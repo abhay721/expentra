@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -10,8 +11,9 @@ import {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
 const Dashboard = () => {
-    const { user } = useContext(AuthContext);
+    const { user, setAppMode, setSelectedGroupId } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
     const [analysis, setAnalysis] = useState(null);
     const [monthlyReport, setMonthlyReport] = useState(null);
     const [budgetStatus, setBudgetStatus] = useState(null);
@@ -55,9 +57,35 @@ const Dashboard = () => {
         value: cat.totalAmount
     })) || [];
 
+    const handleSwitchToGroup = async () => {
+        try {
+            const res = await api.get('/groups');
+            if (res.data.length > 0) {
+                // Skip the selection page if they already have groups, go to the first one
+                setSelectedGroupId(res.data[0]._id);
+                setAppMode('group');
+                navigate('/groups/dashboard');
+            } else {
+                toast.info("You don't have any groups yet. Please create one.");
+                navigate('/groups');
+            }
+        } catch (error) {
+            toast.error("Failed to load groups");
+            navigate('/groups');
+        }
+    };
+
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+            <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+                <button
+                    onClick={handleSwitchToGroup}
+                    className="flex justify-center items-center px-4 py-2 bg-indigo-100 text-indigo-700 font-medium rounded-lg hover:bg-indigo-200 transition-colors"
+                >
+                    Create / Switch to Group
+                </button>
+            </div>
 
             {/* Top Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

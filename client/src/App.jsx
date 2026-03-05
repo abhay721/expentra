@@ -18,6 +18,16 @@ import Budget from './pages/Budget';
 import Reports from './pages/Reports';
 import Analysis from './pages/Analysis';
 import Alerts from './pages/Alerts';
+
+// Group Pages
+import GroupSelection from './pages/group/GroupSelection';
+import GroupDashboard from './pages/group/GroupDashboard';
+import GroupExpenses from './pages/group/GroupExpenses';
+import Settlement from './pages/group/Settlement';
+import Members from './pages/group/Members';
+import GroupAnalytics from './pages/group/GroupAnalytics';
+import GroupReports from './pages/group/GroupReports';
+
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminCategories from './pages/admin/AdminCategories';
@@ -57,6 +67,14 @@ function App() {
               <Route path="/analysis" element={<Analysis />} />
               <Route path="/alerts" element={<Alerts />} />
 
+              {/* Group Routes (Personal Only usually, but let's keep them generally protected) */}
+              <Route path="/groups" element={<GroupSelection />} />
+              <Route path="/groups/dashboard" element={<GroupDashboard />} />
+              <Route path="/groups/expenses" element={<GroupExpenses />} />
+              <Route path="/groups/settlement" element={<Settlement />} />
+              <Route path="/groups/members" element={<Members />} />
+              <Route path="/groups/analytics" element={<GroupAnalytics />} />
+              <Route path="/groups/reports" element={<GroupReports />} />
 
               <Route element={<ProtectedRoute allowedRoles={['company', 'admin']} />}>
                 <Route path="/company/dashboard" element={<CompanyDashboard />} />

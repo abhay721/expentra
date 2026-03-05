@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import {
     MdDashboard,
     MdAttachMoney,
@@ -20,21 +21,32 @@ import logo from '../assets/logo.png';
 
 const Sidebar = ({ role, isOpen, setIsOpen }) => {
     const location = useLocation();
+    const { appMode } = useContext(AuthContext);
 
     const getNavItems = () => {
-        // Personal role: only personal finance pages
+        // Personal role: split by appMode
         if (role === 'personal') {
-            return [
-                { name: 'Dashboard', path: '/dashboard', icon: <MdDashboard className="w-6 h-6" /> },
-                { name: 'Income', path: '/income', icon: <FaMoneyBillWave className="w-6 h-6 text-green-400" /> },
-                { name: 'Expenses', path: '/expenses', icon: <FaMoneyBillWave className="w-6 h-6 text-red-400" /> },
-                { name: 'Budget', path: '/budget', icon: <MdAttachMoney className="w-6 h-6" /> },
-                { name: 'Reports', path: '/reports', icon: <MdPieChart className="w-6 h-6" /> },
-                { name: 'Analysis', path: '/analysis', icon: <MdAnalytics className="w-6 h-6" /> },
-                { name: 'Notification', path: '/alerts', icon: <MdNotificationsActive className="w-6 h-6" /> }
-            ];
+            if (appMode === 'group') {
+                return [
+                    { name: 'Dashboard', path: '/groups/dashboard', icon: <MdDashboard className="w-6 h-6" /> },
+                    { name: 'Expenses', path: '/groups/expenses', icon: <FaMoneyBillWave className="w-6 h-6 text-red-400" /> },
+                    { name: 'Analytics', path: '/groups/analytics', icon: <MdAnalytics className="w-6 h-6" /> },
+                    { name: 'Reports', path: '/groups/reports', icon: <MdPieChart className="w-6 h-6" /> },
+                    { name: 'Members', path: '/groups/members', icon: <MdGroup className="w-6 h-6" /> },
+                    { name: 'Settlement', path: '/groups/settlement', icon: <MdHandshake className="w-6 h-6" /> },
+                    { name: 'Back to Personal', path: '/dashboard', icon: <MdHome className="w-6 h-6 text-indigo-200" />, action: () => setAppMode('personal') },
+                ];
+            } else {
+                return [
+                    { name: 'Dashboard', path: '/dashboard', icon: <MdDashboard className="w-6 h-6" /> },
+                    { name: 'Income', path: '/income', icon: <FaMoneyBillWave className="w-6 h-6 text-green-400" /> },
+                    { name: 'Expenses', path: '/expenses', icon: <FaMoneyBillWave className="w-6 h-6 text-red-400" /> },
+                    { name: 'Budget', path: '/budget', icon: <MdAttachMoney className="w-6 h-6" /> },
+                    { name: 'Reports', path: '/reports', icon: <MdPieChart className="w-6 h-6" /> },
+                    { name: 'Analysis', path: '/analysis', icon: <MdAnalytics className="w-6 h-6" /> }
+                ];
+            }
         }
-
 
         let items = [
             { name: 'Dashboard', path: '/dashboard', icon: <MdDashboard className="w-6 h-6" /> },
@@ -95,7 +107,10 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
                                 <Link
                                     key={item.name}
                                     to={item.path}
-                                    onClick={() => setIsOpen && setIsOpen(false)}
+                                    onClick={() => {
+                                        if (setIsOpen) setIsOpen(false);
+                                        if (item.action) item.action();
+                                    }}
                                     className={`group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-150 ${isActive ? 'text-white' : 'text-indigo-800 hover:text-indigo-900'}`}
                                     style={isActive ? { backgroundColor: '#7bbd39' } : {}}
                                     onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = '#C7D2FE'; }}

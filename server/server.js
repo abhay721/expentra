@@ -23,6 +23,8 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import companyRoutes from './routes/companyRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import companyExpenseRoutes from './routes/companyExpenseRoutes.js';
+import groupRoutes from './routes/groupRoutes.js';
+import groupExpenseRoutes from './routes/groupExpenseRoutes.js';
 
 app.use(cors());
 app.use(express.json());
@@ -39,6 +41,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/company', companyRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/company-expenses', companyExpenseRoutes);
+app.use('/api/groups', groupRoutes);
+app.use('/api/group-expenses', groupExpenseRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');

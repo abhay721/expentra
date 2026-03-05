@@ -8,6 +8,10 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Group Mode State
+    const [appMode, setAppMode] = useState('personal'); // 'personal' | 'group'
+    const [selectedGroupId, setSelectedGroupId] = useState(null);
+
     useEffect(() => {
         const checkLoggedIn = async () => {
             try {
@@ -62,7 +66,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, login, register, logout, loading }}>
+        <AuthContext.Provider value={{
+            user, setUser, login, register, logout, loading,
+            appMode, setAppMode, selectedGroupId, setSelectedGroupId
+        }}>
             {!loading && children}
         </AuthContext.Provider>
     );
