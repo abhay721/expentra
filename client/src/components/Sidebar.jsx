@@ -30,8 +30,7 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
                 return [
                     { name: 'Group Dashboard', path: '/groups/dashboard', icon: <MdDashboard className="w-6 h-6" /> },
                     { name: 'Expenses', path: '/groups/expenses', icon: <MdAttachMoney className="w-6 h-6 text-red-400" /> },
-                    { name: 'Add Expense', path: '/groups/add-expense', icon: <FaMoneyBillWave className="w-6 h-6 text-indigo-400" /> },
-                    { name: 'Balances', path: '/groups/settlement', icon: <MdHandshake className="w-6 h-6" /> },
+                    { name: 'Settlements', path: '/groups/settlement', icon: <MdHandshake className="w-6 h-6" /> },
                     { name: 'Members', path: '/groups/members', icon: <MdGroup className="w-6 h-6" /> },
                     { name: 'Analysis', path: '/groups/analytics', icon: <MdAnalytics className="w-6 h-6" /> },
                     { name: 'Reports', path: '/groups/reports', icon: <MdPieChart className="w-6 h-6" /> },

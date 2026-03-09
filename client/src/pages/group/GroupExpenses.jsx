@@ -53,11 +53,20 @@ const GroupExpenses = () => {
                                         date: new Date(dateKey),
                                         note: `Settled for group of expenses`,
                                         paymentMethod: s.paymentMethod,
-                                        expensesCount: 1
+                                        expensesCount: 1,
+                                        underlyingExpenses: [{
+                                            title: exp.title,
+                                            amount: s.amount
+                                        }]
                                     };
                                 } else {
                                     settlementAggregator[key].amount += s.amount;
                                     settlementAggregator[key].expensesCount += 1;
+                                    // Avoid duplicate expense titles if possible, or just add all
+                                    settlementAggregator[key].underlyingExpenses.push({
+                                        title: exp.title,
+                                        amount: s.amount
+                                    });
                                 }
                             }
                         });
@@ -111,7 +120,7 @@ const GroupExpenses = () => {
                     const isExpanded = expandedActivity === act._id;
 
                     if (isExpense) {
-                        const payers = act.paidBy.map(p => p.name).join(', ');
+                        const payers = act.paidBy?.map(p => p.name).join(', ') || 'Unknown';
                         return (
                             <div key={act._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all hover:shadow-md">
                                 <div
@@ -150,10 +159,10 @@ const GroupExpenses = () => {
                                             <div className="space-y-3">
                                                 <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Payment Breakdown</h4>
                                                 <div className="space-y-2">
-                                                    {act.paidBy.map((p, i) => (
+                                                    {act.paidBy?.map((p, i) => (
                                                         <div key={i} className="flex justify-between items-center text-sm p-2 bg-gray-50 rounded-lg">
                                                             <span className="text-gray-700 font-medium">{p.name}</span>
-                                                            <span className="font-bold text-gray-900 italic">paid ₹{p.amount.toLocaleString()}</span>
+                                                            <span className="font-bold text-gray-900 italic">paid ₹{p.amount?.toLocaleString()}</span>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -163,10 +172,10 @@ const GroupExpenses = () => {
                                             <div className="space-y-3">
                                                 <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Shares</h4>
                                                 <div className="space-y-2">
-                                                    {act.splitBetween.map((s, i) => (
+                                                    {act.splitBetween?.map((s, i) => (
                                                         <div key={i} className="flex justify-between items-center text-sm p-2 bg-indigo-50/30 rounded-lg">
                                                             <span className="text-gray-700 font-medium">{s.name}</span>
-                                                            <span className="font-bold text-indigo-700">₹{s.amount.toLocaleString()}</span>
+                                                            <span className="font-bold text-indigo-700">₹{s.amount?.toLocaleString()}</span>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -206,7 +215,10 @@ const GroupExpenses = () => {
                         // Settlement Log Entry
                         return (
                             <div key={act._id} className="bg-emerald-50/30 rounded-2xl shadow-sm border border-emerald-100 overflow-hidden transition-all hover:shadow-md">
-                                <div className="p-5 flex items-center justify-between">
+                                <div
+                                    className="p-5 flex items-center justify-between cursor-pointer"
+                                    onClick={() => setExpandedActivity(isExpanded ? null : act._id)}
+                                >
                                     <div className="flex items-center space-x-4">
                                         <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
                                             <MdCompareArrows className="w-6 h-6" />
@@ -226,9 +238,30 @@ const GroupExpenses = () => {
                                             <p className="text-xl font-black text-emerald-600">₹{act.amount.toLocaleString()}</p>
                                             <p className="text-[10px] uppercase tracking-wider font-bold text-emerald-400">Settled Amount</p>
                                         </div>
-                                        <div className="w-6"></div> {/* Spacer to align with expense cards */}
+                                        <div className="text-emerald-400">
+                                            {isExpanded ? <MdKeyboardArrowUp className="w-6 h-6" /> : <MdKeyboardArrowDown className="w-6 h-6" />}
+                                        </div>
                                     </div>
                                 </div>
+
+                                {isExpanded && (
+                                    <div className="px-5 pb-5 border-t border-emerald-100 pt-5 space-y-4 animate-fadeIn">
+                                        <h4 className="text-xs font-bold text-emerald-700 uppercase tracking-widest flex items-center">
+                                            <MdReceipt className="mr-2 w-4 h-4" /> Settlement Breakdown
+                                        </h4>
+                                        <div className="space-y-2">
+                                            {act.underlyingExpenses?.map((ue, idx) => (
+                                                <div key={ue.title + idx} className="flex justify-between items-center text-sm p-3 bg-white/60 rounded-xl border border-emerald-50 shadow-sm">
+                                                    <span className="text-gray-700 font-medium truncate max-w-[250px]">{ue.title}</span>
+                                                    <span className="font-bold text-emerald-700 whitespace-nowrap">₹{ue.amount?.toLocaleString()}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg inline-block italic border border-emerald-100/50">
+                                            Total of {act.expensesCount} expense settlement(s)
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         );
                     }
