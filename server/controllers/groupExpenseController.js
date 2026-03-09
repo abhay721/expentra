@@ -181,6 +181,7 @@ export const getGroupExpenses = async (req, res, next) => {
 export const getGroupSettlements = async (req, res, next) => {
     try {
         const { groupId } = req.params;
+        const userId = req.user._id.toString();
 
         const group = await Group.findById(groupId);
         if (!group) {
@@ -188,7 +189,7 @@ export const getGroupSettlements = async (req, res, next) => {
             throw new Error('Group not found');
         }
 
-        const isMember = group.members.some(m => m.user && m.user.toString() === req.user._id.toString());
+        const isMember = group.members.some(m => m.user && m.user.toString() === userId);
         if (!isMember) {
             res.status(401);
             throw new Error('Not authorized');
@@ -197,12 +198,8 @@ export const getGroupSettlements = async (req, res, next) => {
         const expenses = await GroupExpense.find({ groupId });
 
         // Calculate balances
-        // For each user, we calculate: Total Paid - Total Share
-        // If balance > 0, they get money back. If balance < 0, they owe money.
         const balances = {};
-
         group.members.forEach(member => {
-            // Use user ID if available, otherwise name (for unregistered)
             const identifier = member.user ? member.user.toString() : member.name;
             balances[identifier] = {
                 memberInfo: member,
@@ -210,75 +207,152 @@ export const getGroupSettlements = async (req, res, next) => {
             };
         });
 
+        const allSettlements = [];
+        const now = new Date();
+
         expenses.forEach(exp => {
-            // Credit the people who paid
-            if (Array.isArray(exp.paidBy)) {
-                exp.paidBy.forEach(payer => {
-                    const payerId = payer.user ? payer.user.toString() : payer.name;
-                    if (balances[payerId]) {
-                        balances[payerId].balance += payer.amount;
-                    }
-                });
-            } else {
-                // Backward compatibility for old records where paidBy was an ObjectId
-                const payerId = exp.paidBy.toString();
-                if (balances[payerId]) {
-                    balances[payerId].balance += exp.amount;
+            // Credit/Debit from original expense
+            exp.paidBy.forEach(payer => {
+                const id = payer.user ? payer.user.toString() : payer.name;
+                if (balances[id]) balances[id].balance += payer.amount;
+            });
+            exp.splitBetween.forEach(split => {
+                const id = split.user ? split.user.toString() : split.name;
+                if (balances[id]) balances[id].balance -= split.amount;
+            });
+
+            // Handle settlements within this expense
+            exp.settlements.forEach(s => {
+                let status = s.reimbursementStatus;
+                // Auto-overdue logic
+                if (status === 'pending' && s.dueDate && s.dueDate < now) {
+                    status = 'overdue';
                 }
+
+                const fromId = s.from.user ? s.from.user.toString() : s.from.name;
+                const toId = s.to.user ? s.to.user.toString() : s.to.name;
+
+                // If settlement is paid, it cancels out the debt it settled
+                if (status === 'paid') {
+                    if (balances[fromId]) balances[fromId].balance += s.amount;
+                    if (balances[toId]) balances[toId].balance -= s.amount;
+                }
+
+                allSettlements.push({
+                    ...s.toObject(),
+                    _id: s._id,
+                    expenseId: exp._id,
+                    expenseTitle: exp.title,
+                    reimbursementStatus: status
+                });
+            });
+        });
+
+        // Filter and categorize for the current user
+        let totalOwedToUser = 0;
+        let totalUserOwes = 0;
+        const pendingGrouped = {};
+        const paidReimbursements = [];
+        const overdueReimbursements = [];
+
+        allSettlements.forEach(s => {
+            const isFromUsr = s.from.user && s.from.user.toString() === userId;
+            const isToUsr = s.to.user && s.to.user.toString() === userId;
+
+            // Update user-specific totals (only for unpaid)
+            if (s.reimbursementStatus !== 'paid') {
+                if (isFromUsr) totalUserOwes += s.amount;
+                if (isToUsr) totalOwedToUser += s.amount;
             }
 
-            // Debit the members who share the expense
-            exp.splitBetween.forEach(split => {
-                const splitUserId = split.user ? split.user.toString() : split.name;
-                if (balances[splitUserId]) {
-                    balances[splitUserId].balance -= split.amount;
+            // Categorize and Group
+            if (s.reimbursementStatus === 'paid') {
+                paidReimbursements.push(s);
+            } else if (s.reimbursementStatus === 'overdue') {
+                overdueReimbursements.push(s);
+            } else {
+                // Grouping Pending settlements
+                const fromKey = s.from.user ? s.from.user.toString() : s.from.name;
+                const toKey = s.to.user ? s.to.user.toString() : s.to.name;
+                const key = `${fromKey}_${toKey}`;
+
+                if (!pendingGrouped[key]) {
+                    pendingGrouped[key] = {
+                        ...s,
+                        isGrouped: true,
+                        underlyingIds: [s._id],
+                        count: 1
+                    };
+                } else {
+                    pendingGrouped[key].amount += s.amount;
+                    pendingGrouped[key].underlyingIds.push(s._id);
+                    pendingGrouped[key].count += 1;
                 }
-            });
+            }
         });
-
-        // We can also calculate a simplified "who owes whom" array
-        const debtors = [];
-        const creditors = [];
-
-        Object.keys(balances).forEach(identifier => {
-            const bal = balances[identifier];
-            bal.balance = Math.round(bal.balance * 100) / 100;
-            if (bal.balance < 0) debtors.push({ ...bal, identifier });
-            else if (bal.balance > 0) creditors.push({ ...bal, identifier });
-        });
-
-        debtors.sort((a, b) => a.balance - b.balance); // most negative first
-        creditors.sort((a, b) => b.balance - a.balance); // most positive first
-
-        const simplifiedDebts = [];
-
-        let i = 0; // debtors index
-        let j = 0; // creditors index
-
-        while (i < debtors.length && j < creditors.length) {
-            const debtor = debtors[i];
-            const creditor = creditors[j];
-
-            let amountToSettle = Math.min(Math.abs(debtor.balance), creditor.balance);
-            amountToSettle = Math.round(amountToSettle * 100) / 100;
-
-            simplifiedDebts.push({
-                from: debtor.memberInfo,
-                to: creditor.memberInfo,
-                amount: amountToSettle,
-            });
-
-            debtor.balance = Math.round((debtor.balance + amountToSettle) * 100) / 100;
-            creditor.balance = Math.round((creditor.balance - amountToSettle) * 100) / 100;
-
-            if (Math.abs(debtor.balance) === 0) i++;
-            if (creditor.balance === 0) j++;
-        }
 
         res.json({
             balances: Object.values(balances),
-            simplifiedDebts
+            totalOwedToUser,
+            totalUserOwes,
+            pendingReimbursements: Object.values(pendingGrouped),
+            paidReimbursements,
+            overdueReimbursements
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Mark a settlement as paid
+// @route   PATCH /api/group-expenses/:groupId/settlements/:expenseId/:settlementId/paid
+// @access  Private
+export const markSettlementAsPaid = async (req, res, next) => {
+    try {
+        const { groupId, expenseId, settlementId } = req.params;
+        const { paymentMethod } = req.body;
+
+        const expense = await GroupExpense.findById(expenseId);
+        if (!expense) {
+            res.status(404);
+            throw new Error('Expense not found');
+        }
+
+        const settlement = expense.settlements.id(settlementId);
+        if (!settlement) {
+            res.status(404);
+            throw new Error('Settlement record not found');
+        }
+
+        const from = settlement.from.user ? settlement.from.user.toString() : settlement.from.name;
+        const to = settlement.to.user ? settlement.to.user.toString() : settlement.to.name;
+
+        // Implementation of bulk update: Find all pending settlements between this pair in this group
+        const expenses = await GroupExpense.find({ groupId });
+        const now = new Date();
+        const updatePromises = [];
+
+        expenses.forEach(exp => {
+            let hasChanges = false;
+            exp.settlements.forEach(s => {
+                const sFrom = s.from.user ? s.from.user.toString() : s.from.name;
+                const sTo = s.to.user ? s.to.user.toString() : s.to.name;
+
+                if (s.reimbursementStatus === 'pending' && sFrom === from && sTo === to) {
+                    s.reimbursementStatus = 'paid';
+                    s.paymentMethod = paymentMethod || 'cash';
+                    s.paymentDate = now;
+                    hasChanges = true;
+                }
+            });
+            if (hasChanges) {
+                updatePromises.push(exp.save());
+            }
+        });
+
+        await Promise.all(updatePromises);
+
+        res.json({ message: 'All related settlements marked as paid successfully' });
     } catch (error) {
         next(error);
     }

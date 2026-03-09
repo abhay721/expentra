@@ -146,16 +146,16 @@ const GroupDashboard = () => {
                     </div>
 
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                        <h3 className="text-lg font-bold mb-4 text-gray-800">Quick Balances</h3>
-                        {settlements?.simplifiedDebts.length === 0 ? (
+                        <h3 className="text-lg font-bold mb-4 text-gray-800">Pending Settlements</h3>
+                        {((settlements?.pendingReimbursements?.length || 0) + (settlements?.overdueReimbursements?.length || 0)) === 0 ? (
                             <div className="text-center py-10">
                                 <span className="text-4xl">🎉</span>
                                 <p className="text-gray-500 mt-2 font-medium">Everyone is all settled up!</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                {settlements?.simplifiedDebts.map((debt, i) => (
-                                    <div key={i} className="flex flex-col p-4 bg-gray-50 rounded-xl border border-gray-100 relative overflow-hidden group">
+                                {[...(settlements?.overdueReimbursements || []), ...(settlements?.pendingReimbursements || [])].map((debt, i) => (
+                                    <div key={i} className={`flex flex-col p-4 bg-gray-50 rounded-xl border relative overflow-hidden group ${debt.reimbursementStatus === 'overdue' ? 'border-rose-200 bg-rose-50/30' : 'border-gray-100'}`}>
                                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition">
                                             <MdPriorityHigh className="w-12 h-12" />
                                         </div>
@@ -164,7 +164,14 @@ const GroupDashboard = () => {
                                             <span className="mx-2 text-gray-400">pays</span>
                                             <span className="font-bold text-gray-900">{debt.to.name}</span>
                                         </div>
-                                        <span className="text-xl font-black text-rose-600">₹{debt.amount.toLocaleString()}</span>
+                                        <div className="flex items-end justify-between">
+                                            <span className={`text-xl font-black ${debt.reimbursementStatus === 'overdue' ? 'text-rose-600' : 'text-gray-900'}`}>
+                                                ₹{debt.amount.toLocaleString()}
+                                            </span>
+                                            {debt.reimbursementStatus === 'overdue' && (
+                                                <span className="text-[10px] font-black bg-rose-600 text-white px-2 py-0.5 rounded-full uppercase tracking-tighter animate-pulse">Overdue</span>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>

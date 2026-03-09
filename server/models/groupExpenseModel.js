@@ -69,6 +69,22 @@ const groupExpenseSchema = new mongoose.Schema(
                     name: String,
                 },
                 amount: Number,
+                reimbursementStatus: {
+                    type: String,
+                    enum: ['pending', 'paid', 'overdue'],
+                    default: 'pending',
+                },
+                paymentMethod: {
+                    type: String,
+                    enum: ['cash', 'upi', 'bank_transfer'],
+                },
+                paymentDate: Date,
+                dueDate: {
+                    type: Date,
+                    default: () => new Date(+new Date() + 7 * 24 * 60 * 60 * 1000), // Default 7 days
+                },
+                requestedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+                requestedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
             }
         ],
         category: {

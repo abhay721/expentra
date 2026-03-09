@@ -54,8 +54,17 @@ const GroupAnalytics = () => {
     // 2. Who paid how much (Paid By)
     const paidByMap = {};
     expenses.forEach(exp => {
-        const name = exp.paidBy?.name || 'Unknown';
-        paidByMap[name] = (paidByMap[name] || 0) + exp.amount;
+        // Handle array of payers (new system)
+        if (Array.isArray(exp.paidBy)) {
+            exp.paidBy.forEach(payer => {
+                const name = payer.name || 'Unknown';
+                paidByMap[name] = (paidByMap[name] || 0) + payer.amount;
+            });
+        } else {
+            // Backward compatibility for old single-payer records
+            const name = exp.paidBy?.name || 'Unknown';
+            paidByMap[name] = (paidByMap[name] || 0) + exp.amount;
+        }
     });
     const paidByData = Object.keys(paidByMap).map(key => ({
         name: key,
