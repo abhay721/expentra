@@ -9,7 +9,7 @@ connectDB();
 
 const app = express();
 
-import { protect, admin, businessOnly } from './middleware/authMiddleware.js';
+import { protect, admin } from './middleware/authMiddleware.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import expenseRoutes from './routes/expenseRoutes.js';
@@ -20,9 +20,6 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import incomeRoutes from './routes/incomeRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
-import companyRoutes from './routes/companyRoutes.js';
-import projectRoutes from './routes/projectRoutes.js';
-import companyExpenseRoutes from './routes/companyExpenseRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
 import groupExpenseRoutes from './routes/groupExpenseRoutes.js';
 
@@ -38,9 +35,6 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/analysis', analysisRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/company', companyRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/company-expenses', companyExpenseRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/group-expenses', groupExpenseRoutes);
 

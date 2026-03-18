@@ -36,10 +36,7 @@ import AdminReports from './pages/admin/AdminReports';
 import AdminProfile from './pages/admin/AdminProfile';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminSecurityLogs from './pages/admin/AdminSecurityLogs';
-import CompanyDashboard from './pages/company/CompanyDashboard';
-import CompanyProjects from './pages/company/CompanyProjects';
-import CompanyExpenses from './pages/company/CompanyExpenses';
-import CompanyReports from './pages/company/CompanyReports';
+
 
 function App() {
   return (
@@ -80,12 +77,7 @@ function App() {
               <Route path="/groups/reports" element={<GroupReports />} />
               <Route path="/join-group/:inviteCode" element={<GroupSelection />} />
 
-              <Route element={<ProtectedRoute allowedRoles={['company', 'admin']} />}>
-                <Route path="/company/dashboard" element={<CompanyDashboard />} />
-                <Route path="/company/projects" element={<CompanyProjects />} />
-                <Route path="/company/expenses" element={<CompanyExpenses />} />
-                <Route path="/company/reports" element={<CompanyReports />} />
-              </Route>
+
 
               <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                 <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />

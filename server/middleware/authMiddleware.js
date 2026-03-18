@@ -34,15 +34,5 @@ const admin = (req, res, next) => {
     }
 };
 
-const businessOnly = (req, res, next) => {
-    if (req.user && (req.user.role === 'company' || req.user.role === 'admin')) {
-        next();
-    } else {
-        res.status(401);
-        next(new Error('Not authorized as a business account'));
-    }
-};
 
-
-
-export { protect, admin, businessOnly };
+export { protect, admin };

@@ -24,8 +24,6 @@ const Register = () => {
         if (result.success) {
             if (result.role === 'admin') {
                 navigate('/admin/dashboard');
-            } else if (result.role === 'company') {
-                navigate('/company/dashboard');
             } else {
                 navigate('/dashboard');
             }
@@ -88,7 +86,6 @@ const Register = () => {
                                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                             >
                                 <option value="personal">Personal</option>
-                                <option value="company">Company</option>
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
