@@ -90,6 +90,14 @@ export const AuthProvider = ({ children }) => {
         if (user && !loading && notificationSetupDone.current !== user._id) {
             const setupNotifications = async () => {
                 try {
+                    // Register Service Worker explicitly for background notifications
+                    if ('serviceWorker' in navigator) {
+                        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+                            scope: '/'
+                        });
+                        console.log('Firebase Service Worker registered successfully:', registration);
+                    }
+
                     const fcmToken = await getFCMToken();
                     if (fcmToken) {
                         console.log('Current FCM Token:', fcmToken);

@@ -1,4 +1,4 @@
-import admin from "../config/firebaseAdmin.js";
+import { firebaseApp, admin } from "../config/firebaseAdmin.js";
 import User from "../models/userModel.js";
 import Group from "../models/groupModel.js";
 
@@ -7,7 +7,6 @@ import Group from "../models/groupModel.js";
  */
 export const getTokensFromUsers = async (userIds) => {
     try {
-        console.log("[Debug] Fetching tokens for users:", userIds);
         const users = await User.find({ _id: { $in: userIds } });
         const tokens = [];
         users.forEach(u => {
@@ -15,7 +14,6 @@ export const getTokensFromUsers = async (userIds) => {
                 tokens.push(...u.fcmTokens);
             }
         });
-        console.log("[Debug] User Tokens Found:", tokens.length);
         return tokens;
     } catch (err) {
         console.error("getTokensFromUsers Error:", err);
@@ -24,12 +22,14 @@ export const getTokensFromUsers = async (userIds) => {
 };
 
 /**
- * Send push notification (Refined for Debugging)
+ * Send push notification
  */
 export const sendPushNotification = async (tokens, payload) => {
     try {
-        if (!tokens || tokens.length === 0) {
-            console.log("[Debug] Skip Sending: NO valid tokens in array");
+        if (!tokens || tokens.length === 0) return;
+
+        if (!firebaseApp) {
+            console.error("❌ Cannot send notification: Firebase App not initialized. Check your credentials.");
             return;
         }
 
@@ -42,16 +42,10 @@ export const sendPushNotification = async (tokens, payload) => {
             tokens: tokens,
         };
 
-        console.log("--- Sending notification to:", tokens);
-        console.log("[Debug] FCM Payload:", JSON.stringify(message, null, 2));
+        console.log("--- Sending notification to:", tokens.length, "tokens");
+        const response = await firebaseApp.messaging().sendEachForMulticast(message);
 
-        // Using sendEachForMulticast as sendMulticast is deprecated in v10+
-        const response = await admin.messaging().sendEachForMulticast(message);
-        
-        console.log("--- FCM Response Received ---");
-        console.log("FCM Response Status:", JSON.stringify(response, null, 2));
-        console.log("Success Count:", response.successCount);
-        console.log("Failure Count:", response.failureCount);
+        console.log("--- FCM Result: Success:", response.successCount, "| Failure:", response.failureCount);
 
         // Cleanup invalid tokens
         if (response.failureCount > 0) {
@@ -59,7 +53,6 @@ export const sendPushNotification = async (tokens, payload) => {
             response.responses.forEach((resp, idx) => {
                 if (!resp.success) {
                     const error = resp.error;
-                    console.log(`[Debug] Token failure at index ${idx}:`, error.code);
                     if (
                         error.code === "messaging/registration-token-not-registered" ||
                         error.code === "messaging/invalid-registration-token"
@@ -70,7 +63,6 @@ export const sendPushNotification = async (tokens, payload) => {
             });
 
             if (failedTokens.length > 0) {
-                console.log("[Debug] Cleaning DB: Removing invalid tokens:", failedTokens.length);
                 await User.updateMany(
                     { fcmTokens: { $in: failedTokens } },
                     { $pull: { fcmTokens: { $in: failedTokens } } }
@@ -88,25 +80,12 @@ export const sendPushNotification = async (tokens, payload) => {
 export const notifyGroupMembers = async (groupId, senderId, payload) => {
     try {
         const group = await Group.findById(groupId);
-        if (!group) {
-            console.log("[Debug] notifyGroupMembers: Group not found", groupId);
-            return;
-        }
+        if (!group) return;
 
-        console.log('[Debug] senderId:', senderId?.toString());
-        const targetUserIds = [];
-        group.members.forEach((m, idx) => {
-            const memberUserId = m.user ? m.user.toString() : null;
-            console.log(`[Member ${idx}] user field:`, memberUserId, "| Result:", memberUserId !== senderId.toString());
-            
-            if (memberUserId && memberUserId !== senderId.toString()) {
-                targetUserIds.push(m.user);
-            } else if (!m.user) {
-                console.log(`[Member ${idx}] Skipped because 'user' field is empty (likely not a registered user)`);
-            }
-        });
+        const targetUserIds = group.members
+            .filter(m => m.user && m.user.toString() !== senderId.toString())
+            .map(m => m.user);
 
-        console.log('[Debug] Filtered Recipients:', targetUserIds.length);
         const tokens = await getTokensFromUsers(targetUserIds);
         await sendPushNotification(tokens, payload);
     } catch (err) {
