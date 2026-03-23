@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import connectDB from './config/db.js';
 
-// env is already loaded by 'dotenv/config'
+
 
 connectDB();
 
@@ -23,7 +23,12 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
 import groupExpenseRoutes from './routes/groupExpenseRoutes.js';
 
-app.use(cors());
+app.use(cors({
+    origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+}));
 app.use(express.json());
 
 app.use('/api/auth', userRoutes);
