@@ -22,7 +22,7 @@ const app = express();
 
 const allowedOrigins = [
     'http://localhost:5173',
-
+    'https://expentra-ten.vercel.app',
     process.env.FRONTEND_URL
 ].filter(Boolean);
 
@@ -33,7 +33,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-app.options('*', cors());
+app.options(/.*/, cors());
 app.use(express.json());
 
 app.use('/api/auth', userRoutes);
