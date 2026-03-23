@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { MdLogout, MdAccountCircle, MdMenu, MdNotifications } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import api from '../services/api';
+
 
 const Navbar = ({ user, setIsSidebarOpen }) => {
     const { logout, appMode, activeGroup, notifications } = useContext(AuthContext);

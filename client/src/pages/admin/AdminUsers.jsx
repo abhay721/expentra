@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
+import { AuthContext, API } from '../../context/AuthContext';
 import { MdDelete, MdBlock, MdCheckCircle, MdList, MdEdit } from 'react-icons/md';
 
 const AdminUsers = () => {
@@ -20,7 +21,7 @@ const AdminUsers = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await api.get('/admin/users');
+            const res = await axios.get(`${API}/admin/users`);
             setUsers(res.data);
         } catch (error) {
             toast.error('Failed to load users');
@@ -51,7 +52,7 @@ const AdminUsers = () => {
             if (editFormData.password.trim() !== '') {
                 payload.password = editFormData.password;
             }
-            await api.put(`/admin/users/${editFormData.id}`, payload);
+            await axios.put(`${API}/admin/users/${editFormData.id}`, payload);
             toast.success('User details updated');
             setShowEditModal(false);
             fetchUsers();
@@ -65,7 +66,7 @@ const AdminUsers = () => {
     const handleToggleBlock = async (user) => {
         try {
             const newStatus = user.status === 'blocked' || user.isBlocked ? 'active' : 'blocked';
-            await api.put(`/admin/users/${user._id}`, { status: newStatus });
+            await axios.put(`${API}/admin/users/${user._id}`, { status: newStatus });
             toast.success(`User ${!user.isBlocked ? 'blocked' : 'unblocked'} successfully`);
             fetchUsers();
         } catch (error) {
@@ -76,7 +77,7 @@ const AdminUsers = () => {
     const handleDeleteUser = async (id) => {
         if (window.confirm('Are you sure you want to permanently delete this user and all their expenses?')) {
             try {
-                await api.delete(`/admin/users/${id}`);
+                await axios.delete(`${API}/admin/users/${id}`);
                 toast.success('User deleted successfully');
                 fetchUsers();
             } catch (error) {
@@ -90,7 +91,7 @@ const AdminUsers = () => {
         setShowExpenseModal(true);
         setLoadingExpenses(true);
         try {
-            const res = await api.get(`/admin/users/${user._id}/expenses`);
+            const res = await axios.get(`${API}/admin/users/${user._id}/expenses`);
             setUserExpenses(res.data);
         } catch (error) {
             toast.error('Failed to load user expenses');
@@ -102,7 +103,7 @@ const AdminUsers = () => {
     const handleDeleteExpense = async (expenseId) => {
         if (window.confirm('Delete this user expense permanently?')) {
             try {
-                await api.delete(`/admin/users/${selectedUser._id}/expenses/${expenseId}`);
+                await axios.delete(`${API}/admin/users/${selectedUser._id}/expenses/${expenseId}`);
                 toast.success('Expense deleted');
                 setUserExpenses(userExpenses.filter(e => e._id !== expenseId));
             } catch (error) {
@@ -219,7 +220,7 @@ const AdminUsers = () => {
                                                 <td className="px-4 py-2 text-sm text-gray-500">{new Date(exp.date).toLocaleDateString()}</td>
                                                 <td className="px-4 py-2 text-sm text-gray-900">{exp.category}</td>
                                                 <td className="px-4 py-2 text-sm text-gray-500 truncate max-w-[150px]">{exp.description}</td>
-                                                <td className="px-4 py-2 text-sm font-bold text-gray-900">${exp.amount}</td>
+                                                <td className="px-4 py-2 text-sm font-bold text-gray-900">₹{exp.amount}</td>
                                                 <td className="px-4 py-2 text-right text-sm">
                                                     <button onClick={() => handleDeleteExpense(exp._id)} className="text-red-600 hover:text-red-900" title="Delete Expense">
                                                         <MdDelete className="w-4 h-4" />

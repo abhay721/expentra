@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
-import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { MdAdd, MdReceipt, MdKeyboardArrowDown, MdKeyboardArrowUp, MdCompareArrows, MdEdit, MdDelete } from 'react-icons/md';
 
@@ -16,8 +16,8 @@ const GroupExpenses = () => {
     const fetchData = async () => {
         try {
             const [expRes, groupRes] = await Promise.all([
-                api.get(`/group-expenses/${selectedGroupId}`),
-                api.get(`/groups/${selectedGroupId}`)
+                axios.get(`${API}/group-expenses/${selectedGroupId}`),
+                axios.get(`${API}/groups/${selectedGroupId}`)
             ]);
 
             const rawExpenses = expRes.data;
@@ -97,7 +97,7 @@ const GroupExpenses = () => {
             return;
         }
         try {
-            await api.delete(`/group-expenses/${selectedGroupId}/${expenseId}`);
+            await axios.delete(`${API}/group-expenses/${selectedGroupId}/${expenseId}`);
             toast.success("Expense deleted successfully");
             fetchData(); // Refresh list
         } catch (error) {

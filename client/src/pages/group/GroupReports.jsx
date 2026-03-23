@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import api from '../../services/api';
-import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { MdDownload, MdFilterList, MdOutlineReceiptLong, MdPerson } from 'react-icons/md';
@@ -22,8 +22,8 @@ const GroupReports = () => {
         const fetchData = async () => {
             try {
                 const [expRes, grpRes] = await Promise.all([
-                    api.get(`/group-expenses/${selectedGroupId}`),
-                    api.get(`/groups/${selectedGroupId}`)
+                    axios.get(`${API}/group-expenses/${selectedGroupId}`),
+                    axios.get(`${API}/groups/${selectedGroupId}`)
                 ]);
 
                 const rawExpenses = expRes.data;

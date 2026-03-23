@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import api from '../../services/api';
-import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -20,7 +20,7 @@ const GroupAnalytics = () => {
 
         const fetchExpenses = async () => {
             try {
-                const res = await api.get(`/group-expenses/${selectedGroupId}`);
+                const res = await axios.get(`${API}/group-expenses/${selectedGroupId}`);
                 setExpenses(res.data);
             } catch (error) {
                 toast.error("Failed to load group analytics data");

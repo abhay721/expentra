@@ -1,7 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext, API } from '../context/AuthContext';
 import logo from '../assets/logo.png';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -11,13 +13,21 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await login(email, password);
-        if (result.success) {
-            if (result.role === 'admin') {
+        try {
+            const res = await axios.post(`${API}/auth/login`, {
+                email, password
+            });
+            const { token, role } = res.data;
+            login(token, res.data, role);
+            toast.success('Logged in successfully!');
+            if (role === 'admin') {
                 navigate('/admin/dashboard');
             } else {
                 navigate('/dashboard');
             }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Login failed');
+            console.error(error);
         }
     };
 

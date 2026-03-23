@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -26,9 +26,9 @@ const Dashboard = () => {
                 const year = today.getFullYear();
 
                 const [analysisRes, reportRes, budgetRes] = await Promise.all([
-                    api.get('/analysis/summary').catch(() => ({ data: null })),
-                    api.get(`/reports/monthly?month=${month}&year=${year}`).catch(() => ({ data: null })),
-                    api.get(`/budget?month=${month}&year=${year}`).catch(() => ({ data: null }))
+                    axios.get(`${API}/analysis/summary`).catch(() => ({ data: null })),
+                    axios.get(`${API}/reports/monthly?month=${month}&year=${year}`).catch(() => ({ data: null })),
+                    axios.get(`${API}/budget?month=${month}&year=${year}`).catch(() => ({ data: null }))
                 ]);
 
                 setAnalysis(analysisRes.data);
@@ -59,7 +59,7 @@ const Dashboard = () => {
 
     const handleSwitchToGroup = async () => {
         try {
-            const res = await api.get('/groups');
+            const res = await axios.get(`${API}/groups`);
             if (res.data.length > 0) {
                 // Skip the selection page if they already have groups, go to the first one
                 setSelectedGroupId(res.data[0]._id);

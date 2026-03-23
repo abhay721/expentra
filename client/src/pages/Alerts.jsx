@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import api from '../services/api';
-import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../context/AuthContext';
 import { MdNotificationsActive, MdClose } from 'react-icons/md';
 
 const Alerts = () => {
@@ -10,7 +10,7 @@ const Alerts = () => {
     useEffect(() => {
         const fetchAlerts = async () => {
             try {
-                const res = await api.get('/notifications');
+                const res = await axios.get(`${API}/notifications`);
                 setNotifications(res.data);
             } catch (error) {
                 console.error('Failed to load notifications', error);

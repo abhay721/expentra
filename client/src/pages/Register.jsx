@@ -1,7 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext, API } from '../context/AuthContext';
 import logo from '../assets/logo.png';
+
+import { toast } from 'react-toastify';
+
+import axios from 'axios';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -11,7 +15,7 @@ const Register = () => {
         role: 'personal',
     });
 
-    const { register } = useContext(AuthContext);
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -20,13 +24,19 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await register(formData.name, formData.email, formData.password, formData.role);
-        if (result.success) {
-            if (result.role === 'admin') {
+        try {
+            const res = await axios.post(`${API}/auth/register`, formData);
+            const { token, role } = res.data;
+            login(token, res.data, role);
+            toast.success('Registration successful!');
+            if (role === 'admin') {
                 navigate('/admin/dashboard');
             } else {
                 navigate('/dashboard');
             }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Registration failed');
+            console.error(error);
         }
     };
 

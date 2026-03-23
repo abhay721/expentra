@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../services/api';
-import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../../context/AuthContext';
 import { MdAdd, MdGroup, MdEdit, MdDelete, MdClose, MdCheck } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
@@ -30,7 +30,7 @@ const GroupSelection = () => {
 
     const fetchGroups = async () => {
         try {
-            const res = await api.get('/groups');
+            const res = await axios.get(`${API}/groups`);
             setGroups(res.data);
         } catch (error) {
             toast.error("Failed to load groups");
@@ -42,7 +42,7 @@ const GroupSelection = () => {
     const handleCreateGroup = async (e) => {
         e.preventDefault();
         try {
-            const res = await api.post('/groups', newGroup);
+            const res = await axios.post(`${API}/groups`, newGroup);
             setGroups([res.data, ...groups]);
             setNewGroup({ name: '', description: '' });
             setActiveTab('select');
@@ -55,7 +55,7 @@ const GroupSelection = () => {
     const handleJoinGroup = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/groups/join', { inviteCode });
+            await axios.post(`${API}/groups/join`, { inviteCode });
             setInviteCode('');
             setActiveTab('select');
             fetchGroups();
@@ -74,7 +74,7 @@ const GroupSelection = () => {
     const handleUpdateGroup = async (e) => {
         e.preventDefault();
         try {
-            const res = await api.put(`/groups/${editingGroup._id}`, editData);
+            const res = await axios.put(`${API}/groups/${editingGroup._id}`, editData);
             setGroups(groups.map(g => g._id === editingGroup._id ? res.data : g));
             setEditingGroup(null);
             toast.success("Group updated successfully!");
@@ -86,7 +86,7 @@ const GroupSelection = () => {
     const handleDeleteGroup = async (groupId, groupName) => {
         if (!window.confirm(`Are you sure you want to delete "${groupName}"? This action cannot be undone.`)) return;
         try {
-            await api.delete(`/groups/${groupId}`);
+            await axios.delete(`${API}/groups/${groupId}`);
             setGroups(groups.filter(g => g._id !== groupId));
             toast.success("Group deleted successfully");
         } catch (error) {

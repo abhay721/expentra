@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
+import { AuthContext, API } from '../../context/AuthContext';
 import { MdAdd, MdDelete, MdEdit, MdToggleOn, MdToggleOff, MdCategory } from 'react-icons/md';
 
 const AdminCategories = () => {
@@ -12,7 +13,7 @@ const AdminCategories = () => {
 
     const fetchCategories = async () => {
         try {
-            const res = await api.get('/admin/categories');
+            const res = await axios.get(`${API}/admin/categories`);
             setCategories(res.data);
         } catch (error) {
             toast.error('Failed to load categories');
@@ -28,7 +29,7 @@ const AdminCategories = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this category?')) {
             try {
-                await api.delete(`/admin/categories/${id}`);
+                await axios.delete(`${API}/admin/categories/${id}`);
                 toast.success('Category deleted');
                 fetchCategories();
             } catch (error) {
@@ -41,10 +42,10 @@ const AdminCategories = () => {
         e.preventDefault();
         try {
             if (editId) {
-                await api.put(`/admin/categories/${editId}`, formData);
+                await axios.put(`${API}/admin/categories/${editId}`, formData);
                 toast.success('Category updated successfully');
             } else {
-                await api.post('/admin/categories', formData);
+                await axios.post(`${API}/admin/categories`, formData);
                 toast.success('Category created successfully');
             }
             setShowModal(false);
@@ -64,7 +65,7 @@ const AdminCategories = () => {
 
     const handleToggleActive = async (category) => {
         try {
-            await api.put(`/admin/categories/${category._id}`, {
+            await axios.put(`${API}/admin/categories/${category._id}`, {
                 isActive: !category.isActive
             });
             toast.success(`Category ${!category.isActive ? 'activated' : 'deactivated'}`);

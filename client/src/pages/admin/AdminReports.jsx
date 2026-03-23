@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
+import { AuthContext, API } from '../../context/AuthContext';
 import { MdDownload } from 'react-icons/md';
 
 const AdminReports = () => {
@@ -13,7 +14,7 @@ const AdminReports = () => {
 
     useEffect(() => {
         // Load users to populate the filter dropdown
-        api.get('/admin/users').then(res => setUsers(res.data)).catch(err => console.error(err));
+        axios.get(`${API}/admin/users`).then(res => setUsers(res.data)).catch(err => console.error(err));
     }, []);
 
     const fetchReports = async (e) => {
@@ -26,7 +27,7 @@ const AdminReports = () => {
                 query += query ? `&userId=${selectedUser}` : `?userId=${selectedUser}`;
             }
 
-            const res = await api.get(`/admin/reports${query}`);
+            const res = await axios.get(`${API}/admin/reports${query}`);
             setReports(res.data);
             if (res.data.length === 0) toast.info('No records found for these filters');
         } catch (error) {
@@ -141,7 +142,7 @@ const AdminReports = () => {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(rp.date).toLocaleDateString()}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{rp.userId?.name} <br /><span className="text-xs text-gray-400">{rp.userId?.email}</span></td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{rp.category}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">${rp.amount}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">₹{rp.amount}</td>
                                     </tr>
                                 ))}
                                 {reports.length === 0 && <tr><td colSpan="4" className="text-center py-4 text-gray-500">Run a generation to see records.</td></tr>}

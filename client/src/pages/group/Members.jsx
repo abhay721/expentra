@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import api from '../../services/api';
-import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { MdGroupAdd, MdPerson, MdEdit, MdDelete, MdCheck, MdClose } from 'react-icons/md';
 
@@ -24,7 +24,7 @@ const Members = () => {
 
     const fetchGroupData = async () => {
         try {
-            const res = await api.get(`/groups/${selectedGroupId}`);
+            const res = await axios.get(`${API}/groups/${selectedGroupId}`);
             setGroupData(res.data);
         } catch (error) {
             toast.error("Failed to load group members");
@@ -47,7 +47,7 @@ const Members = () => {
 
         setIsSubmitting(true);
         try {
-            await api.put(`/groups/${selectedGroupId}/members`, {
+            await axios.put(`${API}/groups/${selectedGroupId}/members`, {
                 name: name.trim(),
                 email: email.trim() || undefined
             });
@@ -69,7 +69,7 @@ const Members = () => {
         if (!editName.trim()) return toast.error("Name is required");
         setIsSubmitting(true);
         try {
-            await api.put(`/groups/${selectedGroupId}/members/${memberId}`, {
+            await axios.put(`${API}/groups/${selectedGroupId}/members/${memberId}`, {
                 name: editName.trim(),
                 email: editEmail.trim() || ''
             });
@@ -86,7 +86,7 @@ const Members = () => {
     const handleDeleteMember = async (memberId, memberName) => {
         if (!window.confirm(`Are you sure you want to remove ${memberName} from the group?`)) return;
         try {
-            await api.delete(`/groups/${selectedGroupId}/members/${memberId}`);
+            await axios.delete(`${API}/groups/${selectedGroupId}/members/${memberId}`);
             toast.success("Member removed");
             await fetchGroupData();
         } catch (error) {

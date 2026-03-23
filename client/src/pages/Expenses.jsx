@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import api from '../services/api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import { MdAdd, MdDelete, MdEdit } from 'react-icons/md';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext, API } from '../context/AuthContext';
 
 const Expenses = () => {
     const { user } = useContext(AuthContext);
@@ -25,8 +25,8 @@ const Expenses = () => {
         try {
             setLoading(true);
             const [expRes, catRes] = await Promise.all([
-                api.get(`/expenses?month=${filterMonth}&year=${filterYear}${filterCategory ? `&category=${filterCategory}` : ''}`),
-                api.get('/categories')
+                axios.get(`${API}/expenses?month=${filterMonth}&year=${filterYear}${filterCategory ? `&category=${filterCategory}` : ''}`),
+                axios.get(`${API}/categories`)
             ]);
             setExpenses(expRes.data);
             const expCats = catRes.data.filter(c => c.type === 'expense' && c.isActive !== false);
@@ -72,10 +72,10 @@ const Expenses = () => {
         try {
             if (editingId) {
                 // Edit always goes to personal expense endpoint
-                await api.put(`/expenses/${editingId}`, formData);
+                await axios.put(`${API}/expenses/${editingId}`, formData);
                 toast.success('Expense updated');
             } else {
-                await api.post('/expenses', formData);
+                await axios.post(`${API}/expenses`, formData);
                 toast.success('Expense added');
             }
             setShowModal(false);
@@ -89,7 +89,7 @@ const Expenses = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this expense?')) return;
         try {
-            await api.delete(`/expenses/${id}`);
+            await axios.delete(`${API}/expenses/${id}`);
             setExpenses(prev => prev.filter(e => e._id !== id));
             toast.success('Expense deleted');
         } catch (error) {

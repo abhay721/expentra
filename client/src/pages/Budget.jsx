@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import api from '../services/api';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import { MdWarning, MdCheckCircle, MdSavings } from 'react-icons/md';
+import { AuthContext, API } from '../context/AuthContext';
 
 const Budget = () => {
     const [budgetStatus, setBudgetStatus] = useState(null);
@@ -18,8 +19,8 @@ const Budget = () => {
     const fetchBudgetAndReport = async () => {
         try {
             const [budgetRes, reportRes] = await Promise.all([
-                api.get(`/budget?month=${month}&year=${year}`).catch(() => ({ data: null })),
-                api.get(`/reports/monthly?month=${month}&year=${year}`).catch(() => ({ data: null }))
+                axios.get(`${API}/budget?month=${month}&year=${year}`).catch(() => ({ data: null })),
+                axios.get(`${API}/reports/monthly?month=${month}&year=${year}`).catch(() => ({ data: null }))
             ]);
 
             if (budgetRes.data) {
@@ -51,7 +52,7 @@ const Budget = () => {
             return;
         }
         try {
-            await api.post('/budget', {
+            await axios.post(`${API}/budget`, {
                 month,
                 year,
                 limitAmount: Number(amount),

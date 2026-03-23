@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
+import { AuthContext, API } from '../../context/AuthContext';
 import { MdAdminPanelSettings, MdPeople, MdAttachMoney } from 'react-icons/md';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -13,8 +14,8 @@ const AdminDashboard = () => {
         const fetchStats = async () => {
             try {
                 const [basicRes, advRes] = await Promise.all([
-                    api.get('/admin/dashboard'),
-                    api.get('/admin/analytics/overview')
+                    axios.get(`${API}/admin/dashboard`),
+                    axios.get(`${API}/admin/analytics/overview`)
                 ]);
                 setStats(basicRes.data);
                 setAdvancedStats(advRes.data);
@@ -64,7 +65,7 @@ const AdminDashboard = () => {
                 <div className="bg-white p-6 rounded-xl shadow border-l-4 border-orange-500">
                     <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">System Economy</p>
                     <div className="flex justify-between items-center mt-2">
-                        <p className="text-2xl font-bold text-gray-900">${advancedStats?.totalTransactionAmount?.toLocaleString() || 0}</p>
+                        <p className="text-2xl font-bold text-gray-900">₹{advancedStats?.totalTransactionAmount?.toLocaleString() || 0}</p>
                         <MdAttachMoney className="w-8 h-8 text-orange-200" />
                     </div>
                 </div>

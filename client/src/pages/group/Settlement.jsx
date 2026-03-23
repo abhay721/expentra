@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import api from '../../services/api';
-import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import {
     MdHandshake,
@@ -28,8 +28,8 @@ const Settlement = () => {
     const fetchData = async () => {
         try {
             const [groupRes, settleRes] = await Promise.all([
-                api.get(`/groups/${selectedGroupId}`),
-                api.get(`/group-expenses/${selectedGroupId}/settlements`)
+                axios.get(`${API}/groups/${selectedGroupId}`),
+                axios.get(`${API}/group-expenses/${selectedGroupId}/settlements`)
             ]);
             setGroupData(groupRes.data);
             setData(settleRes.data);
@@ -48,7 +48,7 @@ const Settlement = () => {
     const handleMarkAsPaid = async () => {
         if (!selectedSettlement) return;
         try {
-            await api.patch(`/group-expenses/${selectedGroupId}/settlements/${selectedSettlement.expenseId}/${selectedSettlement._id}/paid`, {
+            await axios.patch(`${API}/group-expenses/${selectedGroupId}/settlements/${selectedSettlement.expenseId}/${selectedSettlement._id}/paid`, {
                 paymentMethod
             });
             toast.success("Settlement recorded!");

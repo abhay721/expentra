@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import api from '../services/api';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { toast } from 'react-toastify';
+import { AuthContext, API } from '../context/AuthContext';
 import { MdAdd, MdDelete, MdEdit } from 'react-icons/md';
 
 const Income = () => {
@@ -21,8 +22,8 @@ const Income = () => {
         try {
             setLoading(true);
             const [incRes, catRes] = await Promise.all([
-                api.get(`/incomes?month=${filterMonth}&year=${filterYear}`),
-                api.get('/categories')
+                axios.get(`${API}/incomes?month=${filterMonth}&year=${filterYear}`),
+                axios.get(`${API}/categories`)
             ]);
             setIncomes(incRes.data);
             const incomeCats = catRes.data.filter(c => c.type === 'income' && c.isActive !== false);
@@ -39,7 +40,6 @@ const Income = () => {
 
     useEffect(() => {
         fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterMonth, filterYear]);
 
     const openAdd = () => {
@@ -63,10 +63,10 @@ const Income = () => {
         e.preventDefault();
         try {
             if (editingId) {
-                await api.put(`/incomes/${editingId}`, formData);
+                await axios.put(`${API}/incomes/${editingId}`, formData);
                 toast.success('Income updated successfully');
             } else {
-                await api.post('/incomes', formData);
+                await axios.post(`${API}/incomes`, formData);
                 toast.success('Income added successfully');
             }
             setShowModal(false);
@@ -80,7 +80,7 @@ const Income = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this income entry?')) return;
         try {
-            await api.delete(`/incomes/${id}`);
+            await axios.delete(`${API}/incomes/${id}`);
             setIncomes(prev => prev.filter(i => i._id !== id));
             toast.success('Income deleted');
         } catch (error) {

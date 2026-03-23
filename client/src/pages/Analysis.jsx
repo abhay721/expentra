@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import api from '../services/api';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { toast } from 'react-toastify';
+import { AuthContext, API } from '../context/AuthContext';
 import { MdTrendingUp, MdTrendingDown, MdLightbulb, MdHealthAndSafety, MdWarning, MdRefresh } from 'react-icons/md';
 
 const Analysis = () => {
@@ -12,7 +13,7 @@ const Analysis = () => {
         setLoading(true);
         setError(false);
         try {
-            const res = await api.get('/analysis/summary');
+            const res = await axios.get(`${API}/analysis/summary`);
             setAnalysis(res.data);
         } catch (err) {
             setError(true);

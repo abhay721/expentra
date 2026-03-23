@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../services/api';
-import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { MdArrowBack, MdCalculate, MdCheckCircle, MdInfoOutline, MdReceipt, MdCategory, MdEdit } from 'react-icons/md';
@@ -34,7 +34,7 @@ const AddGroupExpense = () => {
         const fetchData = async () => {
             try {
                 // Fetch group members first
-                const groupRes = await api.get(`/groups/${selectedGroupId}`);
+                const groupRes = await axios.get(`${API}/groups/${selectedGroupId}`);
                 const group = groupRes.data;
                 setGroupData(group);
 
@@ -44,7 +44,7 @@ const AddGroupExpense = () => {
                 if (isEditMode) {
                     // Fetch existing expense details
                     // We need to fetch all expenses and find the specific one since there isn't a single expense endpoint
-                    const expensesRes = await api.get(`/group-expenses/${selectedGroupId}`);
+                    const expensesRes = await axios.get(`${API}/group-expenses/${selectedGroupId}`);
                     const expense = expensesRes.data.find(e => e._id === expenseId);
 
                     if (!expense) {
@@ -200,10 +200,10 @@ const AddGroupExpense = () => {
             };
 
             if (isEditMode) {
-                await api.put(`/group-expenses/${selectedGroupId}/${expenseId}`, payload);
+                await axios.put(`${API}/group-expenses/${selectedGroupId}/${expenseId}`, payload);
                 toast.success("Expense updated successfully");
             } else {
-                await api.post('/group-expenses', payload);
+                await axios.post(`${API}/group-expenses`, payload);
                 toast.success("Expense added successfully");
             }
 

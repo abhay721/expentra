@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import api from '../../services/api';
-import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { MdGroup, MdAccountBalanceWallet, MdTrendingUp, MdPriorityHigh, MdShowChart } from 'react-icons/md';
 
@@ -17,9 +17,9 @@ const GroupDashboard = () => {
         const fetchGroupDashboard = async () => {
             try {
                 const [groupRes, settleRes, expRes] = await Promise.all([
-                    api.get(`/groups/${selectedGroupId}`),
-                    api.get(`/group-expenses/${selectedGroupId}/settlements`),
-                    api.get(`/group-expenses/${selectedGroupId}`)
+                    axios.get(`${API}/groups/${selectedGroupId}`),
+                    axios.get(`${API}/group-expenses/${selectedGroupId}/settlements`),
+                    axios.get(`${API}/group-expenses/${selectedGroupId}`)
                 ]);
                 setGroupData(groupRes.data);
                 setSettlements(settleRes.data);

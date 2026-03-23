@@ -1,30 +1,65 @@
 import React, { createContext, useState, useEffect } from 'react';
-import api from '../services/api';
-import { toast } from 'react-toastify';
+import axios from 'axios';
 import { getFCMToken } from '../utils/getFCMToken';
 import { messaging, onMessage } from '../firebase';
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+export const API = import.meta.env.VITE_URL_API || import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-    // Group Mode State
-    const [appMode, setAppModeState] = useState(localStorage.getItem('appMode') || 'personal'); // 'personal' | 'group'
+export const AuthProvider = ({ children }) => {
+    // Auth State from localStorage
+    const [token, setToken] = useState(localStorage.getItem('token') || null);
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
+    const [role, setRole] = useState(localStorage.getItem('role') || null);
+
+    // Group & App Mode State
+    const [appMode, setAppModeState] = useState(localStorage.getItem('appMode') || 'personal');
     const [selectedGroupId, setSelectedGroupIdState] = useState(localStorage.getItem('selectedGroupId') || null);
     const [activeGroup, setActiveGroup] = useState(null);
     const [notifications, setNotifications] = useState([]);
-
+    const [loading, setLoading] = useState(false);
     const fetchNotifications = async () => {
         try {
-            const res = await api.get('/notifications');
+            const res = await axios.get('/notifications');
             if (res.data) setNotifications(res.data);
         } catch (error) {
             console.error('Failed to load notifications', error);
         }
     };
 
+    const fetchGroupName = async (groupId) => {
+        try {
+            const res = await axios.get(`/groups/${groupId}`);
+            setActiveGroup(res.data);
+        } catch (error) {
+            console.error("Failed to fetch group name", error);
+            setActiveGroup(null);
+        }
+    };
+
+    // Auth Actions
+    const login = (newToken, newUser, newRole) => {
+        setToken(newToken);
+        setUser(newUser);
+        setRole(newRole);
+        localStorage.setItem('token', newToken);
+        localStorage.setItem('user', JSON.stringify(newUser));
+        localStorage.setItem('role', newRole);
+    };
+
+    const logout = () => {
+        setToken(null);
+        setUser(null);
+        setRole(null);
+        localStorage.clear(); // Simple logout
+        setAppModeState('personal');
+        setSelectedGroupIdState(null);
+        setActiveGroup(null);
+        window.location.href = '/login';
+    };
+
+    // Mode handling
     const setAppMode = (mode) => {
         setAppModeState(mode);
         localStorage.setItem('appMode', mode);
@@ -41,132 +76,40 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const fetchGroupName = async (groupId) => {
-        try {
-            const res = await api.get(`/groups/${groupId}`);
-            setActiveGroup(res.data);
-        } catch (error) {
-            console.error("Failed to fetch group name", error);
-            setActiveGroup(null);
-        }
-    };
-
+    // Side Effects for Group & Notifications
     useEffect(() => {
-        if (selectedGroupId && !activeGroup) {
-            fetchGroupName(selectedGroupId);
-        }
+        if (selectedGroupId && !activeGroup) fetchGroupName(selectedGroupId);
     }, [selectedGroupId]);
 
     useEffect(() => {
-        const checkLoggedIn = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    const res = await api.get('/auth/profile');
-                    setUser(res.data);
-                } else {
-                    setUser(null);
-                }
-            } catch (error) {
-                setUser(null);
-                localStorage.removeItem('token');
-                localStorage.removeItem('appMode');
-                localStorage.removeItem('selectedGroupId');
-                setAppModeState('personal');
-                setSelectedGroupIdState(null);
-                setActiveGroup(null);
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (token) fetchNotifications();
+    }, [token]);
 
-        checkLoggedIn();
-        if (user) fetchNotifications();
-    }, [user]);
-
-    const notificationSetupDone = React.useRef(null);
-
+    // Simple FCM Setup
     useEffect(() => {
-        if (user && !loading && notificationSetupDone.current !== user._id) {
+        if (user && token) {
             const setupNotifications = async () => {
                 try {
-                    // Register Service Worker explicitly for background notifications
-                    if ('serviceWorker' in navigator) {
-                        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-                            scope: '/'
-                        });
-                        console.log('Firebase Service Worker registered successfully:', registration);
-                    }
-
                     const fcmToken = await getFCMToken();
-                    if (fcmToken) {
-                        console.log('Current FCM Token:', fcmToken);
-                        await api.post('/auth/fcm-token', { fcmToken });
-                        notificationSetupDone.current = user._id; // Mark as done for this user
-                    }
-
-                    // Foreground messages listener
-                    const unsubscribe = onMessage(messaging, (payload) => {
-                        toast.info(`${payload.notification.title}: ${payload.notification.body}`, {
-                            position: "top-right",
-                            autoClose: 5000,
-                        });
+                    if (fcmToken) await axios.post('/auth/fcm-token', { fcmToken });
+                    onMessage(messaging, (payload) => {
+                        console.log('FCM Payload:', payload);
                         fetchNotifications();
                     });
-
-                    return unsubscribe;
-                } catch (error) {
-                    console.error("FCM setup failed:", error);
-                }
+                } catch (error) { console.error("FCM setup failed:", error); }
             };
             setupNotifications();
         }
-    }, [user, loading]);
-
-    const login = async (email, password) => {
-        try {
-            const res = await api.post('/auth/login', { email, password });
-            localStorage.setItem('token', res.data.token);
-            setUser(res.data);
-            toast.success('Logged in successfully!');
-            return { success: true, role: res.data.role };
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Login failed');
-            return { success: false };
-        }
-    };
-
-    const register = async (name, email, password, role) => {
-        try {
-            const res = await api.post('/auth/register', { name, email, password, role });
-            localStorage.setItem('token', res.data.token);
-            setUser(res.data);
-            toast.success('Registration successful!');
-            return { success: true, role: res.data.role };
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Registration failed');
-            return { success: false };
-        }
-    };
-
-    const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('appMode');
-        localStorage.removeItem('selectedGroupId');
-        setAppModeState('personal');
-        setSelectedGroupIdState(null);
-        setActiveGroup(null);
-        setUser(null);
-        toast.info('Logged out');
-    };
+    }, [user, token]);
 
     return (
         <AuthContext.Provider value={{
-            user, setUser, login, register, logout, loading,
+            token, user, role,
             appMode, setAppMode, selectedGroupId, setSelectedGroupId, activeGroup,
-            notifications, fetchNotifications
+            notifications, fetchNotifications,
+            login, logout, loading
         }}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 };

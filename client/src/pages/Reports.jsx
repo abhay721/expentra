@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import api from '../services/api';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { toast } from 'react-toastify';
+import { AuthContext, API } from '../context/AuthContext';
 import {
     PieChart, Pie, Cell, Tooltip, Legend,
     LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer
@@ -22,8 +23,8 @@ const Reports = () => {
         try {
             setLoading(true);
             const [monthRes, yearRes] = await Promise.all([
-                api.get(`/reports/monthly?month=${selectedMonth}&year=${selectedYear}`),
-                api.get(`/reports/yearly?year=${selectedYear}`)
+                axios.get(`${API}/reports/monthly?month=${selectedMonth}&year=${selectedYear}`),
+                axios.get(`${API}/reports/yearly?year=${selectedYear}`)
             ]);
             setMonthlyData(monthRes.data);
             setYearlyData(yearRes.data);

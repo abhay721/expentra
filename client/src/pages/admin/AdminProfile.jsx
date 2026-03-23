@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import api from '../../services/api';
-import { AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
+import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { MdAdminPanelSettings, MdSecurity } from 'react-icons/md';
 
@@ -25,7 +25,7 @@ const AdminProfile = () => {
             const body = { name, email };
             if (password) body.password = password;
 
-            await api.put('/auth/profile', body);
+            await axios.put(`${API}/auth/profile`, body);
             toast.success('Admin profile updated successfully');
             setPassword('');
         } catch (error) {
