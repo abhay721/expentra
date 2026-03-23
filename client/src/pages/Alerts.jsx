@@ -66,7 +66,7 @@ const Alerts = () => {
                                 {note.details && note.details.length > 0 && (
                                     <ul className="mt-2 text-sm ml-4 list-disc opacity-80">
                                         {note.details.map((d, i) => (
-                                            <li key={i}>{d._id.category}: ~${d._id.amount} ({d.count} times recently)</li>
+                                            <li key={i}>{d._id.category}: ~₹{d._id.amount} ({d.count} times recently)</li>
                                         ))}
                                     </ul>
                                 )}
