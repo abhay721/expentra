@@ -77,23 +77,37 @@ export const addGroupExpense = async (req, res, next) => {
             groupId, title, amount, paidBy, splitType, splitDetails, splitBetween, settlements, category, note, date: date || Date.now()
         });
 
-        // Notifications
-        notifyGroupMembers(groupId, req.user._id, {
-            title: "New Expense Added 🧾",
-            body: `${req.user.name} added ₹${amount} for "${title}" in ${group.name}`,
-            data: { url: `/group/${groupId}` }
-        });
+        // Targeted Notifications: 1. Debtors | 2. Others | 3. Skip Sender
+        const debtors = settlements.filter(s => s.from.user).map(s => s.from.user.toString());
+        const otherMembers = group.members
+            .filter(m => m.user && m.user.toString() !== req.user._id.toString() && !debtors.includes(m.user.toString()))
+            .map(m => m.user);
 
+        // 1. Notify Debtors specifically (Avoids double notifications)
         settlements.forEach(async (s) => {
             if (s.from.user && s.from.user.toString() !== req.user._id.toString()) {
                 const debtorTokens = await getTokensFromUsers([s.from.user]);
-                sendPushNotification(debtorTokens, {
-                    title: "Payment Reminder ⚠️",
-                    body: `You need to pay ₹${s.amount} to ${s.to.name}`,
-                    data: { url: "/groups/settlement" }
-                });
+                if (debtorTokens.length > 0) {
+                    await sendPushNotification(debtorTokens, {
+                        title: "Payment Reminder ⚠️",
+                        body: `Added "${title}" in ${group.name}: You owe ₹${s.amount} to ${s.to.name}`,
+                        data: { url: "/groups/settlement" }
+                    });
+                }
             }
         });
+
+        // 2. Notify other members (Not involved in debts)
+        if (otherMembers.length > 0) {
+            const memberTokens = await getTokensFromUsers(otherMembers);
+            if (memberTokens.length > 0) {
+                await sendPushNotification(memberTokens, {
+                    title: "New Group Expense 🧾",
+                    body: `${req.user.name} added ₹${amount} for "${title}" in ${group.name}`,
+                    data: { url: `/group/${groupId}` }
+                });
+            }
+        }
 
         res.status(201).json(expense);
     } catch (error) { next(error); }
@@ -160,13 +174,16 @@ export const markSettlementAsPaid = async (req, res, next) => {
         settlement.paymentDate = new Date();
         await expense.save();
 
-        if (settlement.to.user) {
-            const receiverTokens = await getTokensFromUsers([settlement.to.user]);
-            sendPushNotification(receiverTokens, {
-                title: "Payment Received 💰",
-                body: `${req.user.name} paid you ₹${settlement.amount}`,
-                data: { url: "/groups/settlement" }
-            });
+        if (settlement.to && (settlement.to.user || settlement.to._id)) {
+            const receiverId = settlement.to.user || settlement.to._id;
+            const receiverTokens = await getTokensFromUsers([receiverId]);
+            if (receiverTokens.length > 0) {
+                await sendPushNotification(receiverTokens, {
+                    title: "Payment Received 💰",
+                    body: `Confirming ₹${settlement.amount} paid by ${req.user.name} for "${expense.title}"`,
+                    data: { url: "/groups/settlement" }
+                });
+            }
         }
         res.json({ message: 'Marked as paid' });
     } catch (error) { next(error); }
