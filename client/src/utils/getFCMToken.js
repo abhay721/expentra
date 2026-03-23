@@ -22,8 +22,7 @@ export const getFCMToken = async () => {
         const registration = await navigator.serviceWorker.ready;
 
         const token = await getToken(messaging, {
-            vapidKey: import.meta.env.VITE_VAPID_KEY,
-            serviceWorkerRegistration: registration
+            vapidKey: import.meta.env.VITE_VAPID_KEY
         });
 
         if (token) {
