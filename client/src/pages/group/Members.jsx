@@ -146,7 +146,7 @@ const Members = () => {
                                     {groupData?.inviteLink || 'N/A'}
                                 </div>
                                 <button
-                                    onClick={() => {
+                                    onClick={() => { 
                                         navigator.clipboard.writeText(groupData?.inviteLink);
                                         toast.success("Link copied!");
                                     }}
