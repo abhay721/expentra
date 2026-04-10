@@ -28,6 +28,42 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const markAsRead = async (id) => {
+        try {
+            await axios.patch(`/notifications/${id}/read`);
+            setNotifications(prev => prev.map(n => n._id === id ? { ...n, read: true } : n));
+        } catch (error) {
+            console.error('Failed to mark notification as read', error);
+        }
+    };
+
+    const markAllAsRead = async () => {
+        try {
+            await axios.patch('/notifications/mark-all-read');
+            setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+        } catch (error) {
+            console.error('Failed to mark all as read', error);
+        }
+    };
+
+    const deleteNotification = async (id) => {
+        try {
+            await axios.delete(`/notifications/${id}`);
+            setNotifications(prev => prev.filter(n => n._id !== id));
+        } catch (error) {
+            console.error('Failed to delete notification', error);
+        }
+    };
+
+    const clearAllNotifications = async () => {
+        try {
+            await axios.delete('/notifications/clear-all');
+            setNotifications([]);
+        } catch (error) {
+            console.error('Failed to clear all notifications', error);
+        }
+    };
+
     const fetchGroupName = async (groupId) => {
         try {
             const res = await axios.get(`/groups/${groupId}`);
@@ -102,11 +138,22 @@ export const AuthProvider = ({ children }) => {
         }
     }, [user, token]);
 
+    const [lastSeen, setLastSeen] = useState(localStorage.getItem('notificationsLastSeen') || 0);
+
+    const markAsSeen = () => {
+        const now = new Date().toISOString();
+        setLastSeen(now);
+        localStorage.setItem('notificationsLastSeen', now);
+    };
+
+    const unreadCount = notifications.filter(n => !n.read).length;
+
     return (
         <AuthContext.Provider value={{
             token, user, role,
             appMode, setAppMode, selectedGroupId, setSelectedGroupId, activeGroup,
-            notifications, fetchNotifications,
+            notifications, fetchNotifications, unreadCount, markAsSeen,
+            markAsRead, markAllAsRead, deleteNotification, clearAllNotifications,
             login, logout, loading
         }}>
             {children}

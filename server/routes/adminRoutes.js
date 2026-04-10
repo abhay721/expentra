@@ -26,7 +26,7 @@ router.get('/dashboard', getAdminDashboardStats);
 // Users
 router.get('/users', getUsers);
 router.put('/users/:id', updateUser);
-router.put('/users/:id', deleteUser);
+router.delete('/users/:id', deleteUser);
 router.get('/users/:id/expenses', getUserExpenses);
 router.delete('/users/:userId/expenses/:expenseId', deleteUserExpense);
 

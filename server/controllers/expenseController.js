@@ -1,31 +1,37 @@
 import Expense from '../models/expenseModel.js';
+import Category from '../models/categoryModel.js';
 import { checkAndNotifyBudgetOverflow } from '../controllers/budgetController.js';
+import { detectCategory } from '../utils/categoryDetector.js';
 
 // @desc    Create new expense
 // @route   POST /api/expenses
 // @access  Private
 const createExpense = async (req, res, next) => {
-    const { amount, category, note, location, date, groupId, paymentMethod, recurring } = req.body;
+    const { title, amount, category, note, location, date, groupId, paymentMethod, recurring } = req.body;
 
     try {
+        if (!title) {
+            res.status(400);
+            return next(new Error('Title is required'));
+        }
         if (!amount) {
             res.status(400);
             return next(new Error('Amount is required and must be a number'));
-        }
-        if (!category) {
-            res.status(400);
-            return next(new Error('Category is required'));
         }
         if (Number(amount) <= 0) {
             res.status(400);
             return next(new Error('Amount must be greater than 0'));
         }
 
+        const categories = await Category.find({ type: 'expense', isActive: true });
+        const detectedCategory = detectCategory(title, categories);
+
         const expense = new Expense({
             userId: req.user._id,
             groupId: groupId || null,
+            title,
             amount: Number(amount),
-            category,
+            category: detectedCategory,
             note: note || '',
             location: location || '',
             date: date || Date.now(),
@@ -85,9 +91,9 @@ const updateExpense = async (req, res, next) => {
                 throw new Error('Not authorized to update this expense');
             }
 
+            expense.title = req.body.title || expense.title;
             expense.amount = req.body.amount ? Number(req.body.amount) : expense.amount;
             expense.category = req.body.category || expense.category;
-            expense.description = req.body.description || expense.description;
             expense.note = req.body.note !== undefined ? req.body.note : expense.note;
             expense.location = req.body.location || expense.location;
             expense.date = req.body.date || expense.date;

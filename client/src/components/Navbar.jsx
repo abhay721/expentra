@@ -1,57 +1,75 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { MdLogout, MdAccountCircle, MdMenu, MdNotifications } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
-
 const Navbar = ({ user, setIsSidebarOpen }) => {
-    const { logout, appMode, activeGroup, notifications } = useContext(AuthContext);
+    const { logout, appMode, activeGroup, unreadCount, markAsSeen } = useContext(AuthContext);
 
     return (
-        <header className="flex justify-between items-center py-4 px-4 md:px-6 bg-white border-b border-gray-200 shrink-0">
-            <div className="flex items-center">
+        <header className="flex justify-between items-center py-4 px-6 bg-card border-b border-background sticky top-0 z-10 shadow-sm">
+            {/* Left side: Menu toggle and Title */}
+            <div className="flex items-center gap-4">
                 <button
-                    className="mr-4 md:hidden text-gray-500 hover:text-gray-700"
+                    className="md:hidden p-2 text-textColor hover:bg-background rounded-lg transition-colors"
                     onClick={() => setIsSidebarOpen(true)}
                 >
                     <MdMenu className="w-6 h-6" />
                 </button>
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900 border-l-4 border-indigo-600 pl-4 capitalize truncate">
-                    {appMode === 'group' && activeGroup ? activeGroup.name : `${user?.role} Portal`}
-                </h2>
+
+                <div className="flex flex-col">
+                    <h2 className="text-lg font-bold text-textColor capitalize">
+                        {appMode === 'group' && activeGroup ? activeGroup.name : `${user?.role} Portal`}
+                    </h2>
+                </div>
+
                 {appMode === 'group' && (
                     <Link
                         to="/groups"
-                        className="ml-4 px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full hover:bg-indigo-100 transition-colors border border-indigo-100 flex items-center whitespace-nowrap"
+                        className="ml-2 px-3 py-1.5 bg-background text-primary text-xs font-semibold rounded border border-background hover:border-primary transition-colors hidden sm:flex items-center"
                     >
-                        Change Group
+                        Switch Group
                     </Link>
                 )}
             </div>
 
-            <div className="flex items-center space-x-6">
-                <div className="flex items-center">
-                    <Link to="/alerts" className="relative text-gray-400 hover:text-gray-600 mr-4 transition-colors">
-                        <MdNotifications className="w-7 h-7" />
-                        {notifications.length > 0 && (
-                            <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white bg-red-500 rounded-full transform translate-x-1/4 -translate-y-1/4">
-                                {notifications.length > 99 ? '99+' : notifications.length}
+            {/* Right side: Notifications, Profile, and Logout */}
+            <div className="flex items-center gap-4">
+
+                {/* Notifications and Profile */}
+                <div className="flex items-center gap-4 border-r border-background pr-4">
+                    <Link
+                        to="/alerts"
+                        onClick={markAsSeen}
+                        className="relative p-2 text-textColor hover:bg-background rounded-lg transition-colors"
+                    >
+                        <MdNotifications className="w-6 h-6" />
+                        {unreadCount > 0 && (
+                            <span className="absolute top-1 right-1 flex h-4 w-4">
+                                <span className="absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-4 w-4 bg-secondary text-[10px] font-bold flex items-center justify-center text-card">
+                                    {unreadCount > 9 ? '9+' : unreadCount}
+                                </span>
                             </span>
                         )}
                     </Link>
 
-                    <MdAccountCircle className="h-8 w-8 text-gray-400" />
-                    <span className="text-gray-700 text-sm font-medium ml-2 mr-4 hidden sm:inline-block">
-                        Hi, {user?.name}
-                    </span>
-                    <button
-                        onClick={logout}
-                        className="flex items-center text-red-600 hover:text-red-800 transition-colors"
-                    >
-                        <MdLogout className="h-5 w-5 sm:mr-1" />
-                        <span className="text-sm font-medium hidden sm:inline-block">Logout</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <MdAccountCircle className="h-8 w-8 text-primary" />
+                        <div className="hidden lg:block text-left">
+                            <p className="text-sm font-semibold text-textColor">Hi, {user?.name}</p>
+                        </div>
+                    </div>
                 </div>
+
+                {/* Logout Button */}
+                <button
+                    onClick={logout}
+                    className="flex items-center gap-2 px-4 py-2 bg-background text-textColor hover:bg-primary hover:text-card font-semibold rounded-lg transition-colors"
+                >
+                    <MdLogout className="h-5 w-5" />
+                    <span className="text-xs uppercase tracking-wider hidden sm:inline-block">Logout</span>
+                </button>
             </div>
         </header>
     );

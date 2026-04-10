@@ -2,25 +2,26 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
-import { MdGroupAdd, MdPerson, MdEdit, MdDelete, MdCheck, MdClose } from 'react-icons/md';
+import {
+    MdGroupAdd, MdPerson, MdEdit, MdDelete, MdCheck, MdClose,
+    MdContentCopy, MdEmail, MdPeople, MdAdminPanelSettings,
+    MdInfoOutline, MdLink
+} from 'react-icons/md';
 
 const Members = () => {
-    const { selectedGroupId } = useContext(AuthContext);
+    const { selectedGroupId, user } = useContext(AuthContext);
     const [groupData, setGroupData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Form states
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Edit states
     const [editingMemberId, setEditingMemberId] = useState(null);
     const [editName, setEditName] = useState('');
     const [editEmail, setEditEmail] = useState('');
-    const { user } = useContext(AuthContext);
 
-    const isAdmin = groupData && user && groupData.createdBy.toString() === user._id.toString();
+    const isAdmin = groupData && user && groupData.createdBy?.toString() === user._id?.toString();
 
     const fetchGroupData = async () => {
         try {
@@ -40,23 +41,19 @@ const Members = () => {
 
     const handleAddMember = async (e) => {
         e.preventDefault();
-
         if (!name.trim()) {
-            return toast.error("Name is required");
+            toast.error("Name is required");
+            return;
         }
-
         setIsSubmitting(true);
         try {
             await axios.put(`${API}/groups/${selectedGroupId}/members`, {
                 name: name.trim(),
                 email: email.trim() || undefined
             });
-
             toast.success(`${name} added to the group!`);
             setName('');
             setEmail('');
-
-            // Refresh member list
             await fetchGroupData();
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to add member");
@@ -66,7 +63,10 @@ const Members = () => {
     };
 
     const handleUpdateMember = async (memberId) => {
-        if (!editName.trim()) return toast.error("Name is required");
+        if (!editName.trim()) {
+            toast.error("Name is required");
+            return;
+        }
         setIsSubmitting(true);
         try {
             await axios.put(`${API}/groups/${selectedGroupId}/members/${memberId}`, {
@@ -100,194 +100,283 @@ const Members = () => {
         setEditEmail(member.email || '');
     };
 
+    const copyToClipboard = (text, message) => {
+        navigator.clipboard.writeText(text);
+        toast.success(message);
+    };
+
     if (!selectedGroupId) {
-        return <div className="p-8 text-center bg-white rounded-xl shadow mt-8">Please select a group first.</div>;
+        return (
+            <div className="max-w-6xl mx-auto px-4 py-8">
+                <div className="bg-white rounded-lg border border-gray-200 p-12 text-center shadow-sm">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <MdPeople className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900">No Group Selected</h3>
+                    <p className="text-gray-600 mt-2">Please select a group from the Groups menu first.</p>
+                </div>
+            </div>
+        );
     }
 
-    if (loading) return <div className="p-8">Loading members...</div>;
+    if (loading) {
+        return (
+            <div className="max-w-6xl mx-auto px-4 py-8">
+                <div className="space-y-4">
+                    <div className="h-8 bg-gray-200 rounded w-1/3 animate-pulse"></div>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="h-80 bg-gray-100 rounded-lg animate-pulse"></div>
+                        <div className="h-80 bg-gray-100 rounded-lg animate-pulse"></div>
+                        <div className="h-96 bg-gray-100 rounded-lg animate-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-gray-900">{groupData?.name} - Members</h1>
+        <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+            {/* Header */}
+            <div>
+                <h1 className="text-2xl font-bold text-gray-900">{groupData?.name}</h1>
+                <p className="text-gray-600 text-sm mt-1">Manage group members and invitations</p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                {/* Invite Members Section */}
-                <div className="md:col-span-1 border border-emerald-100 bg-white rounded-xl shadow-sm p-6 self-start text-sm">
-                    <h2 className="text-base font-semibold mb-4 flex items-center text-emerald-900 border-b pb-2">
-                        <MdGroupAdd className="mr-2 w-5 h-5 text-emerald-500" />
-                        Invite Options
-                    </h2>
-
-                    <div className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Invite Code</label>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Invite Options Card */}
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                    <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
+                        <div className="flex items-center gap-2">
+                            <MdGroupAdd className="w-5 h-5 text-blue-600" />
+                            <h2 className="font-semibold text-gray-900">Invite Options</h2>
+                        </div>
+                    </div>
+                    <div className="p-5 space-y-4">
+                        {/* Invite Code */}
+                        <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                                Invite Code
+                            </label>
                             <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-gray-50 px-4 py-3 rounded-xl font-black text-lg text-center tracking-widest border border-gray-100">
+                                <div className="flex-1 bg-gray-50 px-3 py-2 rounded-lg font-mono text-base font-bold text-center border border-gray-200">
                                     {groupData?.inviteCode || 'N/A'}
                                 </div>
                                 <button
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(groupData?.inviteCode);
-                                        toast.success("Code copied!");
-                                    }}
-                                    className="p-3 bg-gray-100 rounded-xl hover:bg-gray-200 transition"
+                                    onClick={() => copyToClipboard(groupData?.inviteCode, "Invite code copied!")}
+                                    className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                                     title="Copy Code"
                                 >
-                                    <MdCheck className="w-5 h-5 text-gray-600" />
+                                    <MdContentCopy className="w-4 h-4 text-gray-600" />
                                 </button>
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Invite Link</label>
+                        {/* Invite Link */}
+                        <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                                Invite Link
+                            </label>
                             <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-gray-50 px-3 py-2 rounded-lg text-xs truncate border border-gray-100 text-gray-500">
+                                <div className="flex-1 bg-gray-50 px-3 py-2 rounded-lg text-xs truncate border border-gray-200 text-gray-600">
                                     {groupData?.inviteLink || 'N/A'}
                                 </div>
                                 <button
-                                    onClick={() => { 
-                                        navigator.clipboard.writeText(groupData?.inviteLink);
-                                        toast.success("Link copied!");
-                                    }}
+                                    onClick={() => copyToClipboard(groupData?.inviteLink, "Invite link copied!")}
                                     className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                                     title="Copy Link"
                                 >
-                                    <MdCheck className="w-4 h-4 text-gray-600" />
+                                    <MdLink className="w-4 h-4 text-gray-600" />
                                 </button>
                             </div>
+                            <p className="text-xs text-gray-500 mt-1">
+                                Share this link with friends to join the group
+                            </p>
                         </div>
 
-                        <div className="pt-2">
-                            <button
-                                onClick={() => toast.info("Email invitation feature coming soon!")}
-                                className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition"
-                            >
-                                Invite via Email
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => toast.info("Email invitation feature coming soon!")}
+                            className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                        >
+                            <MdEmail className="text-sm" />
+                            Invite via Email
+                        </button>
                     </div>
                 </div>
 
-                {/* Add Member Form (Manual) */}
-                <div className="md:col-span-1 border border-indigo-100 bg-white rounded-xl shadow-sm p-6 self-start text-sm">
-                    <h2 className="text-base font-semibold mb-4 flex items-center text-indigo-900 border-b pb-2">
-                        <MdPerson className="mr-2 w-5 h-5 text-indigo-500" />
-                        Add Manually
-                    </h2>
-
-                    <form onSubmit={handleAddMember} className="space-y-4">
+                {/* Add Member Form */}
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                    <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
+                        <div className="flex items-center gap-2">
+                            <MdPerson className="w-5 h-5 text-blue-600" />
+                            <h2 className="font-semibold text-gray-900">Add Member</h2>
+                        </div>
+                    </div>
+                    <form onSubmit={handleAddMember} className="p-5 space-y-4">
                         <div>
-                            <label className="block text-gray-700 font-medium mb-1">Name <span className="text-red-500">*</span></label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Name <span className="text-red-500">*</span>
+                            </label>
                             <input
                                 type="text"
                                 value={name}
                                 onChange={e => setName(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition"
-                                placeholder="e.g. John Doe"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="e.g., John Doe"
                                 required
                             />
                         </div>
-
                         <div>
-                            <label className="block text-gray-700 font-medium mb-1">Email <span className="text-gray-400 font-normal text-xs">(optional)</span></label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Email <span className="text-gray-500 text-xs font-normal">(optional)</span>
+                            </label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="john@example.com"
                             />
                         </div>
-
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className={`w-full py-3 px-4 rounded-xl font-bold text-white transition-colors
-                                ${isSubmitting ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                            className={`w-full py-2 rounded-lg font-medium text-white transition flex items-center justify-center gap-2 ${isSubmitting
+                                    ? 'bg-gray-400 cursor-not-allowed'
+                                    : 'bg-blue-600 hover:bg-blue-700'
+                                }`}
                         >
-                            {isSubmitting ? 'Adding...' : 'Add Member'}
+                            {isSubmitting ? 'Adding...' : <><MdGroupAdd /> Add Member</>}
                         </button>
                     </form>
                 </div>
 
                 {/* Member List */}
-                <div className="md:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100 text-sm">
-                    <h2 className="text-base font-semibold mb-4 text-gray-800 border-b pb-2">
-                        Current Group Members ({groupData?.members?.length || 0})
-                    </h2>
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                    <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <MdPeople className="w-5 h-5 text-blue-600" />
+                                <h2 className="font-semibold text-gray-900">Members</h2>
+                            </div>
+                            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                                {groupData?.members?.length || 0}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
+                        {groupData?.members?.map((member) => {
+                            const isCreator = groupData.createdBy?.toString() === (member.user?.toString() || member._id?.toString());
+                            const isCurrentUser = user && member.user?.toString() === user._id?.toString();
+                            const isEditing = editingMemberId === member._id;
 
-                    <div className="space-y-3 mt-4">
-                        {groupData?.members.map(member => (
-                            <div key={member._id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-white transition hover:shadow-sm gap-3">
-                                <div className="flex items-center flex-1 truncate">
-                                    <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold mr-3 shrink-0">
-                                        {member.name.charAt(0).toUpperCase()}
-                                    </div>
-                                    {editingMemberId === member._id ? (
-                                        <div className="flex flex-wrap gap-2 flex-1">
+                            return (
+                                <div key={member._id} className="p-4 hover:bg-gray-50 transition">
+                                    {isEditing ? (
+                                        <div className="space-y-3">
                                             <input
                                                 type="text"
                                                 value={editName}
                                                 onChange={e => setEditName(e.target.value)}
-                                                className="px-2 py-1 border rounded text-xs"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                                 placeholder="Name"
+                                                autoFocus
                                             />
                                             <input
                                                 type="email"
                                                 value={editEmail}
                                                 onChange={e => setEditEmail(e.target.value)}
-                                                className="px-2 py-1 border rounded text-xs"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                                 placeholder="Email"
                                             />
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleUpdateMember(member._id)}
+                                                    className="flex-1 py-1.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition flex items-center justify-center gap-1"
+                                                >
+                                                    <MdCheck /> Save
+                                                </button>
+                                                <button
+                                                    onClick={() => setEditingMemberId(null)}
+                                                    className="flex-1 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition flex items-center justify-center gap-1"
+                                                >
+                                                    <MdClose /> Cancel
+                                                </button>
+                                            </div>
                                         </div>
                                     ) : (
-                                        <div className="truncate">
-                                            <p className="font-semibold text-gray-900 truncate" title={member.name}>
-                                                {member.name}
-                                                {groupData.createdBy.toString() === (member.user && member.user.toString()) && (
-                                                    <span className="ml-2 text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full uppercase tracking-wide">Admin</span>
-                                                )}
-                                            </p>
-                                            <p className="text-xs text-gray-500 truncate" title={member.email || 'Unregistered User'}>
-                                                {member.email || 'Unregistered User'}
-                                            </p>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                                                    <span className="text-blue-700 font-bold text-sm">
+                                                        {member.name.charAt(0).toUpperCase()}
+                                                    </span>
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        <p className="font-medium text-gray-900 truncate">
+                                                            {member.name}
+                                                        </p>
+                                                        {isCreator && (
+                                                            <span className="text-xs font-medium bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full flex items-center gap-0.5">
+                                                                <MdAdminPanelSettings className="text-xs" /> Admin
+                                                            </span>
+                                                        )}
+                                                        {isCurrentUser && !isCreator && (
+                                                            <span className="text-xs font-medium bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
+                                                                You
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-xs text-gray-500 truncate">
+                                                        {member.email || 'No email provided'}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {isAdmin && !isCreator && (
+                                                <div className="flex gap-1 shrink-0 ml-2">
+                                                    <button
+                                                        onClick={() => startEditing(member)}
+                                                        className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                                                        title="Edit"
+                                                    >
+                                                        <MdEdit className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteMember(member._id, member.name)}
+                                                        className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"
+                                                        title="Remove"
+                                                    >
+                                                        <MdDelete className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
-
-                                {isAdmin && (
-                                    <div className="flex items-center gap-2 self-end sm:self-center">
-                                        {editingMemberId === member._id ? (
-                                            <>
-                                                <button onClick={() => handleUpdateMember(member._id)} className="p-1.5 text-green-600 hover:bg-green-50 rounded" title="Save">
-                                                    <MdCheck className="w-5 h-5" />
-                                                </button>
-                                                <button onClick={() => setEditingMemberId(null)} className="p-1.5 text-gray-500 hover:bg-gray-100 rounded" title="Cancel">
-                                                    <MdClose className="w-5 h-5" />
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <button onClick={() => startEditing(member)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded" title="Edit">
-                                                    <MdEdit className="w-5 h-5" />
-                                                </button>
-                                                {/* Only show delete if NOT the creator themselves */}
-                                                {groupData.createdBy.toString() !== (member.user && member.user.toString()) && (
-                                                    <button onClick={() => handleDeleteMember(member._id, member.name)} className="p-1.5 text-red-600 hover:bg-red-50 rounded" title="Delete">
-                                                        <MdDelete className="w-5 h-5" />
-                                                    </button>
-                                                )}
-                                            </>
-                                        )}
-                                    </div>
-                                )}
+                            );
+                        })}
+                        {groupData?.members?.length === 0 && (
+                            <div className="p-8 text-center text-gray-500">
+                                <MdPeople className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                                <p>No members yet</p>
+                                <p className="text-xs mt-1">Add members using the form</p>
                             </div>
-                        ))}
+                        )}
                     </div>
                 </div>
-
             </div>
+
+            {/* Admin Note */}
+            {!isAdmin && (
+                <div className="bg-yellow-50 rounded-lg border border-yellow-200 p-3">
+                    <div className="flex items-center gap-2">
+                        <MdInfoOutline className="w-4 h-4 text-yellow-700" />
+                        <p className="text-sm text-yellow-800">
+                            Only group admins can add, edit, or remove members.
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

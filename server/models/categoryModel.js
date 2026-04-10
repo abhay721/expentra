@@ -12,6 +12,15 @@ const categorySchema = new mongoose.Schema(
             enum: ['expense', 'income'],
             default: 'expense',
         },
+        icon: {
+            type: String,
+            default: 'Category', // Default icon name
+        },
+        keywords: [
+            {
+                type: String,
+            }
+        ],
         isActive: {
             type: Boolean,
             default: true,

@@ -12,10 +12,10 @@ const incomeSchema = new mongoose.Schema(
             required: true,
             min: [0.01, 'Amount must be positive'],
         },
-        source: {
+        title: {
             type: String,
-            enum: ['Salary', 'Freelance', 'Business', 'Investment', 'Gift', 'Other'],
-            default: 'Other',
+            required: true,
+            trim: true,
         },
         category: {
             type: String,
@@ -24,8 +24,9 @@ const incomeSchema = new mongoose.Schema(
         },
         description: {
             type: String,
-            required: true,
+            required: false,
             trim: true,
+            default: '',
         },
         date: {
             type: Date,

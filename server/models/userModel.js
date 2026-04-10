@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        status: {
+            type: String,
+            enum: ['active', 'blocked', 'pending'],
+            default: 'active',
+        },
         fcmTokens: {
             type: [String],
             default: [],
@@ -48,7 +53,7 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
-        next();
+        return next();
     }
 
     const salt = await bcrypt.genSalt(10);

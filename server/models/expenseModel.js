@@ -15,6 +15,11 @@ const expenseSchema = new mongoose.Schema(
         paidByMember: {
             type: mongoose.Schema.Types.ObjectId,
         },
+        title: {
+            type: String,
+            required: true,
+            trim: true,
+        },
         amount: {
             type: Number,
             required: true,

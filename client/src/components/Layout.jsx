@@ -9,17 +9,19 @@ const Layout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
-        <div className="flex h-screen bg-gray-100 font-sans">
+        <div className="flex h-screen bg-background text-textColor font-sans selection:bg-primary selection:text-card overflow-hidden">
             {/* Sidebar */}
             <Sidebar role={user?.role} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
-            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <div className="flex-1 flex flex-col min-w-0">
                 {/* Top Navbar */}
                 <Navbar user={user} setIsSidebarOpen={setIsSidebarOpen} />
 
                 {/* Main Content Area */}
-                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 md:p-6">
-                    <Outlet />
+                <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-8 scrollbar-hide">
+                    <div className="max-w-7xl mx-auto">
+                        <Outlet />
+                    </div>
                 </main>
             </div>
         </div>

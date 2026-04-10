@@ -4,7 +4,7 @@ import axios from 'axios';
 import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
-import { MdArrowBack, MdCalculate, MdCheckCircle, MdInfoOutline, MdReceipt, MdCategory, MdEdit } from 'react-icons/md';
+import { MdArrowBack, MdCalculate, MdCheckCircle, MdReceipt, MdCategory, MdEdit } from 'react-icons/md';
 
 const AddGroupExpense = () => {
     const navigate = useNavigate();
@@ -20,20 +20,18 @@ const AddGroupExpense = () => {
     const [note, setNote] = useState('');
     const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
 
-    const [paidBy, setPaidBy] = useState([]); // [{ user, name, amount }]
+    const [paidBy, setPaidBy] = useState([]);
     const [splitType, setSplitType] = useState('equal');
-    const [splitDetails, setSplitDetails] = useState([]); // [{ user, name, share, involved }]
-
-    const [previewSettlements, setPreviewSettlements] = useState(null);
+    const [splitDetails, setSplitDetails] = useState([]);
 
     useEffect(() => {
         if (!selectedGroupId) {
             navigate('/groups');
             return;
         }
+
         const fetchData = async () => {
             try {
-                // Fetch group members first
                 const groupRes = await axios.get(`${API}/groups/${selectedGroupId}`);
                 const group = groupRes.data;
                 setGroupData(group);
@@ -42,11 +40,8 @@ const AddGroupExpense = () => {
                 let initialPaidBy = [];
 
                 if (isEditMode) {
-                    // Fetch existing expense details
-                    // We need to fetch all expenses and find the specific one since there isn't a single expense endpoint
                     const expensesRes = await axios.get(`${API}/group-expenses/${selectedGroupId}`);
                     const expense = expensesRes.data.find(e => e._id === expenseId);
-
                     if (!expense) {
                         toast.error("Expense not found");
                         navigate('/groups/expenses');
@@ -60,9 +55,11 @@ const AddGroupExpense = () => {
                     setDate(format(new Date(expense.date), 'yyyy-MM-dd'));
                     setSplitType(expense.splitType || 'equal');
 
-                    // Map saved paidBy logic matching member IDs
                     initialPaidBy = expense.paidBy.map(p => {
-                        const member = group.members.find(m => (m.user && p.user && m.user.toString() === p.user.toString()) || m.name === p.name);
+                        const member = group.members.find(m =>
+                            (m.user && p.user && m.user.toString() === p.user.toString()) ||
+                            m.name === p.name
+                        );
                         return {
                             mid: member ? member._id : null,
                             user: p.user,
@@ -71,9 +68,11 @@ const AddGroupExpense = () => {
                         };
                     });
 
-                    // Map saved splitDetails
                     initialSplit = group.members.map(m => {
-                        const savedSplit = expense.splitDetails.find(s => (s.user && m.user && s.user.toString() === m.user.toString()) || s.name === m.name);
+                        const savedSplit = expense.splitDetails.find(s =>
+                            (s.user && m.user && s.user.toString() === m.user.toString()) ||
+                            s.name === m.name
+                        );
                         return {
                             mid: m._id,
                             user: m.user,
@@ -82,9 +81,7 @@ const AddGroupExpense = () => {
                             involved: !!savedSplit
                         };
                     });
-
                 } else {
-                    // Default initialization for new expense
                     initialSplit = group.members.map(m => ({
                         mid: m._id,
                         user: m.user,
@@ -102,11 +99,11 @@ const AddGroupExpense = () => {
                 setLoading(false);
             }
         };
+
         fetchData();
     }, [selectedGroupId, navigate, expenseId, isEditMode]);
 
     const handleInvolvementToggle = (mId) => {
-
         setSplitDetails(splitDetails.map(item =>
             item.mid === mId ? { ...item, involved: !item.involved } : item
         ));
@@ -122,19 +119,18 @@ const AddGroupExpense = () => {
         const val = Number(value);
         if (val === 0) {
             setPaidBy(paidBy.filter(p => p.mid !== mId));
+            return;
+        }
+
+        const existing = paidBy.find(p => p.mid === mId);
+        if (existing) {
+            setPaidBy(paidBy.map(p => p.mid === mId ? { ...p, amount: val } : p));
         } else {
-            const existing = paidBy.find(p => p.mid === mId);
-            if (existing) {
-                setPaidBy(paidBy.map(p => p.mid === mId ? { ...p, amount: val } : p));
-            } else {
-                setPaidBy([...paidBy, { mid: mId, user: userId, name, amount: val }]);
-            }
+            setPaidBy([...paidBy, { mid: mId, user: userId, name, amount: val }]);
         }
     };
 
-    const validateAndCalculate = (e) => {
-        if (e) e.preventDefault();
-
+    const validateAndCalculate = () => {
         if (!title || !amount || Number(amount) <= 0) {
             toast.error("Please enter a valid title and amount");
             return false;
@@ -148,20 +144,20 @@ const AddGroupExpense = () => {
 
         const involvedMembers = splitDetails.filter(s => s.involved);
         if (involvedMembers.length === 0) {
-            toast.error("At least one member must be involved in the split");
+            toast.error("At least one member must be involved");
             return false;
         }
 
         if (splitType === 'exact') {
             const totalShare = involvedMembers.reduce((sum, s) => sum + s.share, 0);
             if (Math.abs(totalShare - Number(amount)) > 0.1) {
-                toast.error("Total exact shares must equal total amount");
+                toast.error("Exact shares must equal total amount");
                 return false;
             }
         } else if (splitType === 'percentage') {
             const totalPct = involvedMembers.reduce((sum, s) => sum + s.share, 0);
             if (Math.abs(totalPct - 100) > 0.1) {
-                toast.error("Total percentage must equal 100%");
+                toast.error("Percentages must total 100%");
                 return false;
             }
         }
@@ -173,13 +169,11 @@ const AddGroupExpense = () => {
         if (!validateAndCalculate()) return;
 
         try {
-            const finalSplitDetails = splitDetails
-                .filter(s => s.involved)
-                .map(s => ({
-                    user: (s.user && typeof s.user === 'string' && s.user.length === 24) ? s.user : null,
-                    name: s.name,
-                    share: s.share
-                }));
+            const finalSplitDetails = splitDetails.filter(s => s.involved).map(s => ({
+                user: (s.user && typeof s.user === 'string' && s.user.length === 24) ? s.user : null,
+                name: s.name,
+                share: s.share
+            }));
 
             const finalPaidBy = paidBy.map(p => ({
                 user: (p.user && typeof p.user === 'string' && p.user.length === 24) ? p.user : null,
@@ -213,208 +207,249 @@ const AddGroupExpense = () => {
         }
     };
 
-
-    if (loading) return <div className="p-8">Loading...</div>;
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-textColor opacity-70 text-lg font-medium">Loading...</div>
+            </div>
+        );
+    }
 
     const involvedCount = splitDetails.filter(s => s.involved).length;
+    const totalPaid = paidBy.reduce((s, p) => s + p.amount, 0);
+    const isPaidCorrect = Math.abs(totalPaid - Number(amount)) < 0.01;
 
     return (
-        <div className="max-w-4xl mx-auto pb-12">
-            <div className="flex items-center space-x-4 mb-8">
-                <button onClick={() => navigate('/groups/expenses')} className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition">
-                    <MdArrowBack className="w-6 h-6 text-gray-700" />
-                </button>
-                <h1 className="text-3xl font-bold text-gray-900">{isEditMode ? 'Edit Group Expense' : 'Add Group Expense'}</h1>
+        <div className="min-h-screen bg-background">
+            {/* Header */}
+            <div className="bg-card px-6 py-5 shadow-sm border-b border-background">
+                <div className="max-w-6xl mx-auto flex items-center gap-4">
+                    <button
+                        onClick={() => navigate('/groups/expenses')}
+                        className="p-2 rounded-xl bg-background hover:bg-primary hover:text-card transition-colors text-textColor"
+                    >
+                        <MdArrowBack className="w-5 h-5" />
+                    </button>
+                    <div>
+                        <h1 className="text-textColor text-xl font-bold leading-tight">
+                            {isEditMode ? 'Edit Expense' : 'Add Group Expense'}
+                        </h1>
+                        <p className="text-textColor opacity-70 text-sm mt-0.5">{groupData?.name || 'Group'}</p>
+                    </div>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="max-w-6xl mx-auto px-4 py-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                {/* Left Column: Basic Info & Paid By */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
-                                    <MdReceipt className="mr-2 text-indigo-500" /> Expense Title
-                                </label>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    onChange={e => setTitle(e.target.value)}
-                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition outline-none"
-                                    placeholder="e.g. Pizza Night"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
-                                    <MdCalculate className="mr-2 text-indigo-500" /> Total Amount (₹)
-                                </label>
-                                <input
-                                    type="number"
-                                    value={amount}
-                                    onChange={e => setAmount(e.target.value)}
-                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition outline-none font-bold text-lg"
-                                    placeholder="0.00"
-                                />
+                    {/* Left Column - Forms */}
+                    <div className="lg:col-span-2 space-y-6">
+
+                        {/* Basic Info */}
+                        <div className="bg-card rounded-2xl shadow-sm border border-background p-6">
+                            <h2 className="text-textColor font-bold text-sm uppercase tracking-widest flex items-center gap-2 mb-5">
+                                <MdReceipt className="text-primary" /> Expense Info
+                            </h2>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-semibold text-textColor mb-1">Title</label>
+                                    <input
+                                        type="text"
+                                        value={title}
+                                        onChange={e => setTitle(e.target.value)}
+                                        placeholder="e.g. Pizza Night"
+                                        className="w-full px-4 py-2.5 rounded-xl bg-background border border-background focus:outline-none focus:border-primary text-textColor text-sm transition-colors"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-textColor mb-1">Amount (₹)</label>
+                                    <input
+                                        type="number"
+                                        value={amount}
+                                        onChange={e => setAmount(e.target.value)}
+                                        placeholder="0.00"
+                                        className="w-full px-4 py-2.5 rounded-xl bg-background border border-background focus:outline-none focus:border-primary text-textColor font-bold text-base transition-colors"
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        <div>
-                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                <span className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mr-3 text-sm">1</span>
-                                Paid By
-                            </h3>
+                        {/* Paid By */}
+                        <div className="bg-card rounded-2xl shadow-sm border border-background p-6">
+                            <h2 className="text-textColor font-bold text-sm uppercase tracking-widest mb-5 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-lg bg-primary text-card text-xs flex items-center justify-center font-bold">1</span>
+                                Who Paid?
+                            </h2>
+
                             <div className="space-y-3">
                                 {groupData?.members.map(m => {
-                                    const mId = m._id;
-                                    const payer = paidBy.find(p => p.mid === mId);
+                                    const payer = paidBy.find(p => p.mid === m._id);
                                     return (
-                                        <div key={mId} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
-                                            <span className="font-medium text-gray-700">{m.name}</span>
-                                            <div className="flex items-center space-x-2">
-                                                <span className="text-gray-400">₹</span>
+                                        <div key={m._id} className="flex items-center justify-between px-4 py-3 rounded-xl bg-background border border-background">
+                                            <span className="text-textColor font-medium text-sm">{m.name}</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-primary text-sm font-semibold">₹</span>
                                                 <input
                                                     type="number"
                                                     value={payer ? payer.amount : ''}
-                                                    onChange={e => handlePayerChange(mId, m.name, m.user, e.target.value)}
-                                                    className="w-28 px-3 py-1.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-right"
+                                                    onChange={e => handlePayerChange(m._id, m.name, m.user, e.target.value)}
                                                     placeholder="0.00"
+                                                    className="w-28 px-3 py-1.5 rounded-lg bg-card border border-background focus:outline-none focus:border-primary text-right text-sm text-textColor transition-colors"
                                                 />
                                             </div>
                                         </div>
-                                    )
+                                    );
                                 })}
                             </div>
                         </div>
-                    </div>
 
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                            <span className="w-8 h-8 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center mr-3 text-sm">2</span>
-                            Split Method
-                        </h3>
+                        {/* Split Method */}
+                        <div className="bg-card rounded-2xl shadow-sm border border-background p-6">
+                            <h2 className="text-textColor font-bold text-sm uppercase tracking-widest mb-5 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-lg bg-primary text-card text-xs flex items-center justify-center font-bold">2</span>
+                                Split Method
+                            </h2>
 
-                        <div className="flex flex-wrap gap-2 mb-6">
-                            {['equal', 'exact', 'percentage'].map((type) => (
-                                <button
-                                    key={type}
-                                    onClick={() => setSplitType(type)}
-                                    className={`px-4 py-2 rounded-xl text-sm font-semibold capitalize transition-all ${splitType === type ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                        }`}
-                                >
-                                    {type}
-                                </button>
-                            ))}
-                        </div>
+                            <div className="flex gap-2 mb-5">
+                                {['equal', 'exact', 'percentage'].map(type => (
+                                    <button
+                                        key={type}
+                                        onClick={() => setSplitType(type)}
+                                        className={`px-4 py-2.5 rounded-xl text-sm font-bold capitalize transition-colors border ${splitType === type
+                                            ? 'bg-primary text-card border-primary'
+                                            : 'bg-card text-textColor border-background hover:border-primary'
+                                            }`}
+                                    >
+                                        {type}
+                                    </button>
+                                ))}
+                            </div>
 
-                        <div className="space-y-4">
-                            {splitDetails.map((m) => (
-                                <div key={m.mid} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${m.involved ? 'bg-indigo-50/30 border-indigo-100' : 'bg-gray-50/50 border-transparent grayscale opacity-50'}`}>
-                                    <div className="flex items-center space-x-3">
-                                        <input
-                                            type="checkbox"
-                                            checked={m.involved}
-                                            onChange={() => handleInvolvementToggle(m.mid)}
-                                            className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                        />
-                                        <span className={`font-semibold ${m.involved ? 'text-indigo-900' : 'text-gray-500'}`}>{m.name}</span>
-                                    </div>
-
-                                    {m.involved && (
-                                        <div className="flex items-center space-x-2">
-                                            {splitType === 'equal' ? (
-                                                <span className="text-indigo-600 font-bold px-3 py-1 bg-white rounded-lg border border-indigo-100 shadow-sm">
-                                                    ₹{(Number(amount) / involvedCount || 0).toFixed(2)}
-                                                </span>
-                                            ) : (
-                                                <>
-                                                    <span className="text-gray-400">{splitType === 'percentage' ? '%' : '₹'}</span>
-                                                    <input
-                                                        type="number"
-                                                        value={m.share || ''}
-                                                        onChange={e => handleShareChange(m.mid, e.target.value)}
-                                                        className="w-24 px-3 py-1.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-right font-medium"
-                                                        placeholder="0"
-                                                    />
-                                                </>
-                                            )}
+                            <div className="space-y-3">
+                                {splitDetails.map(m => (
+                                    <div
+                                        key={m.mid}
+                                        className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-colors ${m.involved
+                                            ? 'bg-background border-background'
+                                            : 'bg-card border-background opacity-50'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="checkbox"
+                                                checked={m.involved}
+                                                onChange={() => handleInvolvementToggle(m.mid)}
+                                                className="w-4 h-4 accent-primary rounded"
+                                            />
+                                            <span className={`text-sm font-semibold ${m.involved ? 'text-textColor' : 'text-textColor opacity-70'}`}>
+                                                {m.name}
+                                            </span>
                                         </div>
-                                    )}
+
+                                        {m.involved && (
+                                            <div className="flex items-center gap-2">
+                                                {splitType === 'equal' ? (
+                                                    <span className="text-primary font-bold text-sm bg-card px-3 py-1.5 rounded-lg border border-background">
+                                                        ₹{(Number(amount) / involvedCount || 0).toFixed(2)}
+                                                    </span>
+                                                ) : (
+                                                    <>
+                                                        <span className="text-primary font-medium text-sm">
+                                                            {splitType === 'percentage' ? '%' : '₹'}
+                                                        </span>
+                                                        <input
+                                                            type="number"
+                                                            value={m.share || ''}
+                                                            onChange={e => handleShareChange(m.mid, e.target.value)}
+                                                            placeholder="0"
+                                                            className="w-24 px-3 py-1.5 rounded-lg bg-card border border-background focus:outline-none focus:border-primary text-right text-sm text-textColor transition-colors"
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column - Summary & Details */}
+                    <div className="space-y-6">
+
+                        {/* Summary Card */}
+                        <div className="bg-primary rounded-2xl p-6 shadow-sm text-card">
+                            <h3 className="font-bold text-sm uppercase tracking-widest mb-5 flex items-center gap-2">
+                                <MdCalculate /> Summary
+                            </h3>
+
+                            <div className="space-y-4 text-card opacity-90 text-sm mb-6">
+                                <div className="flex justify-between border-b border-card pb-2">
+                                    <span>Total Amount</span>
+                                    <span className="font-bold text-lg">₹{amount || '0.00'}</span>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right Column: Actions & Additional Info */}
-                <div className="space-y-6">
-                    <div className="bg-indigo-600 p-6 rounded-2xl shadow-xl text-white">
-                        <h3 className="text-xl font-bold mb-4 flex items-center">
-                            <MdCalculate className="mr-2" /> Summary
-                        </h3>
-                        <div className="space-y-4 text-indigo-100">
-                            <div className="flex justify-between border-b border-indigo-500 pb-2">
-                                <span>Total Amount</span>
-                                <span className="text-white font-bold">₹{amount || '0.00'}</span>
+                                <div className="flex justify-between border-b border-card pb-2">
+                                    <span>Total Paid</span>
+                                    <span className={`font-bold ${isPaidCorrect ? 'text-card' : 'text-red-300'}`}>
+                                        ₹{totalPaid.toFixed(2)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Splitting Between</span>
+                                    <span className="font-bold">{involvedCount} members</span>
+                                </div>
                             </div>
-                            <div className="flex justify-between border-b border-indigo-500 pb-2">
-                                <span>Total Paid</span>
-                                <span className={`font-bold ${Math.abs(paidBy.reduce((s, p) => s + p.amount, 0) - Number(amount)) < 0.01 ? 'text-green-300' : 'text-red-300'}`}>
-                                    ₹{paidBy.reduce((s, p) => s + p.amount, 0).toFixed(2)}
-                                </span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span>Splitting Between</span>
-                                <span className="text-white font-bold">{involvedCount} members</span>
-                            </div>
-                        </div>
 
-                        <button
-                            onClick={handleSubmit}
-                            className="w-full mt-8 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg hover:bg-indigo-50 transition shadow-lg active:scale-95 flex items-center justify-center"
-                        >
-                            {isEditMode ? <MdEdit className="mr-2 text-xl" /> : <MdCheckCircle className="mr-2 text-xl" />}
-                            {isEditMode ? 'Update Expense' : 'Save Expense'}
-                        </button>
-                    </div>
-
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-                        <h4 className="text-sm font-bold text-gray-700 uppercase tracking-widest mb-4">Details</h4>
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1 ml-1 flex items-center">
-                                <MdCategory className="mr-1" /> Category
-                            </label>
-                            <select
-                                value={category}
-                                onChange={e => setCategory(e.target.value)}
-                                className="w-full px-4 py-2 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                            <button
+                                onClick={handleSubmit}
+                                className="w-full py-3 bg-card text-primary hover:bg-background rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors shadow-sm"
                             >
-                                <option value="General">General</option>
-                                <option value="Food">Food</option>
-                                <option value="Travel">Travel</option>
-                                <option value="Entertainment">Entertainment</option>
-                                <option value="Shopping">Shopping</option>
-                                <option value="Household">Household</option>
-                            </select>
+                                {isEditMode ? <MdEdit className="text-lg" /> : <MdCheckCircle className="text-lg" />}
+                                {isEditMode ? 'Update Expense' : 'Save Expense'}
+                            </button>
                         </div>
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1 ml-1">Date</label>
-                            <input
-                                type="date"
-                                value={date}
-                                onChange={e => setDate(e.target.value)}
-                                className="w-full px-4 py-2 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1 ml-1">Notes</label>
-                            <textarea
-                                rows="3"
-                                value={note}
-                                onChange={e => setNote(e.target.value)}
-                                className="w-full px-4 py-2 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
-                                placeholder="Add any extra details..."
-                            ></textarea>
+
+                        {/* Details */}
+                        <div className="bg-card rounded-2xl shadow-sm border border-background p-6 space-y-5">
+                            <h4 className="text-textColor font-bold text-sm uppercase tracking-widest flex items-center gap-2">
+                                <MdCategory className="text-primary" /> Details
+                            </h4>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-textColor mb-1">Category</label>
+                                <select
+                                    value={category}
+                                    onChange={e => setCategory(e.target.value)}
+                                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-background focus:outline-none focus:border-primary text-textColor text-sm transition-colors"
+                                >
+                                    {['General', 'Food', 'Travel', 'Entertainment', 'Shopping', 'Household'].map(c => (
+                                        <option key={c} value={c}>{c}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-textColor mb-1">Date</label>
+                                <input
+                                    type="date"
+                                    value={date}
+                                    onChange={e => setDate(e.target.value)}
+                                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-background focus:outline-none focus:border-primary text-textColor text-sm transition-colors"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-textColor mb-1">Notes</label>
+                                <textarea
+                                    rows={3}
+                                    value={note}
+                                    onChange={e => setNote(e.target.value)}
+                                    placeholder="Extra details..."
+                                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-background focus:outline-none focus:border-primary text-textColor text-sm resize-none transition-colors"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

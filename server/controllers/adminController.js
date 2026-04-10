@@ -174,14 +174,14 @@ export const getCategories = async (req, res, next) => {
 // @access  Private/Admin
 export const createCategory = async (req, res, next) => {
     try {
-        const { name, type, isActive } = req.body;
+        const { name, type, isActive, icon, keywords } = req.body;
         const categoryExists = await Category.findOne({ name });
         if (categoryExists) {
             res.status(400);
             throw new Error('Category already exists');
         }
 
-        const category = await Category.create({ name, type, isActive });
+        const category = await Category.create({ name, type, isActive, icon, keywords });
         res.status(201).json(category);
     } catch (error) {
         next(error);
@@ -197,6 +197,8 @@ export const updateCategory = async (req, res, next) => {
         if (category) {
             category.name = req.body.name || category.name;
             category.type = req.body.type || category.type;
+            category.icon = req.body.icon || category.icon;
+            category.keywords = req.body.keywords || category.keywords;
             if (req.body.isActive !== undefined) {
                 category.isActive = req.body.isActive;
             }

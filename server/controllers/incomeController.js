@@ -1,4 +1,6 @@
 import Income from '../models/incomeModel.js';
+import Category from '../models/categoryModel.js';
+import { detectCategory } from '../utils/categoryDetector.js';
 
 // @desc    Get logged in user incomes (supports ?month=&year= filtering)
 // @route   GET /api/incomes
@@ -27,12 +29,21 @@ export const getIncomes = async (req, res, next) => {
 // @access  Private
 export const addIncome = async (req, res, next) => {
     try {
-        const { amount, category, description, date } = req.body;
+        const { title, amount, category, description, date } = req.body;
+        
+        if (!title) {
+            res.status(400);
+            throw new Error('Title is required');
+        }
+
+        const categories = await Category.find({ type: 'income', isActive: true });
+        const detectedCategory = detectCategory(title, categories);
 
         const income = new Income({
             userId: req.user._id,
+            title,
             amount,
-            category,
+            category: detectedCategory,
             description,
             date: date || new Date(),
         });
@@ -68,10 +79,11 @@ export const deleteIncome = async (req, res, next) => {
 // @access  Private
 export const updateIncome = async (req, res, next) => {
     try {
-        const { amount, category, description, date } = req.body;
+        const { title, amount, category, description, date } = req.body;
         const income = await Income.findById(req.params.id);
 
         if (income && income.userId.toString() === req.user._id.toString()) {
+            income.title = title || income.title;
             income.amount = amount || income.amount;
             income.category = category || income.category;
             income.description = description || income.description;
