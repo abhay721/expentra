@@ -9,6 +9,29 @@ import {
 } from 'react-icons/md';
 import CategoryIcon from '../../utils/CategoryIcon';
 
+const AVAILABLE_ICONS = [
+    // Essentials & Shopping
+    'MdStore', 'MdShoppingCart', 'MdShoppingBag', 'MdLocalMall', 'MdStorefront', 'MdAddShoppingCart',
+    // Food & Drink
+    'MdRestaurant', 'MdLocalCafe', 'MdFastfood', 'MdLocalPizza', 'MdLocalBar', 'MdRestaurantMenu', 'MdBakeryDining', 'MdIcecream',
+    // Transport & Travel
+    'MdDirectionsCar', 'MdCommute', 'MdFlight', 'MdLocalGasStation', 'MdDirectionsBike', 'MdDirectionsBus', 'MdDirectionsSubway', 'MdDirectionsWalk', 'MdDirectionsBoat', 'MdTram',
+    // Housing & Utilities
+    'MdHome', 'MdFlashOn', 'MdCleaningServices', 'MdHandyman', 'MdWaterDrop', 'MdAir', 'MdLightbulb', 'MdPropane', 'MdSolarPower',
+    // Finance & Work
+    'MdAttachMoney', 'MdWork', 'MdPayments', 'MdAccountBalance', 'MdReceipt', 'MdSavings', 'MdPaid', 'MdMonetizationOn', 'MdCreditCard', 'MdAccountBalanceWallet',
+    // Entertainment & Lifestyle
+    'MdTheaterComedy', 'MdMovie', 'MdGamepad', 'MdMusicNote', 'MdSportsEsports', 'MdTv', 'MdLocalActivity', 'MdEvent', 'MdCameraAlt',
+    // Health & Fitness
+    'MdLocalHospital', 'MdFitnessCenter', 'MdSelfImprovement', 'MdMedicalServices', 'MdVaccines', 'MdSpa',
+    // Education & Personal
+    'MdSchool', 'MdPets', 'MdCake', 'MdCheckroom', 'MdPerson', 'MdGroup', 'MdElderly', 'MdChildCare',
+    // Tech & Electronics
+    'MdSmartphone', 'MdComputer', 'MdPhonelink', 'MdLaptop', 'MdWatch', 'MdHeadset', 'MdPrint', 'MdRouter',
+    // Others
+    'MdBuild', 'MdSecurity', 'MdCardGiftcard', 'MdSubscriptions', 'MdLandscape', 'MdPool', 'MdSmokingRooms', 'MdStyle', 'MdVolunteerActivism', 'MdPark'
+];
+
 const AdminCategories = () => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -17,6 +40,7 @@ const AdminCategories = () => {
     const [editId, setEditId] = useState(null);
     const [filterType, setFilterType] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
+    const [iconSearchTerm, setIconSearchTerm] = useState('');
 
     const fetchCategories = async () => {
         try {
@@ -143,7 +167,7 @@ const AdminCategories = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
                     <div className="flex items-center justify-between">
                         <div>
@@ -342,8 +366,8 @@ const AdminCategories = () => {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
-                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center flex-shrink-0">
                             <h2 className="text-lg font-semibold text-gray-900">
                                 {editId ? 'Edit Category' : 'Create New Category'}
                             </h2>
@@ -354,7 +378,8 @@ const AdminCategories = () => {
                                 <MdClose className="w-5 h-5" />
                             </button>
                         </div>
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                        <form onSubmit={handleSubmit} className="flex flex-col overflow-hidden">
+                            <div className="p-6 space-y-5 overflow-y-auto">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Category Name <span className="text-red-500">*</span>
@@ -396,19 +421,94 @@ const AdminCategories = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Icon Name
-                                </label>
-                                <div className="flex gap-3">
-                                    <input
-                                        type="text"
-                                        value={formData.icon}
-                                        onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="e.g., MdRestaurant, MdWork"
-                                    />
-                                    <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-200">
-                                        <CategoryIcon iconName={formData.icon} className="w-5 h-5 text-blue-600" />
+                                <div className="flex items-center justify-between mb-2">
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        Select Icon <span className="text-red-500">*</span>
+                                    </label>
+                                    <a 
+                                        href="https://react-icons.github.io/react-icons/icons/md" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-[10px] text-blue-600 hover:underline flex items-center gap-1"
+                                    >
+                                        Browse More on React-Icons Website
+                                    </a>
+                                </div>
+                                
+                                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                                    {/* Icon Preview & Search */}
+                                    <div className="p-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-gray-200 shadow-sm">
+                                                <CategoryIcon iconName={formData.icon} className="w-6 h-6 text-blue-600" />
+                                            </div>
+                                            <div className="text-xs">
+                                                <p className="font-semibold text-gray-900">Preview</p>
+                                                <p className="text-gray-500 text-[10px] break-all">{formData.icon}</p>
+                                            </div>
+                                        </div>
+                                        <div className="relative flex-1 max-w-[160px]">
+                                            <MdSearch className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" />
+                                            <input
+                                                type="text"
+                                                placeholder="Search icons..."
+                                                value={iconSearchTerm}
+                                                onChange={(e) => setIconSearchTerm(e.target.value)}
+                                                className="w-full pl-7 pr-3 py-1.5 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Icon Grid */}
+                                    <div className="h-44 overflow-y-auto p-3 bg-white">
+                                        {iconSearchTerm && !AVAILABLE_ICONS.some(icon => icon.toLowerCase() === iconSearchTerm.toLowerCase()) && (
+                                            <div className="mb-3 px-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, icon: iconSearchTerm })}
+                                                    className={`w-full py-2 px-3 rounded-lg flex items-center gap-3 transition-all ${
+                                                        formData.icon === iconSearchTerm 
+                                                            ? 'bg-blue-600 text-white shadow-md' 
+                                                            : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                                                    }`}
+                                                >
+                                                    <CategoryIcon iconName={iconSearchTerm} className="w-5 h-5" />
+                                                    <span className="text-xs font-medium truncate">Use Custom: {iconSearchTerm}</span>
+                                                </button>
+                                                <div className="h-px bg-gray-100 my-3"></div>
+                                            </div>
+                                        )}
+
+                                        <div className="grid grid-cols-6 gap-2">
+                                            {AVAILABLE_ICONS.filter(icon => 
+                                                icon.toLowerCase().includes(iconSearchTerm.toLowerCase())
+                                            ).map((icon) => (
+                                                <button
+                                                    key={icon}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setFormData({ ...formData, icon });
+                                                        setIconSearchTerm('');
+                                                    }}
+                                                    className={`p-2 rounded-lg flex items-center justify-center transition-all ${
+                                                        formData.icon === icon 
+                                                            ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-100' 
+                                                            : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                                                    }`}
+                                                    title={icon}
+                                                >
+                                                    <CategoryIcon iconName={icon} className="w-5 h-5" />
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        {AVAILABLE_ICONS.filter(icon => 
+                                            icon.toLowerCase().includes(iconSearchTerm.toLowerCase())
+                                        ).length === 0 && !iconSearchTerm && (
+                                            <div className="text-center py-8 text-gray-500 text-xs">
+                                                No icons found. Try searching.
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -438,8 +538,10 @@ const AdminCategories = () => {
                                 />
                                 <span className="text-sm text-gray-700">Active (Users can select this category)</span>
                             </label>
+                            
+                            </div>
 
-                            <div className="flex gap-3 pt-2">
+                            <div className="p-6 bg-gray-50 border-t border-gray-200 flex gap-3 flex-shrink-0">
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
@@ -449,7 +551,7 @@ const AdminCategories = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+                                    className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition shadow-sm"
                                 >
                                     {editId ? 'Update Category' : 'Create Category'}
                                 </button>
