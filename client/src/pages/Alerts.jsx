@@ -45,67 +45,75 @@ const Alerts = () => {
         const configs = {
             BUDGET_EXCEEDED: {
                 icon: MdWarning,
-                bg: 'bg-red-50',
-                border: 'border-red-300',
-                text: 'text-red-800',
+                accent: 'bg-red-500',
+                text: 'text-red-700',
+                lightBg: 'bg-red-50',
                 iconColor: 'text-red-600',
-                label: 'Budget Exceeded'
+                label: 'Budget Exceeded',
+                isSmart: false
             },
             SETTLEMENT_PENDING: {
                 icon: MdPayment,
-                bg: 'bg-yellow-50',
-                border: 'border-yellow-300',
-                text: 'text-yellow-800',
-                iconColor: 'text-yellow-600',
-                label: 'Payment Due'
+                accent: 'bg-amber-500',
+                text: 'text-amber-700',
+                lightBg: 'bg-amber-50',
+                iconColor: 'text-amber-600',
+                label: 'Payment Due',
+                isSmart: false
             },
             GROUP_EXPENSE: {
                 icon: MdGroup,
-                bg: 'bg-blue-50',
-                border: 'border-blue-300',
-                text: 'text-blue-800',
-                iconColor: 'text-blue-600',
-                label: 'Group Activity'
+                accent: 'bg-primary',
+                text: 'text-blue-700',
+                lightBg: 'bg-blue-50',
+                iconColor: 'text-primary',
+                label: 'Group Activity',
+                isSmart: false
             },
             PAYMENT_RECEIVED: {
                 icon: MdCheckCircle,
-                bg: 'bg-green-50',
-                border: 'border-green-300',
-                text: 'text-green-800',
-                iconColor: 'text-green-600',
-                label: 'Payment Received'
+                accent: 'bg-secondary',
+                text: 'text-green-700',
+                lightBg: 'bg-green-50',
+                iconColor: 'text-secondary',
+                label: 'Payment Received',
+                isSmart: false
             },
             BUDGET_WARNING: {
                 icon: MdWarning,
-                bg: 'bg-orange-50',
-                border: 'border-orange-300',
-                text: 'text-orange-800',
+                accent: 'bg-orange-500',
+                text: 'text-orange-700',
+                lightBg: 'bg-orange-50',
                 iconColor: 'text-orange-600',
-                label: 'Budget Warning'
+                label: 'Budget Warning',
+                isSmart: false
             },
             OVERSPENDING_WARNING: {
-                icon: MdWarning,
-                bg: 'bg-orange-50',
-                border: 'border-orange-300',
-                text: 'text-orange-800',
-                iconColor: 'text-orange-600',
-                label: 'Overspending Alert'
+                icon: MdNotificationsActive,
+                accent: 'bg-primary',
+                text: 'text-white',
+                lightBg: 'bg-primary/10',
+                iconColor: 'text-primary',
+                label: 'Smart Insight',
+                isSmart: true
             },
             RECURRING_SUBSCRIPTION: {
                 icon: MdAttachMoney,
-                bg: 'bg-blue-50',
-                border: 'border-blue-300',
-                text: 'text-blue-800',
-                iconColor: 'text-blue-600',
-                label: 'Subscription Reminder'
+                accent: 'bg-primary',
+                text: 'text-blue-700',
+                lightBg: 'bg-blue-50',
+                iconColor: 'text-primary',
+                label: 'Subscription',
+                isSmart: false
             },
             INFO: {
                 icon: MdInfoOutline,
-                bg: 'bg-gray-50',
-                border: 'border-gray-300',
+                accent: 'bg-gray-400',
                 text: 'text-gray-700',
+                lightBg: 'bg-gray-50',
                 iconColor: 'text-gray-600',
-                label: 'Information'
+                label: 'Information',
+                isSmart: false
             }
         };
         return configs[type] || configs.INFO;
@@ -130,86 +138,89 @@ const Alerts = () => {
     }
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                            <MdNotificationsActive className="w-6 h-6 text-blue-600" />
+        <div className="min-h-screen bg-background pb-12">
+            <div className="max-w-4xl mx-auto space-y-8">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                    <div className="flex items-center gap-4">
+                        <div className="relative">
+                            <div className="p-3 bg-primary/10 rounded-2xl">
+                                <MdNotificationsActive className="w-7 h-7 text-primary" />
+                            </div>
+                            {unreadCount > 0 && (
+                                <span className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-background">
+                                    {unreadCount}
+                                </span>
+                            )}
                         </div>
-                        {unreadCount > 0 && (
-                            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                                {unreadCount}
-                            </span>
-                        )}
+                        <div>
+                            <h1 className="text-3xl font-extrabold text-textColor tracking-tight">Alerts</h1>
+                            <p className="text-gray-500 font-medium">Manage your financial notifications</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
-                        <p className="text-sm text-gray-600 mt-0.5">Stay updated with your financial activity</p>
+                    <div className="flex flex-wrap gap-2">
+                        {unreadCount > 0 && (
+                            <button
+                                onClick={handleMarkAllRead}
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-primary bg-white border border-gray-100 rounded-xl hover:bg-primary hover:text-white shadow-sm transition-all duration-300"
+                            >
+                                <MdCheckCircle />
+                                Mark all read
+                            </button>
+                        )}
+                        {notifications.length > 0 && (
+                            <button
+                                onClick={handleClearAll}
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 bg-white border border-gray-100 rounded-xl hover:bg-red-50 hover:text-red-600 shadow-sm transition-all duration-300"
+                            >
+                                <MdDelete />
+                                Clear all
+                            </button>
+                        )}
+                        <button
+                            onClick={fetchNotifications}
+                            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 bg-white border border-gray-100 rounded-xl hover:bg-gray-50 shadow-sm transition-all duration-300"
+                        >
+                            <MdRefresh className="animate-spin-hover" />
+                            Refresh
+                        </button>
                     </div>
                 </div>
-                <div className="flex gap-2">
-                    {unreadCount > 0 && (
-                        <button
-                            onClick={handleMarkAllRead}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
-                        >
-                            <MdCheckCircle className="text-sm" />
-                            Mark all read
-                        </button>
-                    )}
-                    {notifications.length > 0 && (
-                        <button
-                            onClick={handleClearAll}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                        >
-                            <MdDelete className="text-sm" />
-                            Clear all
-                        </button>
-                    )}
+
+                {/* Filter Tabs */}
+                <div className="flex gap-2 p-1 bg-gray-100/50 rounded-2xl w-fit">
                     <button
-                        onClick={fetchNotifications}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                        onClick={() => setFilter('all')}
+                        className={`px-6 py-2 text-sm font-bold rounded-xl transition-all duration-300 ${filter === 'all'
+                            ? 'bg-white text-primary shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
+                            }`}
                     >
-                        <MdRefresh className="text-sm" />
-                        Refresh
+                        All
+                        <span className="ml-2 px-2 py-0.5 bg-gray-100 rounded-lg text-xs">{notifications.length}</span>
+                    </button>
+                    <button
+                        onClick={() => setFilter('unread')}
+                        className={`px-6 py-2 text-sm font-bold rounded-xl transition-all duration-300 ${filter === 'unread'
+                            ? 'bg-white text-primary shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        Unread
+                        <span className="ml-2 px-2 py-0.5 bg-gray-100 rounded-lg text-xs">{unreadCount}</span>
                     </button>
                 </div>
-            </div>
-
-            {/* Filter Tabs */}
-            <div className="flex gap-2 border-b border-gray-200 pb-2">
-                <button
-                    onClick={() => setFilter('all')}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-lg transition ${filter === 'all'
-                            ? 'bg-blue-600 text-white shadow-sm'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                        }`}
-                >
-                    All ({notifications.length})
-                </button>
-                <button
-                    onClick={() => setFilter('unread')}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-lg transition ${filter === 'unread'
-                            ? 'bg-blue-600 text-white shadow-sm'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                        }`}
-                >
-                    Unread ({unreadCount})
-                </button>
-            </div>
 
             {/* Notifications List */}
-            <div className="space-y-3">
+            <div className="space-y-4">
                 {filteredNotifications.length === 0 ? (
-                    <div className="bg-white rounded-lg border border-gray-200 p-12 text-center shadow-sm">
-                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <MdNotificationsNone className="w-8 h-8 text-gray-400" />
+                    <div className="bg-card rounded-3xl border border-gray-100 p-16 text-center shadow-sm">
+                        <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-50">
+                            <MdNotificationsNone className="w-10 h-10 text-gray-300" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900">No Notifications</h3>
-                        <p className="text-gray-600 text-sm mt-1">
-                            {filter === 'unread' ? "You've read all your notifications!" : "You're all caught up!"}
+                        <h3 className="text-xl font-bold text-textColor">No Notifications</h3>
+                        <p className="text-gray-500 mt-2 max-w-xs mx-auto">
+                            {filter === 'unread' ? "You've read all your notifications! Great job managing your finances." : "You're all caught up! No recent activity to show."}
                         </p>
                     </div>
                 ) : (
@@ -221,26 +232,42 @@ const Alerts = () => {
                         return (
                             <div
                                 key={notification._id || idx}
-                                className={`${config.bg} rounded-lg border-l-4 ${config.border} shadow-sm ${isUnread ? 'ring-1 ring-blue-200' : ''}`}
+                                className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 ${config.isSmart
+                                    ? 'bg-gradient-to-r from-primary to-secondary p-[1px] shadow-lg hover:shadow-primary/20 scale-[1.01]'
+                                    : 'bg-card border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5'
+                                    }`}
                             >
-                                <div className="p-4 flex items-start gap-3">
+                                {/* Smart Background Overlay */}
+                                {config.isSmart && (
+                                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                )}
+
+                                <div className={`relative flex items-start gap-4 p-5 ${config.isSmart ? 'bg-gradient-to-r from-primary/95 to-secondary/95 rounded-[15px]' : ''}`}>
+                                    {/* Left Status Indicator */}
+                                    {!config.isSmart && (
+                                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${config.accent}`}></div>
+                                    )}
+
                                     {/* Icon */}
-                                    <div className={`p-2 rounded-lg ${config.bg} border ${config.border} shrink-0`}>
-                                        <Icon className={`w-5 h-5 ${config.iconColor}`} />
+                                    <div className={`shrink-0 p-3 rounded-xl ${config.isSmart ? 'bg-white/20' : config.lightBg}`}>
+                                        <Icon className={`w-6 h-6 ${config.isSmart ? 'text-white' : config.iconColor}`} />
                                     </div>
 
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex flex-wrap items-center gap-2 mb-1">
-                                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${config.bg} ${config.text} border ${config.border}`}>
+                                        <div className="flex flex-wrap items-center gap-3 mb-1.5">
+                                            <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md ${config.isSmart
+                                                ? 'bg-white text-primary'
+                                                : `${config.lightBg} ${config.iconColor}`
+                                                }`}>
                                                 {config.label}
                                             </span>
                                             {isUnread && (
-                                                <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
-                                                    New
+                                                <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md ${config.isSmart ? 'bg-white/20 text-white' : 'bg-primary/10 text-primary'}`}>
+                                                    NEW
                                                 </span>
                                             )}
-                                            <span className="text-xs text-gray-500">
+                                            <span className={`text-xs font-medium ${config.isSmart ? 'text-white/70' : 'text-gray-400'}`}>
                                                 {new Date(notification.createdAt).toLocaleDateString(undefined, {
                                                     month: 'short',
                                                     day: 'numeric',
@@ -249,19 +276,25 @@ const Alerts = () => {
                                                 })}
                                             </span>
                                         </div>
-                                        <p className={`text-sm ${config.text} leading-relaxed`}>
+                                        <h4 className={`text-base font-bold leading-tight ${config.isSmart ? 'text-white' : 'text-textColor'}`}>
                                             {notification.message}
-                                        </p>
+                                        </h4>
 
                                         {/* Details Section */}
                                         {notification.details && notification.details.length > 0 && (
-                                            <div className="mt-3 p-3 bg-white rounded-lg border border-gray-200">
-                                                <p className="text-xs font-medium text-gray-600 mb-2">Details:</p>
-                                                <ul className="space-y-1">
+                                            <div className={`mt-4 p-4 rounded-xl border ${config.isSmart
+                                                ? 'bg-white/10 border-white/20'
+                                                : 'bg-background border-gray-100'
+                                                }`}>
+                                                <p className={`text-[11px] font-bold uppercase tracking-widest mb-3 ${config.isSmart ? 'text-white/60' : 'text-gray-400'}`}>Detailed Analysis</p>
+                                                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                     {notification.details.map((d, i) => (
-                                                        <li key={i} className="text-xs text-gray-700 flex items-center gap-2">
-                                                            <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
-                                                            {d._id?.category}: ₹{d._id?.amount} ({d.count} times)
+                                                        <li key={i} className="flex items-center gap-3 p-2 rounded-lg bg-white/5">
+                                                            <div className={`w-2 h-2 rounded-full ${config.isSmart ? 'bg-secondary' : 'bg-primary'}`}></div>
+                                                            <div className="flex flex-col">
+                                                                <span className={`text-xs font-bold ${config.isSmart ? 'text-white' : 'text-textColor'}`}>{d._id?.category}</span>
+                                                                <span className={`text-[10px] ${config.isSmart ? 'text-white/60' : 'text-gray-500'}`}>₹{d._id?.amount} • {d.count} sessions</span>
+                                                            </div>
                                                         </li>
                                                     ))}
                                                 </ul>
@@ -270,22 +303,28 @@ const Alerts = () => {
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex gap-1 shrink-0">
+                                    <div className="flex flex-col gap-2 shrink-0">
                                         {isUnread && (
                                             <button
                                                 onClick={() => handleMarkAsRead(notification._id)}
-                                                className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                                className={`p-2 rounded-lg transition-all ${config.isSmart
+                                                    ? 'text-white hover:bg-white/20'
+                                                    : 'text-gray-400 hover:text-primary hover:bg-primary/5'
+                                                    }`}
                                                 title="Mark as read"
                                             >
-                                                <MdCheckCircle className="w-4 h-4" />
+                                                <MdCheckCircle className="w-5 h-5" />
                                             </button>
                                         )}
                                         <button
                                             onClick={() => handleDelete(notification._id)}
-                                            className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                                            className={`p-2 rounded-lg transition-all ${config.isSmart
+                                                ? 'text-white hover:bg-white/20'
+                                                : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
+                                                }`}
                                             title="Dismiss"
                                         >
-                                            <MdClose className="w-4 h-4" />
+                                            <MdClose className="w-5 h-5" />
                                         </button>
                                     </div>
                                 </div>
@@ -295,6 +334,7 @@ const Alerts = () => {
                 )}
             </div>
         </div>
+    </div>
     );
 };
 

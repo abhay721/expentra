@@ -7,18 +7,18 @@ const Navbar = ({ user, setIsSidebarOpen }) => {
     const { logout, appMode, activeGroup, unreadCount, markAsSeen } = useContext(AuthContext);
 
     return (
-        <header className="flex justify-between items-center py-4 px-6 bg-card border-b border-background sticky top-0 z-10 shadow-sm">
+        <header className="bg-card px-6 py-4 flex items-center justify-between border-b border-background sticky top-0 z-10 transition-all duration-200">
             {/* Left side: Menu toggle and Title */}
             <div className="flex items-center gap-4">
                 <button
-                    className="md:hidden p-2 text-textColor hover:bg-background rounded-lg transition-colors"
+                    className="md:hidden p-2 text-textColor hover:bg-background rounded-lg transition-all duration-200 hover:-translate-y-0.5"
                     onClick={() => setIsSidebarOpen(true)}
                 >
                     <MdMenu className="w-6 h-6" />
                 </button>
 
                 <div className="flex flex-col">
-                    <h2 className="text-lg font-bold text-textColor capitalize">
+                    <h2 className="text-xl font-semibold text-textColor capitalize">
                         {appMode === 'group' && activeGroup ? activeGroup.name : `${user?.role} Portal`}
                     </h2>
                 </div>
@@ -26,7 +26,7 @@ const Navbar = ({ user, setIsSidebarOpen }) => {
                 {appMode === 'group' && (
                     <Link
                         to="/groups"
-                        className="ml-2 px-3 py-1.5 bg-background text-primary text-xs font-semibold rounded border border-background hover:border-primary transition-colors hidden sm:flex items-center"
+                        className="ml-2 border border-primary text-primary px-4 py-2 rounded-lg hover:bg-background transition-all duration-200 hover:-translate-y-0.5 hidden sm:flex items-center text-sm font-medium"
                     >
                         Switch Group
                     </Link>
@@ -41,7 +41,7 @@ const Navbar = ({ user, setIsSidebarOpen }) => {
                     <Link
                         to="/alerts"
                         onClick={markAsSeen}
-                        className="relative p-2 text-textColor hover:bg-background rounded-lg transition-colors"
+                        className="relative p-2 text-textColor hover:bg-background rounded-lg transition-all duration-200 hover:-translate-y-0.5"
                     >
                         <MdNotifications className="w-6 h-6" />
                         {unreadCount > 0 && (
@@ -65,10 +65,10 @@ const Navbar = ({ user, setIsSidebarOpen }) => {
                 {/* Logout Button */}
                 <button
                     onClick={logout}
-                    className="flex items-center gap-2 px-4 py-2 bg-background text-textColor hover:bg-primary hover:text-card font-semibold rounded-lg transition-colors"
+                    className="flex items-center gap-2 bg-primary text-card px-4 py-2 rounded-lg hover:opacity-90 transition-all duration-200 hover:-translate-y-0.5"
                 >
                     <MdLogout className="h-5 w-5" />
-                    <span className="text-xs uppercase tracking-wider hidden sm:inline-block">Logout</span>
+                    <span className="text-sm hidden sm:inline-block font-medium">Logout</span>
                 </button>
             </div>
         </header>

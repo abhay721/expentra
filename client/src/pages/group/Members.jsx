@@ -135,244 +135,248 @@ const Members = () => {
     }
 
     return (
-        <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+        <div className="max-w-6xl mx-auto px-4 py-8 space-y-6 bg-background min-h-screen pb-20">
             {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-gray-900">{groupData?.name}</h1>
-                <p className="text-gray-600 text-sm mt-1">Manage group members and invitations</p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl md:text-3xl font-bold text-textColor tracking-tight">{groupData?.name}</h1>
+                    <p className="text-sm text-gray-500 mt-1">Manage group members and squad invitations</p>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-xl border border-gray-100 shadow-sm">
+                    <MdPeople className="w-5 h-5 text-primary" />
+                    <span className="text-sm font-semibold text-textColor opacity-70">
+                        {groupData?.members?.length || 0} Members
+                    </span>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Invite Options Card */}
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                    <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
-                        <div className="flex items-center gap-2">
-                            <MdGroupAdd className="w-5 h-5 text-blue-600" />
-                            <h2 className="font-semibold text-gray-900">Invite Options</h2>
+                <div className="space-y-6">
+                    {/* Invite Options Card */}
+                    <div className="bg-card rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all duration-300">
+                        <div className="px-6 py-4 border-b border-gray-50 flex items-center gap-3">
+                            <div className="bg-background rounded-xl p-2">
+                                <MdGroupAdd className="w-5 h-5 text-primary" />
+                            </div>
+                            <h2 className="text-sm font-semibold text-textColor">Quick Invite</h2>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            {/* Invite Code */}
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+                                    Invite Code
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex-1 bg-background px-4 py-2 rounded-xl font-mono text-base font-bold text-center border border-gray-100 text-textColor tracking-widest shadow-inner">
+                                        {groupData?.inviteCode || 'N/A'}
+                                    </div>
+                                    <button
+                                        onClick={() => copyToClipboard(groupData?.inviteCode, "Invite code copied!")}
+                                        className="p-2.5 bg-background text-primary rounded-xl border border-gray-100 hover:bg-primary/5 transition-all"
+                                        title="Copy Code"
+                                    >
+                                        <MdContentCopy className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Invite Link */}
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+                                    Invite Link
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex-1 bg-background px-4 py-2 rounded-xl text-xs truncate border border-gray-100 text-textColor opacity-60">
+                                        {groupData?.inviteLink || 'N/A'}
+                                    </div>
+                                    <button
+                                        onClick={() => copyToClipboard(groupData?.inviteLink, "Invite link copied!")}
+                                        className="p-2.5 bg-background text-primary rounded-xl border border-gray-100 hover:bg-primary/5 transition-all"
+                                        title="Copy Link"
+                                    >
+                                        <MdLink className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => toast.info("Email invitation coming soon!")}
+                                className="w-full py-2.5 bg-primary text-card rounded-xl font-medium text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-sm"
+                            >
+                                <MdEmail className="w-4 h-4" />
+                                Invite via Email
+                            </button>
                         </div>
                     </div>
-                    <div className="p-5 space-y-4">
-                        {/* Invite Code */}
-                        <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">
-                                Invite Code
-                            </label>
-                            <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-gray-50 px-3 py-2 rounded-lg font-mono text-base font-bold text-center border border-gray-200">
-                                    {groupData?.inviteCode || 'N/A'}
+
+                    {/* Add Member Form */}
+                    {isAdmin && (
+                        <div className="bg-card rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all duration-300">
+                            <div className="px-6 py-4 border-b border-gray-50 flex items-center gap-3">
+                                <div className="bg-background rounded-xl p-2">
+                                    <MdPerson className="w-5 h-5 text-secondary" />
+                                </div>
+                                <h2 className="text-sm font-semibold text-textColor">Add Member</h2>
+                            </div>
+                            <form onSubmit={handleAddMember} className="p-6 space-y-4">
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+                                        Full Name *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={e => setName(e.target.value)}
+                                        className="w-full px-4 py-2 bg-background border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium text-textColor transition-all"
+                                        placeholder="e.g. John Doe"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                                        Email <span className="text-[10px] lowercase opacity-50 font-normal tracking-normal">(optional)</span>
+                                    </label>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={e => setEmail(e.target.value)}
+                                        className="w-full px-4 py-2 bg-background border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium text-textColor transition-all"
+                                        placeholder="john@example.com"
+                                    />
                                 </div>
                                 <button
-                                    onClick={() => copyToClipboard(groupData?.inviteCode, "Invite code copied!")}
-                                    className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                                    title="Copy Code"
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className={`w-full py-2.5 rounded-xl font-medium text-sm text-white transition-all shadow-sm ${isSubmitting
+                                            ? 'bg-gray-200 cursor-not-allowed'
+                                            : 'bg-primary hover:opacity-90'
+                                        }`}
                                 >
-                                    <MdContentCopy className="w-4 h-4 text-gray-600" />
+                                    {isSubmitting ? 'Adding...' : 'Add Member'}
                                 </button>
-                            </div>
+                            </form>
                         </div>
-
-                        {/* Invite Link */}
-                        <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">
-                                Invite Link
-                            </label>
-                            <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-gray-50 px-3 py-2 rounded-lg text-xs truncate border border-gray-200 text-gray-600">
-                                    {groupData?.inviteLink || 'N/A'}
-                                </div>
-                                <button
-                                    onClick={() => copyToClipboard(groupData?.inviteLink, "Invite link copied!")}
-                                    className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                                    title="Copy Link"
-                                >
-                                    <MdLink className="w-4 h-4 text-gray-600" />
-                                </button>
-                            </div>
-                            <p className="text-xs text-gray-500 mt-1">
-                                Share this link with friends to join the group
-                            </p>
-                        </div>
-
-                        <button
-                            onClick={() => toast.info("Email invitation feature coming soon!")}
-                            className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition flex items-center justify-center gap-2"
-                        >
-                            <MdEmail className="text-sm" />
-                            Invite via Email
-                        </button>
-                    </div>
-                </div>
-
-                {/* Add Member Form */}
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                    <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
-                        <div className="flex items-center gap-2">
-                            <MdPerson className="w-5 h-5 text-blue-600" />
-                            <h2 className="font-semibold text-gray-900">Add Member</h2>
-                        </div>
-                    </div>
-                    <form onSubmit={handleAddMember} className="p-5 space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Name <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                value={name}
-                                onChange={e => setName(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="e.g., John Doe"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Email <span className="text-gray-500 text-xs font-normal">(optional)</span>
-                            </label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="john@example.com"
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`w-full py-2 rounded-lg font-medium text-white transition flex items-center justify-center gap-2 ${isSubmitting
-                                    ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-blue-600 hover:bg-blue-700'
-                                }`}
-                        >
-                            {isSubmitting ? 'Adding...' : <><MdGroupAdd /> Add Member</>}
-                        </button>
-                    </form>
+                    )}
                 </div>
 
                 {/* Member List */}
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                    <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <MdPeople className="w-5 h-5 text-blue-600" />
-                                <h2 className="font-semibold text-gray-900">Members</h2>
+                <div className="lg:col-span-2 space-y-6">
+                    <div className="bg-card rounded-2xl border border-gray-100 shadow-sm overflow-hidden h-full flex flex-col min-h-[500px]">
+                        <div className="px-6 py-4 border-b border-gray-50 flex items-center gap-3">
+                            <div className="bg-background rounded-xl p-2">
+                                <MdPeople className="w-5 h-5 text-primary" />
                             </div>
-                            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                                {groupData?.members?.length || 0}
-                            </span>
+                            <h2 className="text-sm font-semibold text-textColor">Active Squad Members</h2>
                         </div>
-                    </div>
-                    <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
-                        {groupData?.members?.map((member) => {
-                            const isCreator = groupData.createdBy?.toString() === (member.user?.toString() || member._id?.toString());
-                            const isCurrentUser = user && member.user?.toString() === user._id?.toString();
-                            const isEditing = editingMemberId === member._id;
 
-                            return (
-                                <div key={member._id} className="p-4 hover:bg-gray-50 transition">
-                                    {isEditing ? (
-                                        <div className="space-y-3">
-                                            <input
-                                                type="text"
-                                                value={editName}
-                                                onChange={e => setEditName(e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                                                placeholder="Name"
-                                                autoFocus
-                                            />
-                                            <input
-                                                type="email"
-                                                value={editEmail}
-                                                onChange={e => setEditEmail(e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                                                placeholder="Email"
-                                            />
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={() => handleUpdateMember(member._id)}
-                                                    className="flex-1 py-1.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition flex items-center justify-center gap-1"
-                                                >
-                                                    <MdCheck /> Save
-                                                </button>
-                                                <button
-                                                    onClick={() => setEditingMemberId(null)}
-                                                    className="flex-1 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition flex items-center justify-center gap-1"
-                                                >
-                                                    <MdClose /> Cancel
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                                                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-                                                    <span className="text-blue-700 font-bold text-sm">
-                                                        {member.name.charAt(0).toUpperCase()}
-                                                    </span>
-                                                </div>
-                                                <div className="min-w-0 flex-1">
-                                                    <div className="flex items-center gap-2 flex-wrap">
-                                                        <p className="font-medium text-gray-900 truncate">
-                                                            {member.name}
-                                                        </p>
-                                                        {isCreator && (
-                                                            <span className="text-xs font-medium bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-                                                                <MdAdminPanelSettings className="text-xs" /> Admin
-                                                            </span>
-                                                        )}
-                                                        {isCurrentUser && !isCreator && (
-                                                            <span className="text-xs font-medium bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
-                                                                You
-                                                            </span>
-                                                        )}
+                        <div className="p-4 flex-1 overflow-y-auto max-h-[600px] scrolling-touch">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {groupData?.members?.map((member) => {
+                                    const isCreator = groupData.createdBy?.toString() === (member.user?.toString() || member._id?.toString());
+                                    const isCurrentUser = user && member.user?.toString() === user._id?.toString();
+                                    const isEditing = editingMemberId === member._id;
+
+                                    return (
+                                        <div key={member._id} className={`group p-4 rounded-xl border transition-all duration-300 ${
+                                            isEditing ? 'bg-white border-primary shadow-md' : 'bg-background border-gray-50 hover:border-primary/20 hover:shadow-sm'
+                                        }`}>
+                                            {isEditing ? (
+                                                <div className="space-y-3">
+                                                    <input
+                                                        type="text"
+                                                        value={editName}
+                                                        onChange={e => setEditName(e.target.value)}
+                                                        className="w-full px-3 py-1.5 bg-background border border-gray-100 rounded-lg text-sm font-medium focus:ring-2 focus:ring-primary/20"
+                                                        placeholder="Name"
+                                                        autoFocus
+                                                    />
+                                                    <input
+                                                        type="email"
+                                                        value={editEmail}
+                                                        onChange={e => setEditEmail(e.target.value)}
+                                                        className="w-full px-3 py-1.5 bg-background border border-gray-100 rounded-lg text-sm font-medium focus:ring-2 focus:ring-primary/20"
+                                                        placeholder="Email"
+                                                    />
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={() => handleUpdateMember(member._id)}
+                                                            className="flex-1 py-1.5 bg-secondary text-white rounded-lg text-xs font-semibold hover:opacity-90"
+                                                        >
+                                                            Save
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setEditingMemberId(null)}
+                                                            className="flex-1 py-1.5 bg-gray-100 text-textColor rounded-lg text-xs font-semibold hover:bg-gray-200"
+                                                        >
+                                                            Cancel
+                                                        </button>
                                                     </div>
-                                                    <p className="text-xs text-gray-500 truncate">
-                                                        {member.email || 'No email provided'}
-                                                    </p>
                                                 </div>
-                                            </div>
-                                            {isAdmin && !isCreator && (
-                                                <div className="flex gap-1 shrink-0 ml-2">
-                                                    <button
-                                                        onClick={() => startEditing(member)}
-                                                        className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
-                                                        title="Edit"
-                                                    >
-                                                        <MdEdit className="w-4 h-4" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteMember(member._id, member.name)}
-                                                        className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"
-                                                        title="Remove"
-                                                    >
-                                                        <MdDelete className="w-4 h-4" />
-                                                    </button>
+                                            ) : (
+                                                <div className="flex flex-col h-full justify-between">
+                                                    <div className="flex items-start justify-between">
+                                                        <div className="flex items-center gap-3 min-w-0">
+                                                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-sm border border-primary/10">
+                                                                {member.name.charAt(0).toUpperCase()}
+                                                            </div>
+                                                            <div className="min-w-0">
+                                                                <p className="text-sm font-semibold text-textColor truncate">{member.name}</p>
+                                                                <p className="text-[10px] text-gray-500 truncate font-medium">{member.email || 'No email shared'}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-col items-end gap-1">
+                                                            {isCreator && (
+                                                                <span className="text-[9px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full uppercase tracking-wide">Admin</span>
+                                                            )}
+                                                            {isCurrentUser && !isCreator && (
+                                                                <span className="text-[9px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-wide">You</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+                                                    {(isAdmin && !isCreator) && (
+                                                        <div className="flex items-center gap-3 mt-4 pt-3 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button
+                                                                onClick={() => startEditing(member)}
+                                                                className="text-[10px] font-bold text-textColor opacity-40 hover:opacity-100 hover:text-primary transition-all flex items-center gap-1"
+                                                            >
+                                                                <MdEdit className="w-3.5 h-3.5" /> Edit
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteMember(member._id, member.name)}
+                                                                className="text-[10px] font-bold text-textColor opacity-40 hover:opacity-100 hover:text-red-500 transition-all flex items-center gap-1"
+                                                            >
+                                                                <MdDelete className="w-3.5 h-3.5" /> Remove
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                        {groupData?.members?.length === 0 && (
-                            <div className="p-8 text-center text-gray-500">
-                                <MdPeople className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                                <p>No members yet</p>
-                                <p className="text-xs mt-1">Add members using the form</p>
+                                    );
+                                })}
                             </div>
-                        )}
+
+                            {groupData?.members?.length === 0 && (
+                                <div className="flex flex-col items-center justify-center py-16 text-center text-gray-400">
+                                    <MdPeople className="w-12 h-12 mb-3 opacity-20" />
+                                    <p className="text-sm font-medium">No members yet</p>
+                                    <p className="text-xs opacity-60 mt-1">Building your squad? Start inviting others!</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Admin Note */}
+            {/* Access Disclaimer */}
             {!isAdmin && (
-                <div className="bg-yellow-50 rounded-lg border border-yellow-200 p-3">
-                    <div className="flex items-center gap-2">
-                        <MdInfoOutline className="w-4 h-4 text-yellow-700" />
-                        <p className="text-sm text-yellow-800">
-                            Only group admins can add, edit, or remove members.
+                <div className="bg-amber-50 rounded-xl border border-amber-100 p-4 flex items-start gap-3">
+                    <MdInfoOutline className="w-5 h-5 text-amber-600 shrink-0" />
+                    <div>
+                        <p className="text-sm font-semibold text-amber-900 leading-none">Security Note</p>
+                        <p className="text-xs text-amber-800/70 mt-1.5 leading-relaxed">
+                            Squad management (adding or removing members) is restricted to Group Admins only. You can still use the invite codes to invite friends.
                         </p>
                     </div>
                 </div>

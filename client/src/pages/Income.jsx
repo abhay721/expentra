@@ -112,7 +112,6 @@ const Income = () => {
         setFormData(prev => ({ ...prev, title: title, category: detected }));
     };
 
-    // Get matched category for display in table
     const getDisplayCategory = (income) => {
         const lowerTitle = (income.title || income.description || '').toLowerCase();
         const matched = categories.find(cat =>
@@ -125,42 +124,40 @@ const Income = () => {
 
     if (loading) {
         return (
-            <div className="space-y-4">
+            <div className="space-y-6">
                 <div className="h-8 bg-gray-200 rounded w-1/3 animate-pulse"></div>
-                <div className="h-28 bg-gray-100 rounded-lg animate-pulse"></div>
-                <div className="h-64 bg-gray-100 rounded-lg animate-pulse"></div>
+                <div className="h-32 bg-gray-100 rounded-xl animate-pulse"></div>
+                <div className="h-64 bg-gray-100 rounded-xl animate-pulse"></div>
             </div>
         );
     }
 
     return (
         <div className="space-y-6">
-            {/* Header */}
+            {/* Header Section */}
             <div className="flex flex-wrap justify-between items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Income Log</h1>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <h1 className="text-2xl font-bold text-textColor">Income Log</h1>
+                    <p className="text-sm text-textColor/60 mt-1">
                         {MONTHS[filterMonth - 1]} {filterYear}
                     </p>
                 </div>
 
-                <div className="flex gap-2 items-center flex-wrap">
-                    {/* Month filter */}
+                <div className="flex gap-3 items-center flex-wrap">
                     <select
                         value={filterMonth}
                         onChange={e => setFilterMonth(Number(e.target.value))}
-                        className="border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-gray-200 bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                     >
                         {MONTHS.map((m, i) => (
                             <option key={m} value={i + 1}>{m}</option>
                         ))}
                     </select>
 
-                    {/* Year filter */}
                     <select
                         value={filterYear}
                         onChange={e => setFilterYear(Number(e.target.value))}
-                        className="border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-gray-200 bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                     >
                         {[0, 1, 2].map(o => {
                             const y = today.getFullYear() - o;
@@ -170,60 +167,61 @@ const Income = () => {
 
                     <button
                         onClick={openAdd}
-                        className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition"
+                        className="flex items-center gap-2 px-5 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md"
                     >
                         <MdAdd className="text-lg" /> Record Income
                     </button>
                 </div>
             </div>
 
-            {/* Summary Card */}
-            <div className="bg-blue-600 rounded-lg p-5 flex justify-between items-center shadow-sm">
+            {/* Total Income Card with Gradient */}
+            <div className="bg-gradient-to-r from-primary via-primary/50 via-secondary rounded-2xl p-6 shadow-lg">                <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
-                    <div className="bg-white/10 rounded-lg p-3">
-                        <MdTrendingUp className="text-2xl text-white" />
+                    <div className="bg-white/20 rounded-xl p-3 backdrop-blur-sm">
+                        <MdTrendingUp className="text-3xl text-white" />
                     </div>
                     <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-blue-100">
+                        <p className="text-xs font-medium uppercase tracking-wide text-white/80">
                             Total Income — {MONTHS[filterMonth - 1]} {filterYear}
                         </p>
-                        <p className="text-2xl font-bold text-white mt-1">₹{totalIncome.toLocaleString()}</p>
+                        <p className="text-3xl font-bold text-white mt-1">₹{totalIncome.toLocaleString()}</p>
                     </div>
                 </div>
                 <div className="text-right">
                     <p className="text-2xl font-bold text-white">{incomes.length}</p>
-                    <p className="text-xs text-blue-100 mt-1">Entries</p>
+                    <p className="text-xs text-white/70 mt-1">Total Entries</p>
                 </div>
             </div>
+            </div>
 
-            {/* Table */}
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+            {/* Income Table */}
+            <div className="bg-card rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-200">
                 <div className="overflow-x-auto">
                     <table className="min-w-full">
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-200">
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Date</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Source / Description</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Category</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Amount</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">Actions</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Date</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Source / Description</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Category</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Amount</th>
+                                <th className="px-6 py-4 text-right text-xs font-semibold text-textColor/70 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {incomes.map((income) => (
-                                <tr key={income._id} className="hover:bg-gray-50 transition">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                            {incomes.map((income, idx) => (
+                                <tr key={income._id} className={`${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-all duration-200`}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-textColor/70">
                                         {new Date(income.date).toLocaleDateString('en-IN', {
                                             day: '2-digit',
                                             month: 'short',
                                             year: 'numeric'
                                         })}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                                    <td className="px-6 py-4 text-sm text-textColor font-medium">
                                         <div className="flex flex-col">
                                             <span>{income.title || income.description}</span>
                                             {income.title && income.description && income.title !== income.description && (
-                                                <span className="text-xs text-gray-500 font-normal mt-0.5">{income.description}</span>
+                                                <span className="text-xs text-textColor/50 font-normal mt-0.5">{income.description}</span>
                                             )}
                                         </div>
                                     </td>
@@ -231,27 +229,27 @@ const Income = () => {
                                         {(() => {
                                             const cat = getDisplayCategory(income);
                                             return (
-                                                <span className="px-2.5 py-1 inline-flex items-center gap-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
-                                                    <CategoryIcon iconName={cat.icon} className="w-4 h-4" />
+                                                <span className="px-3 py-1.5 inline-flex items-center gap-2 text-xs font-medium rounded-full bg-primary/10 text-primary">
+                                                    <CategoryIcon iconName={cat.icon} className="w-3.5 h-3.5" />
                                                     {cat.name}
                                                 </span>
                                             );
                                         })()}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-textColor">
                                         ₹{Number(income.amount).toLocaleString()}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right">
                                         <button
                                             onClick={() => openEdit(income)}
-                                            className="text-blue-600 hover:text-blue-800 mr-3 transition"
+                                            className="text-primary hover:text-primary/80 mr-3 transition-all duration-200"
                                             title="Edit"
                                         >
                                             <MdEdit className="w-5 h-5" />
                                         </button>
                                         <button
                                             onClick={() => handleDelete(income._id)}
-                                            className="text-red-500 hover:text-red-700 transition"
+                                            className="text-red-500 hover:text-red-600 transition-all duration-200"
                                             title="Delete"
                                         >
                                             <MdDelete className="w-5 h-5" />
@@ -262,10 +260,10 @@ const Income = () => {
                             {incomes.length === 0 && (
                                 <tr>
                                     <td colSpan="5" className="px-6 py-12 text-center">
-                                        <p className="text-gray-600 font-medium">
+                                        <p className="text-textColor/70 font-medium">
                                             No entries for {MONTHS[filterMonth - 1]} {filterYear}
                                         </p>
-                                        <p className="text-sm text-gray-500 mt-1">
+                                        <p className="text-sm text-textColor/50 mt-1">
                                             Click "Record Income" to add your first entry.
                                         </p>
                                     </td>
@@ -278,22 +276,20 @@ const Income = () => {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
-                        {/* Modal Header */}
-                        <div className="flex items-center gap-3 mb-5">
-                            <div className="bg-blue-600 p-2 rounded-lg">
+                <div className="fixed inset-0 bg-textColor/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-200">
+                    <div className="bg-card rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 border border-gray-200">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="bg-primary rounded-xl p-2">
                                 <MdTrendingUp className="text-white text-xl" />
                             </div>
-                            <h2 className="text-lg font-semibold text-gray-900">
+                            <h2 className="text-lg font-semibold text-textColor">
                                 {editingId ? 'Edit Income Entry' : 'Log New Income'}
                             </h2>
                         </div>
 
                         <form onSubmit={handleSave} className="space-y-4">
-                            {/* Title */}
                             <div>
-                                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1">
+                                <label className="block text-xs font-semibold text-textColor/70 uppercase tracking-wide mb-1.5">
                                     Title <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -302,13 +298,12 @@ const Income = () => {
                                     value={formData.title}
                                     onChange={handleTitleChange}
                                     placeholder="e.g. Salary, Freelance, Rent Income"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
-                            {/* Amount */}
                             <div>
-                                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1">
+                                <label className="block text-xs font-semibold text-textColor/70 uppercase tracking-wide mb-1.5">
                                     Amount (₹) <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -319,13 +314,12 @@ const Income = () => {
                                     value={formData.amount}
                                     onChange={e => setFormData({ ...formData, amount: e.target.value })}
                                     placeholder="0.00"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
-                            {/* Category */}
                             <div>
-                                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1">
+                                <label className="block text-xs font-semibold text-textColor/70 uppercase tracking-wide mb-1.5">
                                     Category (Auto-detected)
                                 </label>
                                 <div className="relative">
@@ -333,59 +327,56 @@ const Income = () => {
                                         type="text"
                                         value={formData.category}
                                         disabled
-                                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+                                        className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 text-textColor/60 cursor-not-allowed"
                                     />
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <CategoryIcon
                                             iconName={categories.find(c => c.name === formData.category)?.icon || 'Category'}
-                                            className="text-blue-600 w-4 h-4"
+                                            className="text-primary w-4 h-4"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Note */}
                             <div>
-                                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1">
-                                    Note <span className="text-gray-500 text-xs font-normal normal-case">(optional)</span>
+                                <label className="block text-xs font-semibold text-textColor/70 uppercase tracking-wide mb-1.5">
+                                    Note <span className="text-textColor/50 text-xs font-normal normal-case">(optional)</span>
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.note}
                                     onChange={e => setFormData({ ...formData, note: e.target.value })}
                                     placeholder="Any extra details..."
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
-                            {/* Date */}
                             <div>
-                                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1">
+                                <label className="block text-xs font-semibold text-textColor/70 uppercase tracking-wide mb-1.5">
                                     Date
                                 </label>
                                 <input
                                     type="date"
                                     value={formData.date}
                                     onChange={e => setFormData({ ...formData, date: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
-                            {/* Buttons */}
-                            <div className="flex justify-end gap-3 pt-2">
+                            <div className="flex justify-end gap-3 pt-4">
                                 <button
                                     type="button"
                                     onClick={() => {
                                         setShowModal(false);
                                         setEditingId(null);
                                     }}
-                                    className="px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                                    className="px-5 py-2.5 text-sm font-medium border border-gray-200 text-textColor rounded-xl hover:bg-gray-50 transition-all duration-200"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-5 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                    className="px-5 py-2.5 text-sm font-medium bg-primary text-white rounded-xl hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md"
                                 >
                                     {editingId ? 'Update Income' : 'Add Income'}
                                 </button>

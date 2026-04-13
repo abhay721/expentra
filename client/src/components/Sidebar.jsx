@@ -75,7 +75,7 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
             {/* Mobile overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                    className="fixed inset-0 bg-textColor/50 backdrop-blur-sm z-40 md:hidden transition-all duration-300"
                     onClick={() => setIsOpen(false)}
                 />
             )}
@@ -84,23 +84,28 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
             <aside className={`
                 fixed inset-y-0 left-0 z-50
                 flex flex-col w-64
-                bg-gray-900 text-white
+                bg-card text-textColor
+                shadow-sm
                 transform transition-transform duration-300 ease-in-out
                 ${isOpen ? 'translate-x-0' : '-translate-x-full'}
                 md:relative md:translate-x-0
+                border-r border-background
             `}>
-                {/* Header */}
-                <div className="flex items-center gap-3 h-20 px-6 border-b border-gray-800">
-                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <span className="font-bold text-lg">E</span>
+                {/* Header / Logo Section */}
+                <div className="flex items-center gap-3 h-20 px-6 border-b border-background bg-card">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary via-secondary to-primary rounded-lg flex items-center justify-center shadow-sm">
+                        <span className="font-bold text-card text-lg">E</span>
                     </div>
-                    <span className="font-bold text-xl">Expentra</span>
+                    <div>
+                        <span className="font-bold text-lg bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent tracking-tight">Expentra</span>
+                        <p className="text-xs text-textColor opacity-60 mt-0.5">Financial Dashboard</p>
+                    </div>
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 overflow-y-auto px-3 py-4">
-                    <div className="space-y-1">
-                        {navItems.map((item) => {
+                <nav className="flex-1 overflow-y-auto px-4 py-6">
+                    <div className="space-y-2">
+                        {navItems.map((item, index) => {
                             const Icon = item.icon;
                             const isActive = location.pathname === item.path ||
                                 location.pathname.startsWith(item.path + '/');
@@ -114,17 +119,24 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
                                         item.action?.();
                                     }}
                                     className={`
-                                        flex items-center gap-3 px-3 py-2.5
+                                        flex items-center gap-3 px-4 py-2.5
                                         rounded-lg text-sm font-medium
                                         transition-all duration-200
+                                        group relative
                                         ${isActive
-                                            ? 'bg-blue-600 text-white'
-                                            : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                                            ? 'bg-primary/10 text-primary shadow-sm'
+                                            : 'text-textColor hover:bg-background hover:text-primary hover:translate-x-1'
                                         }
                                     `}
                                 >
-                                    <Icon className="w-5 h-5" />
-                                    <span>{item.name}</span>
+                                    <Icon className={`
+                                        w-5 h-5 transition-all duration-200
+                                        ${isActive ? 'text-primary' : 'opacity-70 group-hover:text-primary'}
+                                    `} />
+                                    <span className="flex-1">{item.name}</span>
+                                    {isActive && (
+                                        <div className="absolute left-0 w-1 h-8 bg-secondary rounded-r-lg"></div>
+                                    )}
                                 </Link>
                             );
                         })}

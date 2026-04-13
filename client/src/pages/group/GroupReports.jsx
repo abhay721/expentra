@@ -8,12 +8,15 @@ import {
     MdGroup, MdCategory, MdDateRange, MdAttachMoney,
     MdReceipt, MdCompareArrows, MdInfoOutline, MdClear
 } from 'react-icons/md';
+import CategoryIcon from '../../utils/CategoryIcon';
 
 const GroupReports = () => {
     const { selectedGroupId } = useContext(AuthContext);
     const [activities, setActivities] = useState([]);
     const [groupData, setGroupData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [categoryMetadata, setCategoryMetadata] = useState({});
+    const [allCategories, setAllCategories] = useState([]);
 
     const [filterCategory, setFilterCategory] = useState('');
     const [filterPaidBy, setFilterPaidBy] = useState('');
@@ -25,9 +28,10 @@ const GroupReports = () => {
 
         const fetchData = async () => {
             try {
-                const [expRes, grpRes] = await Promise.all([
+                const [expRes, grpRes, catRes] = await Promise.all([
                     axios.get(`${API}/group-expenses/${selectedGroupId}`),
-                    axios.get(`${API}/groups/${selectedGroupId}`)
+                    axios.get(`${API}/groups/${selectedGroupId}`),
+                    axios.get(`${API}/categories`)
                 ]);
 
                 const rawExpenses = expRes.data;
@@ -76,6 +80,16 @@ const GroupReports = () => {
                     transformedActivities.push(aggS);
                 });
 
+                const categoryMap = {
+                    'settlement': 'MdCompareArrows',
+                    'general': 'MdCategory'
+                };
+                catRes.data.forEach(c => {
+                    categoryMap[c.name.toLowerCase()] = c.iconName;
+                });
+                setCategoryMetadata(categoryMap);
+                setAllCategories(catRes.data.map(c => c.name));
+
                 setActivities(transformedActivities);
                 setGroupData(grpRes.data);
             } catch (error) {
@@ -114,7 +128,7 @@ const GroupReports = () => {
         );
     }
 
-    const categories = [...new Set(activities.filter(a => a.type === 'expense').map(a => a.category))];
+    const categories = [...new Set([...allCategories, ...activities.map(a => a.category)])].filter(Boolean).sort();
     const members = groupData?.members || [];
 
     let filteredActivities = activities.filter(act => {
@@ -178,93 +192,91 @@ const GroupReports = () => {
     };
 
     return (
-        <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-            {/* Header */}
+        <div className="max-w-6xl mx-auto px-4 py-8 space-y-8 bg-background min-h-screen pb-20">
+            {/* Header Section */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Group Reports</h1>
-                    <p className="text-gray-600 text-sm mt-1">{groupData?.name} • Financial activity</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-textColor tracking-tight">Group Reports</h1>
+                    <p className="text-sm font-semibold text-gray-400 mt-1 uppercase tracking-widest">{groupData?.name} • Financial activity</p>
                 </div>
                 <button
                     onClick={handleDownloadCSV}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition shadow-sm"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all shadow-md shadow-primary/10"
                 >
-                    <MdDownload className="text-base" /> Export CSV
+                    <MdDownload className="text-lg" /> Export CSV
                 </button>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">Total Amount</p>
-                            <p className="text-2xl font-bold text-gray-900">₹{totalFilteredAmount.toLocaleString()}</p>
-                        </div>
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <MdAttachMoney className="w-5 h-5 text-blue-600" />
+            {/* Overview Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="flex items-center justify-between mb-4">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Transaction Value</p>
+                        <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                            <MdAttachMoney className="w-5 h-5" />
                         </div>
                     </div>
+                    <p className="text-3xl font-bold text-textColor tracking-tight">₹{totalFilteredAmount.toLocaleString()}</p>
                 </div>
-                <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">Expenses</p>
-                            <p className="text-2xl font-bold text-red-600">₹{expenseTotal.toLocaleString()}</p>
-                        </div>
-                        <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                            <MdReceipt className="w-5 h-5 text-red-600" />
+
+                <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="flex items-center justify-between mb-4">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-red-400">Gross Expenses</p>
+                        <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-red-500">
+                            <MdReceipt className="w-5 h-5" />
                         </div>
                     </div>
+                    <p className="text-3xl font-bold text-red-600 tracking-tight">₹{expenseTotal.toLocaleString()}</p>
                 </div>
-                <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">Settlements</p>
-                            <p className="text-2xl font-bold text-green-600">₹{settlementTotal.toLocaleString()}</p>
-                        </div>
-                        <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                            <MdCompareArrows className="w-5 h-5 text-green-600" />
+
+                <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="flex items-center justify-between mb-4">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-secondary">Total Settlements</p>
+                        <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
+                            <MdCompareArrows className="w-5 h-5" />
                         </div>
                     </div>
+                    <p className="text-3xl font-bold text-secondary tracking-tight">₹{settlementTotal.toLocaleString()}</p>
                 </div>
             </div>
 
-            {/* Filters */}
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                        <MdFilterList className="w-5 h-5 text-blue-600" />
-                        <h3 className="font-semibold text-gray-900">Filters</h3>
+            {/* Smart Filters Container */}
+            <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center text-primary">
+                            <MdFilterList className="w-5 h-5" />
+                        </div>
+                        <h3 className="font-bold text-textColor tracking-tight">Advanced Filters</h3>
                     </div>
                     {hasActiveFilters && (
                         <button
                             onClick={clearFilters}
-                            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 transition"
+                            className="text-[10px] font-black text-primary hover:text-primary/70 transition-all uppercase tracking-widest bg-primary/5 px-3 py-1.5 rounded-lg border border-primary/10"
                         >
-                            <MdClear className="text-sm" /> Clear all
+                            <MdClear className="inline text-xs mb-0.5 mr-1" /> Reset Filters
                         </button>
                     )}
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Type</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Type</label>
                         <select
                             value={filterType}
                             onChange={e => setFilterType(e.target.value)}
-                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            className="w-full px-4 py-2.5 bg-background border border-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor"
                         >
-                            <option value="">All Types</option>
-                            <option value="expense">Expenses</option>
-                            <option value="settlement">Settlements</option>
+                            <option value="">All Transactions</option>
+                            <option value="expense">Expenses Only</option>
+                            <option value="settlement">Settlements Only</option>
                         </select>
                     </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Category</label>
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Category</label>
                         <select
                             value={filterCategory}
                             onChange={e => setFilterCategory(e.target.value)}
-                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            className="w-full px-4 py-2.5 bg-background border border-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor transition-all"
                             disabled={filterType === 'settlement'}
                         >
                             <option value="">All Categories</option>
@@ -273,114 +285,106 @@ const GroupReports = () => {
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Payer / From</label>
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Paid By / From</label>
                         <select
                             value={filterPaidBy}
                             onChange={e => setFilterPaidBy(e.target.value)}
-                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            className="w-full px-4 py-2.5 bg-background border border-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor transition-all"
                         >
-                            <option value="">Anyone</option>
+                            <option value="">Any Member</option>
                             {members.map(m => (
                                 <option key={m.user || m.name} value={m.name}>{m.name}</option>
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Sort By</label>
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Sorting</label>
                         <select
                             value={sortBy}
                             onChange={e => setSortBy(e.target.value)}
-                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            className="w-full px-4 py-2.5 bg-background border border-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor transition-all"
                         >
-                            <option value="date-desc">Newest First</option>
-                            <option value="date-asc">Oldest First</option>
-                            <option value="amount-desc">Amount (High to Low)</option>
-                            <option value="amount-asc">Amount (Low to High)</option>
+                            <option value="date-desc">Timeline (Newest)</option>
+                            <option value="date-asc">Timeline (Oldest)</option>
+                            <option value="amount-desc">Value (High to Low)</option>
+                            <option value="amount-asc">Value (Low to High)</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            {/* Results Summary */}
-            <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-600">
-                    Showing <span className="font-semibold text-gray-900">{filteredActivities.length}</span> activities
-                    {hasActiveFilters && <span className="text-blue-600"> (filtered)</span>}
-                </p>
-                <p className="text-sm font-medium text-blue-600">
-                    Total: ₹{totalFilteredAmount.toLocaleString()}
-                </p>
-            </div>
-
-            {/* Activities Table */}
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+            {/* Results Table View */}
+            <div className="bg-card rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        Activity Stream <span className="text-primary font-black ml-1">({filteredActivities.length})</span>
+                    </p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        Total Value: <span className="text-textColor font-black ml-1">₹{totalFilteredAmount.toLocaleString()}</span>
+                    </p>
+                </div>
+                
                 <div className="overflow-x-auto">
                     {filteredActivities.length === 0 ? (
-                        <div className="p-12 text-center">
-                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <MdOutlineReceiptLong className="w-8 h-8 text-gray-400" />
+                        <div className="p-20 text-center">
+                            <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-50">
+                                <MdOutlineReceiptLong className="w-8 h-8 text-gray-300" />
                             </div>
-                            <p className="text-gray-600 font-medium">No activities match your filters</p>
-                            <p className="text-sm text-gray-500 mt-1">Try adjusting your filter criteria</p>
+                            <p className="text-textColor font-bold">No results found</p>
+                            <p className="text-gray-400 text-xs mt-1">Try adjusting your filters to see more activity.</p>
                         </div>
                     ) : (
-                        <table className="w-full text-left">
-                            <thead className="bg-gray-50 border-b border-gray-200">
-                                <tr>
-                                    <th className="px-4 py-3 text-xs font-medium text-gray-600 uppercase">Date</th>
-                                    <th className="px-4 py-3 text-xs font-medium text-gray-600 uppercase">Type</th>
-                                    <th className="px-4 py-3 text-xs font-medium text-gray-600 uppercase">Description</th>
-                                    <th className="px-4 py-3 text-xs font-medium text-gray-600 uppercase">Category</th>
-                                    <th className="px-4 py-3 text-xs font-medium text-gray-600 uppercase">Payer/From</th>
-                                    <th className="px-4 py-3 text-xs font-medium text-gray-600 uppercase text-right">Amount</th>
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-background/50 border-b border-gray-100">
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Description</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Member / From</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Amount</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-gray-50">
                                 {filteredActivities.map((act) => (
-                                    <tr key={act.id} className="hover:bg-gray-50 transition">
-                                        <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
-                                            {format(new Date(act.date), 'dd MMM yyyy')}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${act.type === 'expense'
-                                                    ? 'bg-red-100 text-red-700'
-                                                    : 'bg-green-100 text-green-700'
-                                                }`}>
-                                                {act.type === 'expense' ? <MdReceipt className="text-xs" /> : <MdCompareArrows className="text-xs" />}
-                                                {act.type}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <p className="text-sm font-medium text-gray-900">{act.title}</p>
-                                            {act.note && (
-                                                <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
-                                                    <MdInfoOutline className="text-xs" /> {act.note}
-                                                </p>
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
-                                                <MdCategory className="text-xs" />
-                                                {act.category}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="flex items-center gap-2">
-                                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${act.paidBy.includes(',')
-                                                        ? 'bg-purple-100 text-purple-600'
-                                                        : 'bg-blue-100 text-blue-600'
-                                                    }`}>
-                                                    {act.paidBy.includes(',') ? 'M' : (act.paidBy.charAt(0) || 'U').toUpperCase()}
+                                    <tr key={act.id} className="group hover:bg-background transition-all duration-200">
+                                        <td className="px-6 py-5">
+                                            <div className="space-y-1">
+                                                <p className="text-sm font-bold text-textColor tracking-tight">{act.title}</p>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1 uppercase tracking-widest">
+                                                        <MdDateRange className="text-xs" /> {format(new Date(act.date), 'dd MMM yyyy')}
+                                                    </span>
+                                                    {act.note && (
+                                                        <span className="text-[9px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded flex items-center gap-1">
+                                                            <MdInfoOutline className="text-xs" /> {act.note}
+                                                        </span>
+                                                    )}
                                                 </div>
-                                                <span className="text-sm text-gray-700 truncate max-w-[120px]">{act.paidBy || 'Unknown'}</span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 text-right">
-                                            <span className={`text-sm font-bold ${act.type === 'expense' ? 'text-red-600' : 'text-green-600'
+                                        <td className="px-6 py-5">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-9 h-9 rounded-xl bg-background flex items-center justify-center text-primary shadow-sm border border-gray-100 transition-transform group-hover:scale-105">
+                                                    <CategoryIcon iconName={categoryMetadata[act.category?.toLowerCase()] || 'MdCategory'} className="w-5 h-5" />
+                                                </div>
+                                                <p className="text-sm font-bold text-textColor tracking-tight">{act.category}</p>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shadow-sm transition-transform group-hover:scale-105 ${
+                                                    act.paidBy.includes(',') ? 'bg-purple-100 text-purple-600' : 'bg-primary/10 text-primary'
                                                 }`}>
+                                                    {act.paidBy.includes(',') ? 'M' : (act.paidBy.charAt(0) || 'U').toUpperCase()}
+                                                </div>
+                                                <p className="text-sm font-bold text-textColor truncate max-w-[120px] tracking-tight">{act.paidBy || 'Unknown'}</p>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5 text-right">
+                                            <p className={`text-base font-black tracking-tight ${act.type === 'expense' ? 'text-red-500' : 'text-secondary'}`}>
                                                 ₹{act.amount.toLocaleString()}
-                                            </span>
+                                            </p>
+                                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest opacity-50">{act.type}</p>
                                         </td>
                                     </tr>
                                 ))}

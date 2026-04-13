@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import CategoryIcon from '../../utils/CategoryIcon';
 import {
     MdAdd, MdReceipt, MdKeyboardArrowDown, MdKeyboardArrowUp,
     MdCompareArrows, MdEdit, MdDelete, MdGroup, MdAttachMoney,
@@ -14,14 +15,16 @@ const GroupExpenses = () => {
     const { selectedGroupId } = useContext(AuthContext);
     const [activities, setActivities] = useState([]);
     const [groupData, setGroupData] = useState(null);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [expandedActivity, setExpandedActivity] = useState(null);
 
     const fetchData = async () => {
         try {
-            const [expRes, groupRes] = await Promise.all([
+            const [expRes, groupRes, catRes] = await Promise.all([
                 axios.get(`${API}/group-expenses/${selectedGroupId}`),
-                axios.get(`${API}/groups/${selectedGroupId}`)
+                axios.get(`${API}/groups/${selectedGroupId}`),
+                axios.get(`${API}/categories`)
             ]);
 
             const rawExpenses = expRes.data;
@@ -77,6 +80,7 @@ const GroupExpenses = () => {
             transformedActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
             setActivities(transformedActivities);
             setGroupData(groupRes.data);
+            setCategories(catRes.data);
         } catch (error) {
             toast.error("Failed to load activities");
         } finally {
@@ -129,234 +133,206 @@ const GroupExpenses = () => {
     }
 
     return (
-        <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">{groupData?.name}</h1>
-                    <p className="text-gray-600 text-sm mt-1">Group expenses and settlement history</p>
+        <div className="space-y-6 pb-10 text-textColor">
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex items-center gap-4">
+                    <div className="p-3 bg-primary/10 rounded-2xl">
+                        <MdGroup className="w-8 h-8 text-primary" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{groupData?.name}</h1>
+                        <p className="text-sm opacity-60 mt-1">Activity and settlement history</p>
+                    </div>
                 </div>
                 <button
                     onClick={() => navigate('/groups/add-expense')}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md font-bold text-sm"
                 >
                     <MdAdd className="text-lg" />
                     Add Expense
                 </button>
             </div>
 
-            {/* Activities List */}
-            <div className="space-y-4">
-                {activities.map((act) => {
-                    const isExpense = act.activityType === 'expense';
-                    const isExpanded = expandedActivity === act._id;
-
-                    if (isExpense) {
-                        const payers = act.paidBy?.map(p => p.name).join(', ') || 'Unknown';
-                        return (
-                            <div
-                                key={act._id}
-                                className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden"
-                            >
-                                <div
-                                    className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors"
-                                    onClick={() => setExpandedActivity(isExpanded ? null : act._id)}
-                                >
-                                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                                        <div className="w-10 h-10 bg-gray-100 text-blue-600 rounded-lg flex items-center justify-center shrink-0">
-                                            <MdReceipt className="w-5 h-5" />
-                                        </div>
-                                        <div className="min-w-0 flex-1">
-                                            <h3 className="font-semibold text-gray-900 truncate">{act.title}</h3>
-                                            <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 mt-1">
-                                                <span className="flex items-center gap-1">
-                                                    <MdCalendarToday className="text-xs" />
-                                                    {new Date(act.date).toLocaleDateString()}
-                                                </span>
-                                                <span>•</span>
-                                                <span className="flex items-center gap-1">
-                                                    <MdPerson className="text-xs" />
-                                                    Paid by {payers}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="text-right">
-                                            <p className="text-lg font-bold text-gray-900">₹{act.amount.toLocaleString()}</p>
-                                            <p className="text-xs text-gray-500">Total</p>
-                                        </div>
-                                        <div className="text-gray-400">
-                                            {isExpanded ? <MdKeyboardArrowUp className="w-5 h-5" /> : <MdKeyboardArrowDown className="w-5 h-5" />}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {isExpanded && (
-                                    <div className="px-4 pb-4 pt-3 border-t border-gray-200 space-y-4">
-                                        {/* Action Buttons */}
-                                        <div className="flex justify-end gap-2">
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); navigate(`/groups/expenses/edit/${act._id}`); }}
-                                                className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-gray-100 rounded transition-colors"
-                                            >
-                                                <MdEdit className="text-sm" /> Edit
-                                            </button>
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); handleDeleteExpense(act._id); }}
-                                                className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded transition-colors"
-                                            >
-                                                <MdDelete className="text-sm" /> Delete
-                                            </button>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {/* Payment Breakdown */}
-                                            <div>
-                                                <h4 className="text-xs font-semibold text-gray-600 uppercase mb-2 flex items-center gap-1">
-                                                    <MdAttachMoney className="text-blue-600" /> Payment Breakdown
-                                                </h4>
-                                                <div className="space-y-2">
-                                                    {act.paidBy?.map((p, i) => (
-                                                        <div key={i} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                                                            <span className="text-sm text-gray-900">{p.name}</span>
-                                                            <span className="text-sm font-semibold text-gray-900">₹{p.amount?.toLocaleString()}</span>
-                                                        </div>
-                                                    ))}
+            {/* Activities Table */}
+            <div className="bg-card rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full">
+                        <thead>
+                            <tr className="bg-gray-50/50 border-b border-gray-100">
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-primary uppercase tracking-widest">Date</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-primary uppercase tracking-widest">Description</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-primary uppercase tracking-widest">Payers / Method</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-primary uppercase tracking-widest">Category</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-primary uppercase tracking-widest">Amount</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-primary uppercase tracking-widest">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                            {activities.map((act) => {
+                                const isExpense = act.activityType === 'expense';
+                                return (
+                                    <React.Fragment key={act._id}>
+                                        <tr 
+                                            onClick={() => setExpandedActivity(expandedActivity === act._id ? null : act._id)}
+                                            className={`group cursor-pointer transition-all duration-200 ${expandedActivity === act._id ? 'bg-primary/5' : 'hover:bg-gray-50/80'}`}
+                                        >
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium opacity-60">
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`transition-transform duration-200 ${expandedActivity === act._id ? 'rotate-180' : ''}`}>
+                                                        <MdKeyboardArrowDown className="text-primary opacity-40" />
+                                                    </div>
+                                                    {new Date(act.date).toLocaleDateString('en-IN', {
+                                                        day: '2-digit',
+                                                        month: 'short',
+                                                        year: 'numeric'
+                                                    })}
                                                 </div>
-                                            </div>
-
-                                            {/* Split Details */}
-                                            <div>
-                                                <h4 className="text-xs font-semibold text-gray-600 uppercase mb-2 flex items-center gap-1">
-                                                    <MdGroup className="text-blue-600" /> Split Details
-                                                </h4>
-                                                <div className="space-y-2">
-                                                    {act.splitBetween?.map((s, i) => (
-                                                        <div key={i} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                                                            <span className="text-sm text-gray-900">{s.name}</span>
-                                                            <span className="text-sm font-semibold text-blue-600">₹{s.amount?.toLocaleString()}</span>
-                                                        </div>
-                                                    ))}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-bold opacity-90">{act.title}</span>
+                                                    {act.note && (
+                                                        <span className="text-[10px] opacity-40 italic mt-0.5 line-clamp-1">{act.note}</span>
+                                                    )}
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Settlements */}
-                                        {act.settlements && act.settlements.length > 0 && (
-                                            <div className="bg-gray-50 rounded-lg p-3">
-                                                <h4 className="text-xs font-semibold text-green-600 uppercase mb-2 flex items-center gap-1">
-                                                    <MdCompareArrows /> Settlements
-                                                </h4>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {act.settlements.map((s, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className={`flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg text-sm shadow-sm border ${s.reimbursementStatus === 'paid' ? 'border-green-300' : 'border-gray-200'
-                                                                }`}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center gap-2">
+                                                    {isExpense ? (
+                                                        <div className="flex -space-x-2">
+                                                            {act.paidBy?.map((p, idx) => (
+                                                                <div key={idx} className="w-6 h-6 rounded-full bg-primary/10 border-2 border-card flex items-center justify-center text-[8px] font-black text-primary uppercase" title={p.name}>
+                                                                    {p.name.charAt(0)}
+                                                                </div>
+                                                            ))}
+                                                            <span className="text-[10px] opacity-60 font-medium ml-3 self-center">
+                                                                {act.paidBy?.length > 1 ? `${act.paidBy[0].name} +${act.paidBy.length - 1}` : act.paidBy?.[0]?.name}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="px-2 py-0.5 rounded-md bg-secondary/10 text-secondary text-[10px] font-black uppercase tracking-tighter">
+                                                            Settlement ({act.paymentMethod || 'cash'})
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                {isExpense ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-8 h-8 rounded-lg bg-background border border-gray-100 flex items-center justify-center p-1.5 shadow-sm">
+                                                            <CategoryIcon
+                                                                iconName={categories.find(c => c.name === act.category)?.icon || 'Category'}
+                                                                className="text-primary w-full h-full"
+                                                            />
+                                                        </div>
+                                                        <span className="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full bg-background border border-gray-100 opacity-70">
+                                                            {act.category || 'Other'}
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="opacity-20">—</span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`text-sm font-black ${isExpense ? 'text-red-500' : 'text-secondary'}`}>
+                                                    ₹{act.amount.toLocaleString()}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                {isExpense ? (
+                                                    <div className="flex justify-end gap-2" onClick={e => e.stopPropagation()}>
+                                                        <button
+                                                            onClick={() => navigate(`/groups/expenses/edit/${act._id}`)}
+                                                            className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                            title="Edit"
                                                         >
-                                                            <span className="font-medium text-gray-900">{s.from.name}</span>
-                                                            <span className="text-gray-500">→</span>
-                                                            <span className="font-medium text-gray-900">{s.to.name}</span>
-                                                            <span className="font-bold text-green-600">₹{s.amount.toLocaleString()}</span>
-                                                            {s.reimbursementStatus === 'paid' && <MdCheckCircle className="text-green-600 text-sm" />}
+                                                            <MdEdit className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteExpense(act._id)}
+                                                            className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                                            title="Delete"
+                                                        >
+                                                            <MdDelete className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-[10px] font-bold opacity-30 px-3 cursor-default">SYSTEM</span>
+                                                )}
+                                            </td>
+                                        </tr>
+
+                                        {/* Expanded Settlement Details */}
+                                        {expandedActivity === act._id && (
+                                            <tr className="bg-gray-50/50 border-b border-gray-100">
+                                                <td colSpan="6" className="px-10 py-6">
+                                                    <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-1 duration-200">
+                                                        <div className="flex items-center gap-2 text-primary">
+                                                            <MdCompareArrows className="text-lg" />
+                                                            <h4 className="text-xs font-black uppercase tracking-widest">
+                                                                {isExpense ? 'Settlement Breakdown' : 'Included Expenses'}
+                                                            </h4>
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            </div>
+
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                            {isExpense ? (
+                                                                act.settlements?.map((s, idx) => (
+                                                                    <div key={idx} className="bg-card border border-gray-100 rounded-xl p-3 shadow-sm flex items-center justify-between gap-4">
+                                                                        <div className="flex items-center gap-3">
+                                                                            <div className="flex items-center gap-1.5 min-w-0">
+                                                                                <span className="text-[10px] font-bold opacity-80 truncate">{s.from.name}</span>
+                                                                                <MdKeyboardArrowUp className="rotate-90 text-primary opacity-30 text-xs shrink-0" />
+                                                                                <span className="text-[10px] font-bold opacity-80 truncate">{s.to.name}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="flex flex-col items-end shrink-0">
+                                                                            <span className="text-xs font-black text-secondary">₹{s.amount.toLocaleString()}</span>
+                                                                            <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md ${s.reimbursementStatus === 'paid' ? 'bg-secondary/10 text-secondary' : 'bg-orange-500/10 text-orange-500'}`}>
+                                                                                {s.reimbursementStatus}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                ))
+                                                            ) : (
+                                                                act.underlyingExpenses?.map((ue, idx) => (
+                                                                    <div key={idx} className="bg-card border border-gray-100 rounded-xl p-3 shadow-sm flex items-center justify-between gap-4">
+                                                                        <span className="text-[10px] font-bold opacity-80 truncate">{ue.title}</span>
+                                                                        <span className="text-xs font-black text-secondary shrink-0">₹{ue.amount.toLocaleString()}</span>
+                                                                    </div>
+                                                                ))
+                                                            )}
+                                                        </div>
+
+                                                        {isExpense && (!act.settlements || act.settlements.length === 0) && (
+                                                            <p className="text-[10px] font-bold opacity-30 italic">No settlement needed for this expense.</p>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         )}
-
-                                        {/* Note */}
-                                        {act.note && (
-                                            <div className="flex items-start gap-2 p-3 bg-gray-50 rounded-lg">
-                                                <MdInfoOutline className="text-gray-500 text-sm mt-0.5" />
-                                                <p className="text-xs text-gray-600 italic">{act.note}</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    } else {
-                        // Settlement Activity
-                        return (
-                            <div
-                                key={act._id}
-                                className="bg-white rounded-lg border border-green-200 shadow-sm overflow-hidden"
-                            >
-                                <div
-                                    className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors"
-                                    onClick={() => setExpandedActivity(isExpanded ? null : act._id)}
-                                >
-                                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                                        <div className="w-10 h-10 bg-gray-100 text-green-600 rounded-lg flex items-center justify-center shrink-0">
-                                            <MdCompareArrows className="w-5 h-5" />
+                                    </React.Fragment>
+                                );
+                            })}
+                            {activities.length === 0 && (
+                                <tr>
+                                    <td colSpan="6" className="px-6 py-16 text-center">
+                                        <div className="w-16 h-16 bg-background rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-50">
+                                            <MdReceipt className="w-8 h-8 opacity-20" />
                                         </div>
-                                        <div className="min-w-0 flex-1">
-                                            <h3 className="font-semibold text-gray-900 truncate">{act.title}</h3>
-                                            <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 mt-1">
-                                                <span className="flex items-center gap-1">
-                                                    <MdCalendarToday className="text-xs" />
-                                                    {new Date(act.date).toLocaleDateString()}
-                                                </span>
-                                                <span>•</span>
-                                                <span className="flex items-center gap-1">
-                                                    Method: <span className="font-medium text-green-600 uppercase text-xs">{act.paymentMethod || 'cash'}</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="text-right">
-                                            <p className="text-lg font-bold text-green-600">₹{act.amount.toLocaleString()}</p>
-                                            <p className="text-xs text-gray-500">Settled</p>
-                                        </div>
-                                        <div className="text-green-400">
-                                            {isExpanded ? <MdKeyboardArrowUp className="w-5 h-5" /> : <MdKeyboardArrowDown className="w-5 h-5" />}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {isExpanded && (
-                                    <div className="px-4 pb-4 pt-3 border-t border-gray-200 space-y-3">
-                                        <h4 className="text-xs font-semibold text-green-600 uppercase mb-2 flex items-center gap-1">
-                                            <MdReceipt className="text-sm" /> Expense Breakdown
-                                        </h4>
-                                        <div className="space-y-2">
-                                            {act.underlyingExpenses?.map((ue, idx) => (
-                                                <div key={idx} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                                                    <span className="text-sm text-gray-700 truncate max-w-[250px]">{ue.title}</span>
-                                                    <span className="text-sm font-semibold text-green-600">₹{ue.amount?.toLocaleString()}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <div className="inline-flex items-center gap-1 text-xs font-medium text-green-600 bg-gray-100 px-3 py-1.5 rounded-full">
-                                            <MdInfoOutline className="text-xs" />
-                                            Total of {act.expensesCount} expense settlement(s)
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    }
-                })}
-
-                {activities.length === 0 && (
-                    <div className="text-center py-12 bg-white rounded-lg border border-gray-200 shadow-sm">
-                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <MdReceipt className="w-8 h-8 text-gray-400" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900">No Activity Yet</h3>
-                        <p className="text-gray-600 mt-1">Add your first expense to start tracking!</p>
-                        <button
-                            onClick={() => navigate('/groups/add-expense')}
-                            className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                        >
-                            <MdAdd className="text-base" />
-                            Add Expense
-                        </button>
-                    </div>
-                )}
+                                        <p className="text-sm font-bold opacity-40">No activity history found</p>
+                                        <button
+                                            onClick={() => navigate('/groups/add-expense')}
+                                            className="mt-4 text-primary font-black text-[10px] uppercase tracking-widest hover:underline"
+                                        >
+                                            Add First Expense
+                                        </button>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

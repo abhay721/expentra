@@ -114,56 +114,60 @@ const GroupSelection = () => {
 
     if (loading) {
         return (
-            <div className="max-w-6xl mx-auto px-4 py-8">
-                <div className="flex justify-center items-center min-h-[400px]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                </div>
+            <div className="min-h-screen bg-background flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
         );
     }
 
     return (
-        <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-            {/* Header */}
-            <div className="text-center space-y-3">
-                <div className="inline-flex items-center justify-center p-3 bg-blue-50 rounded-lg mb-2">
-                    <MdGroup className="w-8 h-8 text-blue-600" />
+        <div className="min-h-screen bg-background py-10 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-5xl mx-auto space-y-10 text-textColor">
+                {/* Header Section */}
+                <div className="text-center space-y-4">
+                    <div className="inline-flex items-center justify-center p-4 bg-primary/10 rounded-2xl mb-2 transition-transform hover:scale-110">
+                        <MdGroup className="w-8 h-8 text-primary" />
+                    </div>
+                    <h1 className="text-4xl font-extrabold tracking-tight">
+                        Group Selection
+                    </h1>
+                    <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
+                        Track shared expenses, manage group bills, and collaborate seamlessly with friends and family.
+                    </p>
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900">Group Mode</h1>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                    Collaborate, split bills, and track shared expenses with family and friends
-                </p>
-            </div>
 
             {/* Tab Navigation */}
             <div className="flex justify-center">
-                <div className="bg-gray-100 p-1 rounded-lg flex gap-1">
+                <div className="bg-gray-100 p-1.5 rounded-2xl flex gap-1 shadow-inner border border-gray-200">
                     <button
                         onClick={() => setActiveTab('select')}
-                        className={`px-6 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${activeTab === 'select'
-                                ? 'bg-white shadow-sm text-blue-600'
-                                : 'text-gray-600 hover:text-gray-900'
+                        className={`px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2.5 ${activeTab === 'select'
+                            ? 'bg-card shadow-md text-primary scale-105'
+                            : 'text-gray-500 hover:text-textColor hover:bg-gray-200'
                             }`}
                     >
-                        <MdGroup /> My Groups
+                        <MdGroup className="text-lg" />
+                        My Groups
                     </button>
                     <button
                         onClick={() => setActiveTab('create')}
-                        className={`px-6 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${activeTab === 'create'
-                                ? 'bg-white shadow-sm text-blue-600'
-                                : 'text-gray-600 hover:text-gray-900'
+                        className={`px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2.5 ${activeTab === 'create'
+                            ? 'bg-card shadow-md text-primary scale-105'
+                            : 'text-gray-500 hover:text-textColor hover:bg-gray-200'
                             }`}
                     >
-                        <MdCreate /> Create Group
+                        <MdCreate className="text-lg" />
+                        Create Group
                     </button>
                     <button
                         onClick={() => setActiveTab('join')}
-                        className={`px-6 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${activeTab === 'join'
-                                ? 'bg-white shadow-sm text-blue-600'
-                                : 'text-gray-600 hover:text-gray-900'
+                        className={`px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2.5 ${activeTab === 'join'
+                            ? 'bg-card shadow-md text-primary scale-105'
+                            : 'text-gray-500 hover:text-textColor hover:bg-gray-200'
                             }`}
                     >
-                        <MdLogin /> Join Group
+                        <MdLogin className="text-lg" />
+                        Join Group
                     </button>
                 </div>
             </div>
@@ -172,31 +176,33 @@ const GroupSelection = () => {
             <div>
                 {/* My Groups Tab */}
                 {activeTab === 'select' && (
-                    <div className="space-y-6">
+                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         {groups.length === 0 ? (
-                            <div className="text-center py-16 bg-white rounded-lg border-2 border-dashed border-gray-200">
-                                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <MdGroup className="w-10 h-10 text-gray-400" />
+                            <div className="text-center py-20 bg-card rounded-3xl border border-gray-100 shadow-sm">
+                                <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                                    <MdGroup className="w-12 h-12 text-gray-300" />
                                 </div>
-                                <h3 className="text-xl font-semibold text-gray-900">No groups yet</h3>
-                                <p className="text-gray-600 mt-2">Get started by creating or joining a group.</p>
-                                <div className="mt-6 flex gap-3 justify-center">
+                                <h3 className="text-2xl font-bold text-textColor">No groups found</h3>
+                                <p className="text-gray-500 mt-2 max-w-sm mx-auto">
+                                    You aren't a member of any groups yet. Create a new one or join with an invite code.
+                                </p>
+                                <div className="mt-8 flex gap-4 justify-center">
                                     <button
                                         onClick={() => setActiveTab('create')}
-                                        className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+                                        className="px-8 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/20 active:scale-95"
                                     >
                                         Create Group
                                     </button>
                                     <button
                                         onClick={() => setActiveTab('join')}
-                                        className="px-5 py-2 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:border-blue-300 hover:text-blue-600 transition"
+                                        className="px-8 py-3 bg-white border border-gray-200 text-textColor rounded-xl font-bold hover:bg-gray-50 transition-all shadow-sm active:scale-95"
                                     >
                                         Join Group
                                     </button>
                                 </div>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                                 {groups.map((group) => {
                                     const isCreator = user && group.createdBy &&
                                         group.createdBy.toString() === (user._id || user.id).toString();
@@ -204,47 +210,49 @@ const GroupSelection = () => {
                                         <div
                                             key={group._id}
                                             onClick={() => handleSelectGroup(group._id)}
-                                            className="bg-white rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition overflow-hidden"
+                                            className="group bg-card rounded-3xl border border-gray-100 shadow-sm cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col"
                                         >
-                                            <div className="p-5">
-                                                <div className="flex items-start justify-between mb-3">
-                                                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                                        <MdGroup className="w-6 h-6 text-blue-600" />
+                                            <div className="p-8 flex-1">
+                                                <div className="flex items-start justify-between mb-6">
+                                                    <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                                                        <MdGroup className="w-7 h-7 text-primary" />
                                                     </div>
                                                     {isCreator && (
-                                                        <div className="flex gap-1">
+                                                        <div className="flex gap-2">
                                                             <button
                                                                 onClick={(e) => startEditing(e, group)}
-                                                                className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                                                                className="p-2.5 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
                                                                 title="Edit Group"
                                                             >
-                                                                <MdEdit className="w-4 h-4" />
+                                                                <MdEdit className="w-5 h-5" />
                                                             </button>
                                                             <button
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     handleDeleteGroup(group._id, group.name);
                                                                 }}
-                                                                className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"
+                                                                className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                                                                 title="Delete Group"
                                                             >
-                                                                <MdDelete className="w-4 h-4" />
+                                                                <MdDelete className="w-5 h-5" />
                                                             </button>
                                                         </div>
                                                     )}
                                                 </div>
-                                                <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">{group.name}</h3>
-                                                <p className="text-gray-600 text-sm line-clamp-2 min-h-[40px] mb-3">
-                                                    {group.description || 'No description provided.'}
+                                                <h3 className="text-xl font-bold text-textColor mb-2 group-hover:text-primary transition-colors">{group.name}</h3>
+                                                <p className="text-gray-500 text-sm line-clamp-2 min-h-[40px] leading-relaxed">
+                                                    {group.description || 'Manage shared expenses and split bills with your team.'}
                                                 </p>
-                                                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                                                    <div className="flex items-center gap-1.5 text-sm text-gray-600">
-                                                        <MdPeople className="text-blue-600" />
-                                                        <span>{group.members?.length || 1} members</span>
+                                            </div>
+                                            <div className="px-8 py-5 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between group-hover:bg-primary/5 transition-colors">
+                                                <div className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                                                    <div className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center -space-x-2">
+                                                       <MdPeople className="text-primary w-4 h-4" />
                                                     </div>
-                                                    <div className="text-blue-600 text-sm font-medium">
-                                                        Select →
-                                                    </div>
+                                                    <span>{group.members?.length || 1} members</span>
+                                                </div>
+                                                <div className="text-primary text-sm font-bold flex items-center gap-1">
+                                                    Open <span className="transition-transform group-hover:translate-x-1">→</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -257,43 +265,43 @@ const GroupSelection = () => {
 
                 {/* Create Group Tab */}
                 {activeTab === 'create' && (
-                    <div className="max-w-md mx-auto bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-100 rounded-lg">
-                                    <MdCreate className="w-5 h-5 text-blue-600" />
+                    <div className="max-w-xl mx-auto bg-card rounded-3xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-500 animate-in zoom-in-95">
+                        <div className="bg-primary/5 px-8 py-6 border-b border-gray-100">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-white rounded-2xl shadow-sm text-primary">
+                                    <MdCreate className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-semibold text-gray-900">Create New Group</h2>
-                                    <p className="text-sm text-gray-600">Start a new group to track shared expenses</p>
+                                    <h2 className="text-xl font-bold text-textColor">Create New Group</h2>
+                                    <p className="text-sm text-gray-500">Launch a new space for your shared expenses</p>
                                 </div>
                             </div>
                         </div>
-                        <form onSubmit={handleCreateGroup} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Group Name *</label>
+                        <form onSubmit={handleCreateGroup} className="p-8 space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-700 ml-1">Group Name</label>
                                 <input
                                     type="text"
                                     value={newGroup.name}
                                     onChange={(e) => setNewGroup({ ...newGroup, name: e.target.value })}
                                     placeholder="e.g., Goa Trip 2024, Roommates"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary transition-all text-textColor placeholder:text-gray-400"
                                     required
                                 />
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-700 ml-1">Description (Optional)</label>
                                 <textarea
                                     value={newGroup.description}
                                     onChange={(e) => setNewGroup({ ...newGroup, description: e.target.value })}
                                     placeholder="What is this group for?"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                                    rows="3"
+                                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary transition-all text-textColor placeholder:text-gray-400 resize-none"
+                                    rows="4"
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+                                className="w-full py-4 bg-primary text-white rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/30 active:scale-[0.98]"
                             >
                                 Create Group
                             </button>
@@ -303,39 +311,39 @@ const GroupSelection = () => {
 
                 {/* Join Group Tab */}
                 {activeTab === 'join' && (
-                    <div className="max-w-md mx-auto bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-green-100 rounded-lg">
-                                    <MdLogin className="w-5 h-5 text-green-600" />
+                    <div className="max-w-xl mx-auto bg-card rounded-3xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-500 animate-in zoom-in-95">
+                        <div className="bg-secondary/5 px-8 py-6 border-b border-gray-100">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-white rounded-2xl shadow-sm text-secondary">
+                                    <MdLogin className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-semibold text-gray-900">Join a Group</h2>
-                                    <p className="text-sm text-gray-600">Enter the invite code shared by your friend</p>
+                                    <h2 className="text-xl font-bold text-textColor">Join a Group</h2>
+                                    <p className="text-sm text-gray-500">Enter the secret invite code shared with you</p>
                                 </div>
                             </div>
                         </div>
-                        <form onSubmit={handleJoinGroup} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Invite Code</label>
+                        <form onSubmit={handleJoinGroup} className="p-8 space-y-8">
+                            <div className="space-y-4">
+                                <label className="text-sm font-bold text-gray-700 block text-center">Enter 6-Character Invite Code</label>
                                 <input
                                     type="text"
                                     value={inviteCode}
                                     onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-                                    placeholder="e.g., 8F4K29"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-center text-lg font-mono tracking-wider uppercase"
+                                    placeholder="CODE24"
+                                    className="w-full px-5 py-6 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-secondary/10 focus:bg-white focus:border-secondary transition-all text-center text-4xl font-black tracking-[0.5em] text-secondary placeholder:text-gray-200 uppercase"
                                     maxLength={6}
                                     required
                                 />
-                                <p className="text-xs text-gray-500 mt-1.5 text-center">
-                                    Enter the 6-character code exactly as shown
+                                <p className="text-xs text-gray-400 text-center font-medium">
+                                    Invite codes are case-sensitive and must be exactly 6 characters.
                                 </p>
                             </div>
                             <button
                                 type="submit"
-                                className="w-full py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition"
+                                className="w-full py-4 bg-secondary text-white rounded-2xl font-bold text-lg hover:bg-secondary/90 transition-all shadow-lg hover:shadow-secondary/30 active:scale-[0.98]"
                             >
-                                Join Group
+                                Join Group Now
                             </button>
                         </form>
                     </div>
@@ -344,56 +352,60 @@ const GroupSelection = () => {
 
             {/* Edit Modal */}
             {editingGroup && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
-                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                            <h2 className="text-lg font-semibold text-gray-900">Edit Group</h2>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-textColor/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-card rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-white/20 transform transition-all animate-in zoom-in-95 duration-300">
+                        <div className="bg-gray-50/50 px-8 py-6 border-b border-gray-100 flex justify-between items-center">
+                            <div>
+                                <h2 className="text-xl font-bold text-textColor">Edit Group</h2>
+                                <p className="text-xs text-gray-500 mt-0.5">Update group name or description</p>
+                            </div>
                             <button
                                 onClick={() => setEditingGroup(null)}
-                                className="p-1 hover:bg-gray-200 rounded transition text-gray-500 hover:text-gray-700"
+                                className="p-2 hover:bg-gray-200 rounded-xl transition-all text-gray-400 hover:text-textColor"
                             >
-                                <MdClose className="w-5 h-5" />
+                                <MdClose className="w-6 h-6" />
                             </button>
                         </div>
-                        <form onSubmit={handleUpdateGroup} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Group Name</label>
+                        <form onSubmit={handleUpdateGroup} className="p-8 space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-700 ml-1">Group Name</label>
                                 <input
                                     type="text"
                                     value={editData.name}
                                     onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary transition-all text-textColor"
                                     required
                                 />
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-700 ml-1">Description</label>
                                 <textarea
                                     value={editData.description}
                                     onChange={(e) => setEditData({ ...editData, description: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                                    rows="3"
+                                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary transition-all text-textColor resize-none"
+                                    rows="4"
                                 />
                             </div>
-                            <div className="flex gap-3 pt-2">
+                            <div className="flex gap-4 pt-2">
                                 <button
                                     type="button"
                                     onClick={() => setEditingGroup(null)}
-                                    className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition"
+                                    className="flex-1 py-4 border border-gray-200 text-textColor rounded-2xl font-bold hover:bg-gray-50 transition-all active:scale-95"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+                                    className="flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/30 active:scale-95"
                                 >
-                                    Save Changes
+                                    Save
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
+            </div>
         </div>
     );
 };

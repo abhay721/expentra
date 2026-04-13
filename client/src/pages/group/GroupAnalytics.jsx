@@ -4,11 +4,11 @@ import { AuthContext, API } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-    PieChart, Pie, Cell
+    PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
 import {
     MdTrendingUp, MdCategory, MdPerson, MdGroup, MdAttachMoney,
-    MdShowChart, MdReceipt
+    MdShowChart, MdReceipt, MdAutoGraph, MdTrendingDown, MdHealthAndSafety
 } from 'react-icons/md';
 
 const COLORS = ['#2563EB', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC489A', '#06B6D4', '#84CC16'];
@@ -146,119 +146,127 @@ const GroupAnalytics = () => {
             ) : (
                 <>
                     {/* Summary Cards */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Unified Insight Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {/* Total Spending */}
-                        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Total Spending</p>
-                                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <MdAttachMoney className="w-4 h-4 text-blue-600" />
+                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-background rounded-xl p-2.5">
+                                    <MdAttachMoney className="w-5 h-5 text-primary" />
                                 </div>
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-textColor/40">Total Group Spend</h3>
                             </div>
-                            <p className="text-2xl font-bold text-gray-900">₹{totalSpent.toLocaleString()}</p>
-                            <p className="text-xs text-gray-500 mt-1">{expenses.length} transactions</p>
+                            <p className="text-xl font-bold text-textColor">₹{totalSpent.toLocaleString()}</p>
+                            <p className="text-[10px] font-bold text-primary uppercase tracking-tighter mt-1">{expenses.length} transactions recorded</p>
                         </div>
 
                         {/* Top Payer */}
-                        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Top Payer</p>
-                                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                    <MdPerson className="w-4 h-4 text-green-600" />
+                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-background rounded-xl p-2.5">
+                                    <MdPerson className="w-5 h-5 text-primary" />
                                 </div>
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-textColor/40">Top Contributor</h3>
                             </div>
-                            <p className="text-xl font-bold text-gray-900 truncate">{topPayer}</p>
-                            <p className="text-xs text-gray-500 mt-1">Highest contributor</p>
+                            <p className="text-xl font-bold text-textColor truncate">{topPayer}</p>
+                            <p className="text-[10px] font-bold text-primary uppercase tracking-tighter mt-1">Highest squad contributor</p>
                         </div>
 
                         {/* Top Category */}
-                        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Top Category</p>
-                                <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                                    <MdCategory className="w-4 h-4 text-yellow-600" />
+                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-background rounded-xl p-2.5">
+                                    <MdCategory className="w-5 h-5 text-primary" />
                                 </div>
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-textColor/40">Top Spending Cat</h3>
                             </div>
-                            <p className="text-xl font-bold text-gray-900 truncate">{topCategory}</p>
-                            <p className="text-xs text-gray-500 mt-1">Most spent on</p>
-                        </div>
-
-                        {/* Average Expense */}
-                        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Avg Expense</p>
-                                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                                    <MdReceipt className="w-4 h-4 text-purple-600" />
-                                </div>
-                            </div>
-                            <p className="text-2xl font-bold text-gray-900">₹{avgExpense.toLocaleString()}</p>
-                            <p className="text-xs text-gray-500 mt-1">Per transaction</p>
+                            <p className="text-xl font-bold text-textColor truncate">{topCategory}</p>
+                            <p className="text-[10px] font-bold text-primary uppercase tracking-tighter mt-1">Most frequent group expense</p>
                         </div>
                     </div>
 
-                    {/* Charts */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Charts Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Category Pie Chart */}
-                        <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
-                            <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200">
-                                <MdCategory className="w-5 h-5 text-blue-600" />
-                                <h3 className="font-semibold text-gray-900">Spending by Category</h3>
+                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                                    <MdCategory className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-bold text-textColor">Spending by Category</h3>
+                                    <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest leading-none mt-1">Mix Breakdown</p>
+                                </div>
                             </div>
-                            <div className="h-80 w-full">
-                                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                            <div className="h-72 w-full mt-2">
+                                <ResponsiveContainer width="100%" height="100%">
                                     <PieChart>
                                         <Pie
                                             data={categoryData}
-                                            cx="50%"
-                                            cy="50%"
-                                            labelLine={false}
-                                            label={({ name, percent }) =>
-                                                percent > 0.05 ? `${name} ${(percent * 100).toFixed(0)}%` : ''
-                                            }
-                                            outerRadius={90}
-                                            fill="#8884d8"
+                                            innerRadius={60}
+                                            outerRadius={80}
+                                            paddingAngle={4}
                                             dataKey="value"
+                                            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                                            labelLine={false}
                                         >
                                             {categoryData.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                             ))}
                                         </Pie>
-                                        <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                                        <Legend />
+                                        <Tooltip
+                                            contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -1px rgba(0,0,0,0.1)', fontSize: '12px' }}
+                                            formatter={(value) => [`₹${value.toLocaleString()}`, 'Spent']}
+                                        />
+                                        <Legend
+                                            iconType="circle"
+                                            layout="horizontal"
+                                            verticalAlign="bottom"
+                                            align="center"
+                                            wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', paddingTop: '10px' }}
+                                            formatter={(value, entry) => {
+                                                const item = categoryData.find(d => d.name === value);
+                                                return <span className="text-textColor/70">{value}: ₹{item?.value.toLocaleString()}</span>;
+                                            }}
+                                        />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </div>
                         </div>
 
                         {/* Contributions Bar Chart */}
-                        <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
-                            <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200">
-                                <MdPerson className="w-5 h-5 text-blue-600" />
-                                <h3 className="font-semibold text-gray-900">Contributions by Member</h3>
+                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
+                                    <MdPerson className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-bold text-textColor">Member Shares</h3>
+                                    <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest leading-none mt-1">Individual Contributions</p>
+                                </div>
                             </div>
-                            <div className="h-80 w-full">
-                                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                                    <BarChart
-                                        data={paidByData}
-                                        layout="vertical"
-                                        margin={{ top: 5, right: 30, left: 60, bottom: 5 }}
-                                    >
-                                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                                        <XAxis
-                                            type="number"
-                                            tickFormatter={(value) => `₹${value}`}
-                                            axisLine={false}
-                                            tickLine={false}
-                                        />
+                            <div className="h-72 w-full mt-2">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={paidByData} layout="vertical" margin={{ left: 10 }}>
+                                        <XAxis type="number" hide />
                                         <YAxis
-                                            type="category"
                                             dataKey="name"
+                                            type="category"
                                             axisLine={false}
                                             tickLine={false}
-                                            width={80}
+                                            tick={{ fill: '#9CA3AF', fontSize: 10, fontWeight: 'bold' }}
+                                            width={100}
+                                            tickFormatter={(value) => {
+                                                const item = paidByData.find(d => d.name === value);
+                                                return `${value} (₹${item?.amount.toLocaleString()})`;
+                                            }}
                                         />
-                                        <Tooltip formatter={(value) => [`₹${value.toLocaleString()}`, 'Amount Paid']} />
-                                        <Bar dataKey="amount" fill="#2563EB" radius={[0, 8, 8, 0]} maxBarSize={40}>
+                                        <Tooltip
+                                            cursor={{ fill: 'transparent' }}
+                                            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                                            formatter={(value) => [`₹${value.toLocaleString()}`, 'Paid']}
+                                        />
+                                        <Bar dataKey="amount" radius={[0, 10, 10, 0]} maxBarSize={25}>
                                             {paidByData.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                             ))}
@@ -267,32 +275,43 @@ const GroupAnalytics = () => {
                                 </ResponsiveContainer>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Monthly Trend Chart */}
-                    {monthlyData.length > 1 && (
-                        <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
-                            <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200">
-                                <MdTrendingUp className="w-5 h-5 text-blue-600" />
-                                <h3 className="font-semibold text-gray-900">Monthly Spending Trend</h3>
+                        {/* Monthly Trend Chart */}
+                        {monthlyData.length > 0 && (
+                            <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm md:col-span-2">
+                                <div className="flex items-center gap-3 mb-8">
+                                    <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                                        <MdTrendingUp className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold text-textColor">Spending Trend</h3>
+                                        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest leading-none mt-1">Monthly Flow</p>
+                                    </div>
+                                </div>
+                                <div className="h-72 w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <LineChart data={monthlyData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 11, fontWeight: 'bold' }} dy={10} />
+                                            <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 11 }} tickFormatter={(val) => `₹${val / 1000}k`} />
+                                            <Tooltip
+                                                contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                                                formatter={(value) => [`₹${value.toLocaleString()}`, 'Spent']}
+                                            />
+                                            <Line
+                                                type="monotone"
+                                                dataKey="amount"
+                                                stroke="#2563EB"
+                                                strokeWidth={4}
+                                                dot={{ r: 4, fill: '#2563EB', strokeWidth: 2, stroke: '#FFFFFF' }}
+                                                activeDot={{ r: 6, fill: '#2563EB', strokeWidth: 2, stroke: '#FFFFFF' }}
+                                            />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </div>
                             </div>
-                            <div className="h-80 w-full">
-                                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                                    <BarChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                        <XAxis dataKey="month" axisLine={false} tickLine={false} />
-                                        <YAxis tickFormatter={(value) => `₹${value}`} axisLine={false} tickLine={false} />
-                                        <Tooltip formatter={(value) => [`₹${value.toLocaleString()}`, 'Spending']} />
-                                        <Bar dataKey="amount" fill="#2563EB" radius={[8, 8, 0, 0]}>
-                                            {monthlyData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </>
             )}
         </div>
