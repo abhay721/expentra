@@ -125,7 +125,7 @@ const Reports = () => {
             {/* Clean KPI row resembling Analysis Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {/* Total Income */}
-                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-background rounded-xl p-2.5">
@@ -139,7 +139,7 @@ const Reports = () => {
                 </div>
 
                 {/* Total Expense */}
-                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-background rounded-xl p-2.5">
@@ -153,7 +153,7 @@ const Reports = () => {
                 </div>
 
                 {/* Remaining Balance */}
-                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-background rounded-xl p-2.5">
@@ -180,7 +180,7 @@ const Reports = () => {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Category-wise Pie Chart */}
-                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 transition-all duration-300 flex flex-col justify-center relative overflow-hidden">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 flex flex-col justify-center relative overflow-hidden">
                     <div className="absolute top-6 left-6">
                         <h3 className="text-lg font-semibold text-textColor">Expense Breakdown</h3>
                         <p className="text-sm text-textColor opacity-60 mt-0.5">Where your money went this month</p>
@@ -190,6 +190,7 @@ const Reports = () => {
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
+                                        isAnimationActive={false}
                                         data={categoryData}
                                         cx="50%"
                                         cy="50%"
@@ -216,7 +217,7 @@ const Reports = () => {
                 </div>
 
                 {/* Yearly Trend Line Chart */}
-                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 pb-8 transition-all duration-300">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 pb-8">
                     <div className="mb-8">
                         <h3 className="text-lg font-semibold text-textColor">Monthly Trend ({selectedYear})</h3>
                         <p className="text-sm text-textColor opacity-60 mt-0.5">Your monthly spending velocity</p>
@@ -239,6 +240,7 @@ const Reports = () => {
                                         labelFormatter={val => MONTHS[val - 1] || val}
                                     />
                                     <Line
+                                        isAnimationActive={false}
                                         type="monotone"
                                         dataKey="totalAmount"
                                         name="Expense"
@@ -260,7 +262,7 @@ const Reports = () => {
 
             {/* Empty State Overlay / Fallback */}
             {categoryData.length === 0 && totalIncome === 0 && (
-                <div className="bg-card rounded-2xl border border-background p-12 text-center transition-all duration-300 shadow-sm mt-6">
+                <div className="bg-card rounded-2xl border border-background p-12 text-center shadow-sm mt-6">
                     <div className="flex flex-col items-center gap-3">
                         <MdAttachMoney className="w-16 h-16 text-textColor opacity-20" />
                         <h3 className="text-lg font-medium text-textColor opacity-70">No Data Available</h3>

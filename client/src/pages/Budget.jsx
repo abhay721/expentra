@@ -215,8 +215,8 @@ const Budget = () => {
 
                     {/* Budget vs Income Discrepancy Note */}
                     {budgetStatus.budget > (monthlyReport?.totalIncome || 0) && (
-                        <div className="flex items-start gap-2 bg-danger/5/50 border border-danger/20 px-3 py-2.5 rounded-lg text-xs text-danger font-medium w-fit">
-                            <MdWarning className="shrink-0 text-sm mt-0.5" />
+                        <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 px-3 py-2.5 rounded-lg text-xs text-amber-800 font-medium w-fit">
+                            <MdWarning className="shrink-0 text-sm mt-0.5 text-amber-500" />
                             <span>Your Max Spend Limit (₹{budgetStatus.budget.toLocaleString()}) exceeds your recorded Income (₹{(monthlyReport?.totalIncome || 0).toLocaleString()}). Consider adjusting your budget.</span>
                         </div>
                     )}

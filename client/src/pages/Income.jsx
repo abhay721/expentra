@@ -175,7 +175,8 @@ const Income = () => {
             </div>
 
             {/* Total Income Card with Gradient */}
-            <div className="bg-gradient-to-r from-primary via-primary/50 via-secondary rounded-2xl p-6 shadow-lg">                <div className="flex justify-between items-center">
+            <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-6 shadow-lg">
+                <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                     <div className="bg-card/20 rounded-xl p-3 backdrop-blur-sm">
                         <MdTrendingUp className="text-3xl text-white" />

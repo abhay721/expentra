@@ -96,39 +96,33 @@ const Settlement = () => {
         const isFromMe = settlement.from.user === (user?._id || user?.id);
         const isToMe = settlement.to.user === (user?._id || user?.id);
 
-        const statusStyles = {
-            pending: 'border-background bg-card hover:border-primary/20',
-            overdue: 'border-danger/20 bg-danger/5/20 hover:border-danger/30',
-            paid: 'border-background bg-background/30 grayscale'
-        };
-
         return (
-            <div className={`p-6 rounded-2xl border transition-all duration-300 hover:shadow-lg shadow-sm ${statusStyles[status]}`}>
-                <div className="flex items-start justify-between mb-5">
+            <div className={`p-5 rounded-2xl border bg-card transition-all duration-200 border-background hover:shadow-md`}>
+                <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-xl bg-background flex items-center justify-center shadow-sm border border-background`}>
+                        <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-background">
                             {isFromMe ? (
-                                <MdCallMade className="w-6 h-6 text-danger" />
+                                <MdCallMade className="w-5 h-5 text-danger" />
                             ) : isToMe ? (
-                                <MdCallReceived className="w-6 h-6 text-secondary" />
+                                <MdCallReceived className="w-5 h-5 text-secondary" />
                             ) : (
-                                <MdHandshake className="w-6 h-6 text-primary" />
+                                <MdHandshake className="w-5 h-5 text-primary" />
                             )}
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-textColor/50 uppercase tracking-widest mb-1">
+                            <p className="text-[10px] font-semibold text-textColor/50 uppercase tracking-wider">
                                 {isFromMe ? `You owe ${settlement.to.name}` :
                                     isToMe ? `${settlement.from.name} owes you` :
                                         `${settlement.from.name} → ${settlement.to.name}`}
                             </p>
-                            <h4 className={`text-2xl font-black tracking-tight ${isFromMe ? 'text-danger' : isToMe ? 'text-secondary' : 'text-textColor'}`}>
+                            <h4 className={`text-xl font-bold ${isFromMe ? 'text-danger' : isToMe ? 'text-secondary' : 'text-textColor'}`}>
                                 ₹{settlement.amount.toLocaleString()}
                             </h4>
                         </div>
                     </div>
                     {status === 'overdue' && (
-                        <div className="w-8 h-8 bg-danger text-white rounded-lg flex items-center justify-center shadow-md shadow-danger/20 animate-pulse">
-                            <MdPriorityHigh className="w-5 h-5" />
+                        <div className="px-2 py-0.5 bg-danger/10 text-danger rounded text-[9px] font-bold uppercase">
+                            Overdue
                         </div>
                     )}
                 </div>
@@ -139,16 +133,16 @@ const Settlement = () => {
                             setSelectedSettlement(settlement);
                             setIsModalOpen(true);
                         }}
-                        className="w-full py-3 bg-primary text-white rounded-xl text-xs font-black uppercase tracking-widest hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+                        className="w-full py-2 bg-primary text-white rounded-xl text-xs font-semibold hover:bg-primary/90 transition-all shadow-sm"
                     >
-                        <MdPayment className="text-lg" /> Record Payment
+                        Record Payment
                     </button>
                 )}
 
                 {status === 'paid' && (
-                    <div className="flex items-center justify-center gap-2 py-2 text-textColor/50">
+                    <div className="flex items-center justify-center gap-1.5 py-1 text-textColor/40">
                         <MdCheckCircle className="text-sm" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Settled</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-secondary">Settled</span>
                     </div>
                 )}
             </div>
@@ -156,107 +150,87 @@ const Settlement = () => {
     };
 
     return (
-        <div className="max-w-6xl mx-auto px-4 py-8 space-y-10 bg-background min-h-screen pb-24">
+        <div className="space-y-6 bg-transparent pb-10">
             {/* Header Section */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <div className="flex items-center gap-2 mb-2">
-                        <MdHandshake className="text-primary text-lg" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-primary">Settlements Overview</span>
-                    </div>
-                    <h1 className="text-3xl font-black text-textColor tracking-tight">Group Balances</h1>
-                    <p className="text-sm font-semibold text-textColor/50 mt-1 uppercase tracking-widest">{groupData?.name || 'Active Group'}</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-textColor">Settlements</h1>
+                    <p className="text-sm text-textColor/60 mt-1 uppercase text-xs tracking-wide">
+                        Group: {groupData?.name || 'Active Group'}
+                    </p>
                 </div>
             </div>
 
             {/* Premium Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="bg-primary rounded-[32px] p-8 text-white shadow-xl shadow-primary/20 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-card/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
-                    <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-4">Total Receivable</p>
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-4xl font-black tracking-tighter">₹{totalOwedToUser.toLocaleString()}</h2>
-                        <div className="w-12 h-12 bg-card/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
-                            <MdCallReceived className="w-7 h-7" />
-                        </div>
+                <div className="bg-card rounded-2xl border border-background p-6 shadow-sm flex items-start gap-4">
+                    <div className="bg-secondary/10 p-3 rounded-xl">
+                        <MdCallReceived className="text-secondary text-2xl" />
                     </div>
-                    <p className="text-[10px] font-bold text-white/40 mt-6 uppercase tracking-widest">Expected from group members</p>
+                    <div>
+                        <p className="text-xs font-semibold text-textColor opacity-60 uppercase tracking-wide">Total Receivable</p>
+                        <p className="text-2xl font-bold text-secondary mt-1">₹{totalOwedToUser.toLocaleString()}</p>
+                        <p className="text-[10px] text-textColor opacity-40 mt-1 uppercase">Expected reimbursement</p>
+                    </div>
                 </div>
 
-                <div className="bg-card rounded-[32px] p-8 border border-background shadow-sm relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-danger/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
-                    <p className="text-[10px] font-black text-textColor/50 uppercase tracking-widest mb-4">Total Payable</p>
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-4xl font-black text-danger tracking-tighter">₹{totalUserOwes.toLocaleString()}</h2>
-                        <div className="w-12 h-12 bg-danger/5 rounded-2xl flex items-center justify-center text-danger border border-danger/20">
-                            <MdCallMade className="w-7 h-7" />
-                        </div>
+                <div className="bg-card rounded-2xl border border-background p-6 shadow-sm flex items-start gap-4">
+                    <div className="bg-danger/10 p-3 rounded-xl">
+                        <MdCallMade className="text-danger text-2xl" />
                     </div>
-                    <p className="text-[10px] font-bold text-textColor/40 mt-6 uppercase tracking-widest">You need to settle back</p>
+                    <div>
+                        <p className="text-xs font-semibold text-textColor opacity-60 uppercase tracking-wide">Total Payable</p>
+                        <p className="text-2xl font-bold text-danger mt-1">₹{totalUserOwes.toLocaleString()}</p>
+                        <p className="text-[10px] text-textColor opacity-40 mt-1 uppercase">To be settled by you</p>
+                    </div>
                 </div>
             </div>
 
-            {/* Urgent / Overdue Section */}
-            {overdueReimbursements.length > 0 && (
-                <div className="animate-in fade-in slide-in-from-top-4 duration-500">
-                    <div className="flex items-center justify-between mb-6 px-2">
-                        <div className="flex items-center gap-3">
-                            <div className="w-2 h-6 bg-danger rounded-full" />
-                            <h3 className="text-sm font-black text-danger uppercase tracking-widest">
-                                Overdue Payments
-                            </h3>
+            {/* Overdue/Pending Sections */}
+            <div className="space-y-8">
+                {overdueReimbursements.length > 0 && (
+                    <div>
+                        <div className="flex items-center gap-2 mb-4 px-1">
+                            <div className="w-1.5 h-4 bg-danger rounded-full" />
+                            <h3 className="text-sm font-bold text-textColor uppercase tracking-wider">Overdue Payments</h3>
                         </div>
-                        <span className="px-4 py-1.5 bg-danger text-white text-[10px] font-black rounded-full shadow-lg shadow-danger/20">
-                            {overdueReimbursements.length} Urgent
-                        </span>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {overdueReimbursements.map(s => (
-                            <SettlementCard key={s._id} settlement={s} status="overdue" />
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* Pending Section */}
-            <div>
-                <div className="flex items-center justify-between mb-6 px-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-2 h-6 bg-primary rounded-full" />
-                        <h3 className="text-sm font-black text-textColor uppercase tracking-widest">
-                            Pending Settlements
-                        </h3>
-                    </div>
-                    <span className="px-4 py-1.5 bg-background border border-background text-[10px] font-black rounded-full text-textColor/50 tracking-widest uppercase">
-                        {pendingReimbursements.length} Open
-                    </span>
-                </div>
-
-                {pendingReimbursements.length === 0 && overdueReimbursements.length === 0 ? (
-                    <div className="bg-card rounded-[40px] border border-background p-24 text-center shadow-sm relative overflow-hidden">
-                        <div className="absolute inset-0 bg-secondary/5 opacity-50" />
-                        <div className="relative z-10">
-                            <MdCheckCircle className="w-20 h-20 text-secondary mx-auto mb-6 drop-shadow-sm" />
-                            <h4 className="text-2xl font-black text-textColor tracking-tight">All Settlements Cleared!</h4>
-                            <p className="text-sm font-semibold text-textColor/50 mt-2 max-w-xs mx-auto uppercase tracking-widest">You are all squared with the group members.</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {overdueReimbursements.map(s => (
+                                <SettlementCard key={s._id} settlement={s} status="overdue" />
+                            ))}
                         </div>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {pendingReimbursements.map(s => (
-                            <SettlementCard key={s._id} settlement={s} status="pending" />
-                        ))}
                     </div>
                 )}
+
+                <div>
+                    <div className="flex items-center gap-2 mb-4 px-1">
+                        <div className="w-1.5 h-4 bg-primary rounded-full" />
+                        <h3 className="text-sm font-bold text-textColor uppercase tracking-wider">Pending Settlements</h3>
+                    </div>
+
+                    {pendingReimbursements.length === 0 && overdueReimbursements.length === 0 ? (
+                        <div className="bg-card rounded-2xl border border-background p-12 text-center shadow-sm">
+                            <MdCheckCircle className="w-16 h-16 text-secondary/30 mx-auto mb-4" />
+                            <h4 className="text-lg font-bold text-textColor">All Settled!</h4>
+                            <p className="text-sm text-textColor/50 mt-1 uppercase text-xs tracking-wide">You are all squared with the group.</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {pendingReimbursements.map(s => (
+                                <SettlementCard key={s._id} settlement={s} status="pending" />
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Net Balance Breakdown Table */}
-            <div className="bg-card rounded-[32px] border border-background shadow-sm overflow-hidden mb-12">
-                <div className="px-8 py-6 border-b border-background flex items-center justify-between bg-background/30">
-                    <h3 className="text-[10px] font-black text-textColor/50 uppercase tracking-widest flex items-center gap-3">
+            <div className="bg-card rounded-2xl border border-background shadow-sm overflow-hidden mb-12">
+                <div className="px-6 py-4 border-b border-background flex items-center justify-between bg-background">
+                    <h3 className="text-xs font-bold text-textColor opacity-70 uppercase tracking-wider flex items-center gap-2">
                         <MdAccountBalanceWallet className="text-primary text-xl" /> Group Net Balances
                     </h3>
-                    <span className="text-[10px] font-black text-textColor/40 uppercase tracking-widest">{balances.length} Members</span>
+                    <span className="text-[10px] font-bold text-textColor/40 uppercase tracking-widest">{balances.length} Members</span>
                 </div>
                 <div className="divide-y divide-background">
                     {balances.map((bal, idx) => {
@@ -264,32 +238,29 @@ const Settlement = () => {
                         const isPos = amt > 0.01;
                         const isNeg = amt < -0.01;
                         return (
-                            <div key={idx} className="px-8 py-6 flex items-center justify-between hover:bg-background/50 transition-all duration-300 group">
-                                <div className="flex items-center gap-5">
-                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm transition-transform group-hover:scale-110 ${
+                            <div key={idx} className="px-6 py-4 flex items-center justify-between hover:bg-background/50 transition-all duration-200">
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shadow-sm ${
                                         isPos ? 'bg-secondary/10 text-secondary' :
                                         isNeg ? 'bg-danger/10 text-danger' :
-                                            'bg-card text-textColor/50'
+                                            'bg-background text-textColor/30'
                                     }`}>
                                         {bal.memberInfo.name.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <p className="font-bold text-textColor leading-tight">{bal.memberInfo.name}</p>
-                                        <p className="text-[9px] font-black opacity-30 uppercase tracking-widest mt-1">
-                                            {isPos ? 'Net Receivable' : isNeg ? 'Net Payable' : 'Fully Settled'}
+                                        <p className="text-sm font-bold text-textColor">{bal.memberInfo.name}</p>
+                                        <p className="text-[9px] font-semibold opacity-40 uppercase tracking-wider">
+                                            {isPos ? 'Receivable' : isNeg ? 'Payable' : 'Settled'}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className={`text-xl font-black tracking-tight ${
+                                    <p className={`text-lg font-bold ${
                                         isPos ? 'text-secondary' :
                                         isNeg ? 'text-danger' :
-                                            'text-textColor/40'
+                                            'text-textColor/30'
                                     }`}>
                                         {isPos ? '+' : ''}₹{Math.abs(amt).toLocaleString()}
-                                    </p>
-                                    <p className="text-[9px] font-bold text-textColor/40 uppercase tracking-tighter opacity-70">
-                                        {isPos ? 'receives' : isNeg ? 'owes' : 'balanced'}
                                     </p>
                                 </div>
                             </div>
@@ -300,54 +271,48 @@ const Settlement = () => {
 
             {/* Settlement Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-textColor/40 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-card w-full max-w-sm rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-white/20">
-                        {/* Modal Header */}
-                        <div className="bg-primary px-8 py-8 flex justify-between items-center relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-card/10 rounded-full -mr-16 -mt-16" />
-                            <div className="relative z-10">
-                                <h3 className="text-white font-black uppercase text-xs tracking-widest opacity-90">Confirm Settlement</h3>
-                                <p className="text-[10px] font-medium text-white/50 mt-1 uppercase tracking-tighter">Recording payment details</p>
-                            </div>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-textColor/40 backdrop-blur-sm">
+                    <div className="bg-card w-full max-w-sm rounded-2xl shadow-xl overflow-hidden border border-background">
+                        <div className="p-6 border-b border-background flex justify-between items-center bg-background">
+                            <h3 className="text-sm font-bold text-textColor uppercase tracking-wider">Confirm Settlement</h3>
                             <button
                                 onClick={() => setIsModalOpen(false)}
-                                className="w-10 h-10 flex items-center justify-center hover:bg-card/10 rounded-2xl transition text-white relative z-10"
+                                className="text-textColor/40 hover:text-textColor transition-colors"
                             >
-                                <MdClose className="text-2xl" />
+                                <MdClose className="text-xl" />
                             </button>
                         </div>
 
-                        {/* Modal Body */}
-                        <div className="p-8 space-y-8">
-                            <div className="text-center py-4 bg-background rounded-[32px] border border-background shadow-inner">
-                                <p className="text-[10px] font-black text-textColor/50 uppercase tracking-widest mb-2 leading-none">
-                                    Final Amount to {selectedSettlement?.to.name}
+                        <div className="p-6 space-y-6">
+                            <div className="text-center p-4 bg-background rounded-xl border border-background">
+                                <p className="text-[10px] font-bold text-textColor/40 uppercase tracking-widest mb-1">
+                                    Settling to {selectedSettlement?.to.name}
                                 </p>
-                                <h2 className="text-4xl font-black text-textColor tracking-tighter">
+                                <h2 className="text-3xl font-bold text-textColor">
                                     ₹{selectedSettlement?.amount.toLocaleString()}
                                 </h2>
                             </div>
 
-                            <div className="space-y-4">
-                                <label className="block text-[10px] font-black text-textColor/50 uppercase tracking-widest px-1">
+                            <div className="space-y-3">
+                                <label className="block text-[10px] font-bold text-textColor/50 uppercase tracking-widest">
                                     Payment Method
                                 </label>
-                                <div className="grid grid-cols-1 gap-2.5">
+                                <div className="space-y-2">
                                     {['cash', 'upi', 'bank_transfer'].map(method => (
                                         <button
                                             key={method}
                                             onClick={() => setPaymentMethod(method)}
-                                            className={`w-full px-6 py-4 rounded-2xl border text-left transition-all duration-300 flex items-center justify-between ${
+                                            className={`w-full px-4 py-3 rounded-xl border text-left transition-all duration-200 flex items-center justify-between ${
                                                 paymentMethod === method
-                                                    ? 'border-primary bg-primary/5 text-primary shadow-sm shadow-primary/5'
-                                                    : 'border-background text-textColor/60 hover:border-primary/20 bg-background/50'
+                                                    ? 'border-primary bg-primary/5 text-primary'
+                                                    : 'border-background text-textColor/60 bg-background/50'
                                                 }`}
                                         >
-                                            <span className="text-[10px] font-black uppercase tracking-widest">
+                                            <span className="text-xs font-bold uppercase tracking-wide">
                                                 {method.replace('_', ' ')}
                                             </span>
                                             {paymentMethod === method && (
-                                                <MdCheckCircle className="text-primary text-xl animate-in zoom-in" />
+                                                <MdCheckCircle className="text-primary text-lg" />
                                             )}
                                         </button>
                                     ))}
@@ -356,9 +321,9 @@ const Settlement = () => {
 
                             <button
                                 onClick={handleMarkAsPaid}
-                                className="w-full py-5 bg-primary text-white rounded-[32px] font-black text-xs uppercase tracking-widest hover:shadow-2xl hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center gap-3"
+                                className="w-full py-3 bg-primary text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:opacity-90 transition-all shadow-sm"
                             >
-                                <MdCheckCircle className="text-xl" /> Finalize Settlement
+                                Record Payment
                             </button>
                         </div>
                     </div>
