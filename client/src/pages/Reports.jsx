@@ -98,7 +98,7 @@ const Reports = () => {
                     <select
                         value={selectedMonth}
                         onChange={e => setSelectedMonth(Number(e.target.value))}
-                        className="bg-card rounded-xl border border-gray-100 px-4 py-2 text-sm text-textColor outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all cursor-pointer"
+                        className="bg-card rounded-xl border border-background px-4 py-2 text-sm text-textColor outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all cursor-pointer"
                     >
                         {MONTHS.map((m, i) => (
                             <option key={m} value={i + 1}>{m}</option>
@@ -107,7 +107,7 @@ const Reports = () => {
                     <select
                         value={selectedYear}
                         onChange={e => setSelectedYear(Number(e.target.value))}
-                        className="bg-card rounded-xl border border-gray-100 px-4 py-2 text-sm text-textColor outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all cursor-pointer"
+                        className="bg-card rounded-xl border border-background px-4 py-2 text-sm text-textColor outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all cursor-pointer"
                     >
                         {years.map(y => (
                             <option key={y} value={y}>{y}</option>
@@ -115,7 +115,7 @@ const Reports = () => {
                     </select>
                     <button
                         onClick={exportCSV}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-gray-100 text-primary rounded-xl hover:bg-background transition-all duration-300 text-sm font-semibold shadow-sm ml-2"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-background text-primary rounded-xl hover:bg-background transition-all duration-300 text-sm font-semibold shadow-sm ml-2"
                     >
                         <MdDownload className="text-lg" /> Export CSV
                     </button>
@@ -125,7 +125,7 @@ const Reports = () => {
             {/* Clean KPI row resembling Analysis Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {/* Total Income */}
-                <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-background rounded-xl p-2.5">
@@ -139,29 +139,29 @@ const Reports = () => {
                 </div>
 
                 {/* Total Expense */}
-                <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-background rounded-xl p-2.5">
-                                <MdTrendingUp className="w-5 h-5 text-red-500" />
+                                <MdTrendingUp className="w-5 h-5 text-danger" />
                             </div>
                             <h3 className="text-sm font-semibold text-textColor opacity-70">Total Expense</h3>
                         </div>
-                        <p className="text-4xl font-black text-red-500">₹{totalSpent.toLocaleString()}</p>
+                        <p className="text-4xl font-black text-danger">₹{totalSpent.toLocaleString()}</p>
                     </div>
                     <p className="text-xs text-textColor opacity-50 font-medium mt-3">{MONTHS[selectedMonth - 1]} {selectedYear}</p>
                 </div>
 
                 {/* Remaining Balance */}
-                <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-background rounded-xl p-2.5">
-                                {remainingBalance >= 0 ? <MdTrendingDown className="w-5 h-5 text-primary" /> : <MdTrendingUp className="w-5 h-5 text-red-500" />}
+                                {remainingBalance >= 0 ? <MdTrendingDown className="w-5 h-5 text-primary" /> : <MdTrendingUp className="w-5 h-5 text-danger" />}
                             </div>
                             <h3 className="text-sm font-semibold text-textColor opacity-70">Remaining Balance</h3>
                         </div>
-                        <p className={`text-4xl font-black ${remainingBalance >= 0 ? 'text-primary' : 'text-red-500'}`}>
+                        <p className={`text-4xl font-black ${remainingBalance >= 0 ? 'text-primary' : 'text-danger'}`}>
                             ₹{remainingBalance.toLocaleString()}
                         </p>
                     </div>
@@ -171,16 +171,16 @@ const Reports = () => {
 
             {/* Warning Message (Moved Below Stats) */}
             {totalSpent > 0 && totalIncome > 0 && totalSpent > totalIncome && (
-                <div className="flex items-start gap-2 bg-orange-50/50 border border-orange-100 px-3 py-2.5 rounded-lg text-xs text-orange-600 font-medium w-fit mt-2">
+                <div className="flex items-start gap-2 bg-danger/5 border border-danger/20 px-3 py-2.5 rounded-lg text-xs text-danger font-medium w-fit mt-2">
                     <MdWarning className="shrink-0 text-sm mt-0.5" />
-                    <span>⚠️ Warning: You have outspent your total income by ₹{(totalSpent - totalIncome).toLocaleString()} this month.</span>
+                    <span>Warning: You have outspent your total income by ₹{(totalSpent - totalIncome).toLocaleString()} this month.</span>
                 </div>
             )}
 
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Category-wise Pie Chart */}
-                <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6 transition-all duration-300 flex flex-col justify-center relative overflow-hidden">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 transition-all duration-300 flex flex-col justify-center relative overflow-hidden">
                     <div className="absolute top-6 left-6">
                         <h3 className="text-lg font-semibold text-textColor">Expense Breakdown</h3>
                         <p className="text-sm text-textColor opacity-60 mt-0.5">Where your money went this month</p>
@@ -216,7 +216,7 @@ const Reports = () => {
                 </div>
 
                 {/* Yearly Trend Line Chart */}
-                <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6 pb-8 transition-all duration-300">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 pb-8 transition-all duration-300">
                     <div className="mb-8">
                         <h3 className="text-lg font-semibold text-textColor">Monthly Trend ({selectedYear})</h3>
                         <p className="text-sm text-textColor opacity-60 mt-0.5">Your monthly spending velocity</p>
@@ -260,7 +260,7 @@ const Reports = () => {
 
             {/* Empty State Overlay / Fallback */}
             {categoryData.length === 0 && totalIncome === 0 && (
-                <div className="bg-card rounded-2xl border border-gray-100 p-12 text-center transition-all duration-300 shadow-sm mt-6">
+                <div className="bg-card rounded-2xl border border-background p-12 text-center transition-all duration-300 shadow-sm mt-6">
                     <div className="flex flex-col items-center gap-3">
                         <MdAttachMoney className="w-16 h-16 text-textColor opacity-20" />
                         <h3 className="text-lg font-medium text-textColor opacity-70">No Data Available</h3>

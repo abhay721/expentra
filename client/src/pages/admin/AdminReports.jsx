@@ -110,12 +110,12 @@ const AdminReports = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                        <MdReceipt className="w-7 h-7 text-blue-600" />
+                    <div className="p-2 bg-primary/5 rounded-lg">
+                        <MdReceipt className="w-7 h-7 text-primary" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">System Reports</h1>
-                        <p className="text-sm text-gray-600 mt-0.5">Extract and analyze financial transactions</p>
+                        <h1 className="text-2xl font-bold text-textColor">System Reports</h1>
+                        <p className="text-sm text-textColor/70 mt-0.5">Extract and analyze financial transactions</p>
                     </div>
                 </div>
                 <div className="flex gap-2">
@@ -123,7 +123,7 @@ const AdminReports = () => {
                         onClick={exportCSV}
                         disabled={reports.length === 0}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${reports.length === 0
-                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                ? 'bg-card text-textColor/50 cursor-not-allowed'
                                 : 'bg-green-600 text-white hover:bg-green-700 shadow-sm'
                             }`}
                     >
@@ -134,17 +134,17 @@ const AdminReports = () => {
             </div>
 
             {/* Filters Card */}
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
+            <div className="bg-card rounded-lg border border-background shadow-sm overflow-hidden">
+                <div className="px-5 py-3 bg-background border-b border-background">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <MdDateRange className="w-5 h-5 text-blue-600" />
-                            <h2 className="font-semibold text-gray-900">Filter Reports</h2>
+                            <MdDateRange className="w-5 h-5 text-primary" />
+                            <h2 className="font-semibold text-textColor">Filter Reports</h2>
                         </div>
                         {hasActiveFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 transition"
+                                className="flex items-center gap-1 text-xs text-textColor/60 hover:text-textColor/80 transition"
                             >
                                 <MdClear className="text-sm" />
                                 Clear filters
@@ -155,35 +155,35 @@ const AdminReports = () => {
                 <form onSubmit={fetchReports} className="p-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
-                            <label className="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1">
+                            <label className="block text-xs font-medium text-textColor/80 uppercase tracking-wide mb-1">
                                 Start Date
                             </label>
                             <input
                                 type="date"
                                 value={startDate}
                                 onChange={e => setStartDate(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-background rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1">
+                            <label className="block text-xs font-medium text-textColor/80 uppercase tracking-wide mb-1">
                                 End Date
                             </label>
                             <input
                                 type="date"
                                 value={endDate}
                                 onChange={e => setEndDate(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-background rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-gray-700 uppercase tracking-wide mb-1">
+                            <label className="block text-xs font-medium text-textColor/80 uppercase tracking-wide mb-1">
                                 Filter by User
                             </label>
                             <select
                                 value={selectedUser}
                                 onChange={e => setSelectedUser(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-background rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="">All Users</option>
                                 {users.map(u => (
@@ -194,7 +194,7 @@ const AdminReports = () => {
                         <div className="flex items-end">
                             <button
                                 type="submit"
-                                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                                className="w-full px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2"
                             >
                                 <MdRefresh className="text-sm" />
                                 Generate Report
@@ -207,74 +207,74 @@ const AdminReports = () => {
             {/* Summary Cards */}
             {summary && reports.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                    <div className="bg-card rounded-lg border border-background p-4 shadow-sm">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-gray-600 uppercase">Total Amount</p>
-                                <p className="text-2xl font-bold text-gray-900">₹{summary.totalAmount.toLocaleString()}</p>
+                                <p className="text-xs font-medium text-textColor/70 uppercase">Total Amount</p>
+                                <p className="text-2xl font-bold text-textColor">₹{summary.totalAmount.toLocaleString()}</p>
                             </div>
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <MdAttachMoney className="w-5 h-5 text-blue-600" />
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <MdAttachMoney className="w-5 h-5 text-primary" />
                             </div>
                         </div>
-                        <p className="text-xs text-gray-500 mt-2">{summary.count} transactions</p>
+                        <p className="text-xs text-textColor/60 mt-2">{summary.count} transactions</p>
                     </div>
 
-                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                    <div className="bg-card rounded-lg border border-background p-4 shadow-sm">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-gray-600 uppercase">Categories Used</p>
-                                <p className="text-2xl font-bold text-gray-900">{summary.categories}</p>
+                                <p className="text-xs font-medium text-textColor/70 uppercase">Categories Used</p>
+                                <p className="text-2xl font-bold text-textColor">{summary.categories}</p>
                             </div>
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <MdCategory className="w-5 h-5 text-blue-600" />
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <MdCategory className="w-5 h-5 text-primary" />
                             </div>
                         </div>
-                        <p className="text-xs text-gray-500 mt-2">Unique categories</p>
+                        <p className="text-xs text-textColor/60 mt-2">Unique categories</p>
                     </div>
 
-                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                    <div className="bg-card rounded-lg border border-background p-4 shadow-sm">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-gray-600 uppercase">Top Category</p>
-                                <p className="text-lg font-bold text-gray-900 truncate">{summary.topCategory}</p>
+                                <p className="text-xs font-medium text-textColor/70 uppercase">Top Category</p>
+                                <p className="text-lg font-bold text-textColor truncate">{summary.topCategory}</p>
                             </div>
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <MdTrendingUp className="w-5 h-5 text-blue-600" />
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <MdTrendingUp className="w-5 h-5 text-primary" />
                             </div>
                         </div>
-                        <p className="text-xs text-gray-500 mt-2">Highest spending</p>
+                        <p className="text-xs text-textColor/60 mt-2">Highest spending</p>
                     </div>
 
-                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                    <div className="bg-card rounded-lg border border-background p-4 shadow-sm">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-gray-600 uppercase">Avg Transaction</p>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-xs font-medium text-textColor/70 uppercase">Avg Transaction</p>
+                                <p className="text-2xl font-bold text-textColor">
                                     ₹{(summary.totalAmount / summary.count).toLocaleString()}
                                 </p>
                             </div>
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <MdReceipt className="w-5 h-5 text-blue-600" />
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <MdReceipt className="w-5 h-5 text-primary" />
                             </div>
                         </div>
-                        <p className="text-xs text-gray-500 mt-2">Per transaction</p>
+                        <p className="text-xs text-textColor/60 mt-2">Per transaction</p>
                     </div>
                 </div>
             )}
 
             {/* Results Table */}
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
+            <div className="bg-card rounded-lg border border-background shadow-sm overflow-hidden">
+                <div className="px-5 py-3 bg-background border-b border-background">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <MdReceipt className="w-5 h-5 text-blue-600" />
-                            <h3 className="font-semibold text-gray-900">
+                            <MdReceipt className="w-5 h-5 text-primary" />
+                            <h3 className="font-semibold text-textColor">
                                 Transactions {reports.length > 0 && `(${reports.length})`}
                             </h3>
                         </div>
                         {loading && (
-                            <div className="flex items-center gap-2 text-sm text-blue-600">
+                            <div className="flex items-center gap-2 text-sm text-primary">
                                 <div className="animate-spin rounded-full w-4 h-4 border-2 border-blue-600 border-t-transparent"></div>
                                 Loading...
                             </div>
@@ -285,70 +285,70 @@ const AdminReports = () => {
                 {loading ? (
                     <div className="p-12 text-center">
                         <div className="animate-pulse space-y-2">
-                            <div className="h-10 bg-gray-100 rounded w-full"></div>
-                            <div className="h-10 bg-gray-100 rounded w-full"></div>
-                            <div className="h-10 bg-gray-100 rounded w-full"></div>
+                            <div className="h-10 bg-card rounded w-full"></div>
+                            <div className="h-10 bg-card rounded w-full"></div>
+                            <div className="h-10 bg-card rounded w-full"></div>
                         </div>
                     </div>
                 ) : reports.length === 0 ? (
                     <div className="p-12 text-center">
-                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <MdReceipt className="w-8 h-8 text-gray-400" />
+                        <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center mx-auto mb-3">
+                            <MdReceipt className="w-8 h-8 text-textColor/50" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900">No Transactions Found</h3>
-                        <p className="text-gray-600 text-sm mt-1">
+                        <h3 className="text-lg font-semibold text-textColor">No Transactions Found</h3>
+                        <p className="text-textColor/70 text-sm mt-1">
                             {hasActiveFilters ? 'Try adjusting your filters' : 'Select date range and generate report'}
                         </p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-gray-50 border-b border-gray-200">
+                            <thead className="bg-background border-b border-background">
                                 <tr>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Date</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">User</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Category</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Description</th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-600 uppercase">Amount</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-textColor/70 uppercase">Date</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-textColor/70 uppercase">User</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-textColor/70 uppercase">Category</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-textColor/70 uppercase">Description</th>
+                                    <th className="px-4 py-3 text-right text-xs font-medium text-textColor/70 uppercase">Amount</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-background">
                                 {reports.map((rp) => (
-                                    <tr key={rp._id} className="hover:bg-gray-50 transition">
-                                        <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
+                                    <tr key={rp._id} className="hover:bg-background transition">
+                                        <td className="px-4 py-3 text-sm text-textColor/70 whitespace-nowrap">
                                             {new Date(rp.date).toLocaleDateString()}
                                         </td>
                                         <td className="px-4 py-3">
                                             <div>
-                                                <p className="text-sm font-medium text-gray-900">{rp.userId?.name || 'Unknown'}</p>
-                                                <p className="text-xs text-gray-500">{rp.userId?.email || 'No email'}</p>
+                                                <p className="text-sm font-medium text-textColor">{rp.userId?.name || 'Unknown'}</p>
+                                                <p className="text-xs text-textColor/60">{rp.userId?.email || 'No email'}</p>
                                             </div>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
                                                 <MdCategory className="text-xs" />
                                                 {rp.category}
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <p className="text-sm text-gray-600 max-w-xs truncate" title={rp.title}>
+                                            <p className="text-sm text-textColor/70 max-w-xs truncate" title={rp.title}>
                                                 {rp.title || '—'}
                                             </p>
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            <span className="text-sm font-semibold text-green-600">
+                                            <span className="text-sm font-semibold text-secondary">
                                                 ₹{rp.amount.toLocaleString()}
                                             </span>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
-                            <tfoot className="bg-gray-50 border-t border-gray-200">
+                            <tfoot className="bg-background border-t border-background">
                                 <tr>
-                                    <td colSpan="4" className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                                    <td colSpan="4" className="px-4 py-3 text-right text-sm font-semibold text-textColor/80">
                                         Total:
                                     </td>
-                                    <td className="px-4 py-3 text-right text-sm font-bold text-blue-600">
+                                    <td className="px-4 py-3 text-right text-sm font-bold text-primary">
                                         ₹{reports.reduce((sum, r) => sum + r.amount, 0).toLocaleString()}
                                     </td>
                                 </tr>
@@ -359,12 +359,12 @@ const AdminReports = () => {
             </div>
 
             {/* Info Note */}
-            <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
+            <div className="bg-primary/5 rounded-lg border border-blue-200 p-4">
                 <div className="flex items-start gap-3">
-                    <MdInfoOutline className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <MdInfoOutline className="w-5 h-5 text-primary mt-0.5" />
                     <div>
                         <p className="text-sm font-medium text-blue-900">Report Information</p>
-                        <p className="text-xs text-blue-700 mt-0.5">
+                        <p className="text-xs text-primary mt-0.5">
                             Reports include all expense and income transactions across the platform.
                             Use date filters to narrow down results. Export to CSV for offline analysis.
                         </p>

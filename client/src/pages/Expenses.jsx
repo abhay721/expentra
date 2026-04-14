@@ -126,9 +126,9 @@ const Expenses = () => {
     if (loading) {
         return (
             <div className="space-y-6">
-                <div className="h-8 bg-gray-200 rounded w-1/3 animate-pulse"></div>
-                <div className="h-32 bg-gray-100 rounded-xl animate-pulse"></div>
-                <div className="h-64 bg-gray-100 rounded-xl animate-pulse"></div>
+                <div className="h-8 bg-card rounded w-1/3 animate-pulse"></div>
+                <div className="h-32 bg-card rounded-xl animate-pulse"></div>
+                <div className="h-64 bg-card rounded-xl animate-pulse"></div>
             </div>
         );
     }
@@ -148,7 +148,7 @@ const Expenses = () => {
                     <select
                         value={filterMonth}
                         onChange={e => setFilterMonth(Number(e.target.value))}
-                        className="border border-gray-200 bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                        className="border border-background bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                     >
                         {MONTHS.map((m, i) => (
                             <option key={m} value={i + 1}>{m}</option>
@@ -158,7 +158,7 @@ const Expenses = () => {
                     <select
                         value={filterYear}
                         onChange={e => setFilterYear(Number(e.target.value))}
-                        className="border border-gray-200 bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                        className="border border-background bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                     >
                         {[0, 1, 2].map(o => {
                             const y = today.getFullYear() - o;
@@ -169,7 +169,7 @@ const Expenses = () => {
                     <select
                         value={filterCategory}
                         onChange={e => setFilterCategory(e.target.value)}
-                        className="border border-gray-200 bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                        className="border border-background bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                     >
                         <option value="">All Categories</option>
                         {categories.map(c => (
@@ -190,7 +190,7 @@ const Expenses = () => {
             <div className="bg-gradient-to-r from-primary via-background to-secondary rounded-2xl p-6 shadow-lg">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                        <div className="bg-white/20 rounded-xl p-3 backdrop-blur-sm">
+                        <div className="bg-card/20 rounded-xl p-3 backdrop-blur-sm">
                             <MdOutlineReceiptLong className="text-3xl text-white" />
                         </div>
                         <div>
@@ -208,11 +208,11 @@ const Expenses = () => {
             </div>
 
             {/* Expense Table */}
-            <div className="bg-card rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-200">
+            <div className="bg-card rounded-2xl shadow-sm border border-background overflow-hidden transition-all duration-200">
                 <div className="overflow-x-auto">
                     <table className="min-w-full">
                         <thead>
-                            <tr className="bg-gray-50 border-b border-gray-200">
+                            <tr className="bg-background border-b border-background">
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Date</th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Title</th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Category</th>
@@ -220,9 +220,9 @@ const Expenses = () => {
                                 <th className="px-6 py-4 text-right text-xs font-semibold text-textColor/70 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-background">
                             {expenses.map((expense, idx) => (
-                                <tr key={expense._id} className={`${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-all duration-200`}>
+                                <tr key={expense._id} className={`${idx % 2 === 0 ? 'bg-card' : 'bg-background'} hover:bg-background transition-all duration-200`}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-textColor/70">
                                         {new Date(expense.date).toLocaleDateString('en-IN', {
                                             day: '2-digit',
@@ -247,7 +247,7 @@ const Expenses = () => {
                                             {expense.category}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-danger">
                                         ₹{Number(expense.amount).toLocaleString()}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -260,7 +260,7 @@ const Expenses = () => {
                                         </button>
                                         <button
                                             onClick={() => handleDelete(expense._id)}
-                                            className="text-red-500 hover:text-red-600 transition-all duration-200"
+                                            className="text-danger hover:text-danger/80 transition-all duration-200"
                                             title="Delete"
                                         >
                                             <MdDelete className="w-5 h-5" />
@@ -288,7 +288,7 @@ const Expenses = () => {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-textColor/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-200">
-                    <div className="bg-card rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 max-h-screen overflow-y-auto border border-gray-200">
+                    <div className="bg-card rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 max-h-screen overflow-y-auto border border-background">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-primary rounded-xl p-2">
                                 <MdOutlineReceiptLong className="text-white text-xl" />
@@ -301,27 +301,27 @@ const Expenses = () => {
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
                                 <label className="block text-xs font-semibold text-textColor/70 uppercase tracking-wide mb-1.5">
-                                    Title <span className="text-red-500">*</span>
+                                    Title <span className="text-danger">*</span>
                                 </label>
                                 <input
                                     type="text" required
                                     value={formData.title}
                                     onChange={handleTitleChange}
                                     placeholder="e.g. Tea, Uber, Rent"
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-background rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
                             <div>
                                 <label className="block text-xs font-semibold text-textColor/70 uppercase tracking-wide mb-1.5">
-                                    Amount (₹) <span className="text-red-500">*</span>
+                                    Amount (₹) <span className="text-danger">*</span>
                                 </label>
                                 <input
                                     type="number" step="0.01" required min="0"
                                     value={formData.amount}
                                     onChange={e => setFormData({ ...formData, amount: e.target.value })}
                                     placeholder="0.00"
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-background rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
@@ -334,7 +334,7 @@ const Expenses = () => {
                                         type="text"
                                         value={formData.category}
                                         disabled
-                                        className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 text-textColor/60 cursor-not-allowed"
+                                        className="w-full pl-10 pr-4 py-2.5 border border-background rounded-xl text-sm bg-background text-textColor/60 cursor-not-allowed"
                                     />
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <CategoryIcon
@@ -354,7 +354,7 @@ const Expenses = () => {
                                     value={formData.note}
                                     onChange={e => setFormData({ ...formData, note: e.target.value })}
                                     placeholder="Any extra details..."
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-background rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
@@ -366,17 +366,17 @@ const Expenses = () => {
                                     type="date"
                                     value={formData.date}
                                     onChange={e => setFormData({ ...formData, date: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-background rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
-                            <div className="flex items-center gap-3 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-200">
+                            <div className="flex items-center gap-3 bg-background px-4 py-2.5 rounded-xl border border-background">
                                 <input
                                     type="checkbox"
                                     id="recurring"
                                     checked={formData.recurring}
                                     onChange={e => setFormData({ ...formData, recurring: e.target.checked })}
-                                    className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
+                                    className="w-4 h-4 text-primary rounded border-background focus:ring-primary"
                                 />
                                 <label htmlFor="recurring" className="text-sm font-medium text-textColor cursor-pointer select-none">
                                     🔁 Mark as Recurring
@@ -387,7 +387,7 @@ const Expenses = () => {
                                 <button
                                     type="button"
                                     onClick={() => { setShowModal(false); setEditingId(null); }}
-                                    className="px-5 py-2.5 text-sm font-medium border border-gray-200 text-textColor rounded-xl hover:bg-gray-50 transition-all duration-200"
+                                    className="px-5 py-2.5 text-sm font-medium border border-background text-textColor rounded-xl hover:bg-background transition-all duration-200"
                                 >
                                     Cancel
                                 </button>

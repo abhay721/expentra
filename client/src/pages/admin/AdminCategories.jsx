@@ -130,10 +130,10 @@ const AdminCategories = () => {
     if (loading) {
         return (
             <div className="space-y-6">
-                <div className="h-8 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+                <div className="h-8 bg-card rounded w-1/4 animate-pulse"></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="h-40 bg-gray-100 rounded-lg animate-pulse"></div>
+                        <div key={i} className="h-40 bg-card rounded-lg animate-pulse"></div>
                     ))}
                 </div>
             </div>
@@ -145,12 +145,12 @@ const AdminCategories = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                        <MdCategory className="w-7 h-7 text-blue-600" />
+                    <div className="p-2 bg-primary/5 rounded-lg">
+                        <MdCategory className="w-7 h-7 text-primary" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Category Management</h1>
-                        <p className="text-sm text-gray-600 mt-0.5">Manage expense and income categories</p>
+                        <h1 className="text-2xl font-bold text-textColor">Category Management</h1>
+                        <p className="text-sm text-textColor/70 mt-0.5">Manage expense and income categories</p>
                     </div>
                 </div>
                 <button
@@ -159,7 +159,7 @@ const AdminCategories = () => {
                         setFormData({ name: '', type: 'expense', isActive: true, icon: 'MdCategory', keywords: '' });
                         setShowModal(true);
                     }}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition font-medium"
                 >
                     <MdAdd className="text-base" />
                     New Category
@@ -168,43 +168,43 @@ const AdminCategories = () => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                <div className="bg-card rounded-lg border border-background p-4 shadow-sm">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">Total Categories</p>
-                            <p className="text-2xl font-bold text-gray-900">{categories.length}</p>
+                            <p className="text-xs font-medium text-textColor/70 uppercase">Total Categories</p>
+                            <p className="text-2xl font-bold text-textColor">{categories.length}</p>
                         </div>
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <MdCategory className="w-5 h-5 text-blue-600" />
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <MdCategory className="w-5 h-5 text-primary" />
                         </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">{totalActive} active</p>
+                    <p className="text-xs text-textColor/60 mt-2">{totalActive} active</p>
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                <div className="bg-card rounded-lg border border-background p-4 shadow-sm">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">Expense Categories</p>
-                            <p className="text-2xl font-bold text-red-600">{expenseCount}</p>
+                            <p className="text-xs font-medium text-textColor/70 uppercase">Expense Categories</p>
+                            <p className="text-2xl font-bold text-danger">{expenseCount}</p>
                         </div>
-                        <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                            <MdTrendingUp className="w-5 h-5 text-red-600" />
+                        <div className="w-10 h-10 bg-danger/10 rounded-lg flex items-center justify-center">
+                            <MdTrendingUp className="w-5 h-5 text-danger" />
                         </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">For tracking spending</p>
+                    <p className="text-xs text-textColor/60 mt-2">For tracking spending</p>
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                <div className="bg-card rounded-lg border border-background p-4 shadow-sm">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">Income Categories</p>
-                            <p className="text-2xl font-bold text-green-600">{incomeCount}</p>
+                            <p className="text-xs font-medium text-textColor/70 uppercase">Income Categories</p>
+                            <p className="text-2xl font-bold text-secondary">{incomeCount}</p>
                         </div>
-                        <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                            <MdAttachMoney className="w-5 h-5 text-green-600" />
+                        <div className="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center">
+                            <MdAttachMoney className="w-5 h-5 text-secondary" />
                         </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">For tracking earnings</p>
+                    <p className="text-xs text-textColor/60 mt-2">For tracking earnings</p>
                 </div>
             </div>
 
@@ -214,8 +214,8 @@ const AdminCategories = () => {
                     <button
                         onClick={() => setFilterType('all')}
                         className={`px-4 py-2 text-sm font-medium rounded-lg transition ${filterType === 'all'
-                                ? 'bg-blue-600 text-white shadow-sm'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                ? 'bg-primary text-white shadow-sm'
+                                : 'bg-card text-textColor/70 hover:bg-card'
                             }`}
                     >
                         All
@@ -223,8 +223,8 @@ const AdminCategories = () => {
                     <button
                         onClick={() => setFilterType('expense')}
                         className={`px-4 py-2 text-sm font-medium rounded-lg transition ${filterType === 'expense'
-                                ? 'bg-red-600 text-white shadow-sm'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                ? 'bg-danger text-white shadow-sm'
+                                : 'bg-card text-textColor/70 hover:bg-card'
                             }`}
                     >
                         Expenses
@@ -233,20 +233,20 @@ const AdminCategories = () => {
                         onClick={() => setFilterType('income')}
                         className={`px-4 py-2 text-sm font-medium rounded-lg transition ${filterType === 'income'
                                 ? 'bg-green-600 text-white shadow-sm'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                : 'bg-card text-textColor/70 hover:bg-card'
                             }`}
                     >
                         Income
                     </button>
                 </div>
                 <div className="relative">
-                    <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                    <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-textColor/50 text-sm" />
                     <input
                         type="text"
                         placeholder="Search categories..."
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
-                        className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full sm:w-64"
+                        className="pl-9 pr-4 py-2 border border-background rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full sm:w-64"
                     />
                 </div>
             </div>
@@ -256,32 +256,32 @@ const AdminCategories = () => {
                 {filteredCategories.map((cat) => (
                     <div
                         key={cat._id}
-                        className={`bg-white rounded-lg border shadow-sm ${cat.isActive ? 'border-gray-200' : 'border-gray-200 bg-gray-50'
+                        className={`bg-card rounded-lg border shadow-sm ${cat.isActive ? 'border-background' : 'border-background bg-background'
                             }`}
                     >
                         <div className="p-5">
                             <div className="flex justify-between items-start mb-3">
                                 <div className="flex items-center gap-3">
                                     <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${cat.isActive
-                                            ? cat.type === 'expense' ? 'bg-red-50' : 'bg-green-50'
-                                            : 'bg-gray-100'
+                                            ? cat.type === 'expense' ? 'bg-danger/5' : 'bg-secondary/5'
+                                            : 'bg-card'
                                         }`}>
                                         <CategoryIcon
                                             iconName={cat.icon || 'MdCategory'}
                                             className={`w-6 h-6 ${cat.isActive
-                                                    ? cat.type === 'expense' ? 'text-red-500' : 'text-green-500'
-                                                    : 'text-gray-400'
+                                                    ? cat.type === 'expense' ? 'text-danger' : 'text-green-500'
+                                                    : 'text-textColor/50'
                                                 }`}
                                         />
                                     </div>
                                     <div>
-                                        <h3 className={`font-semibold text-lg ${cat.isActive ? 'text-gray-900' : 'text-gray-500'
+                                        <h3 className={`font-semibold text-lg ${cat.isActive ? 'text-textColor' : 'text-textColor/60'
                                             }`}>
                                             {cat.name}
                                         </h3>
                                         <span className={`text-xs px-2 py-0.5 rounded-full ${cat.type === 'expense'
-                                                ? 'bg-red-100 text-red-700'
-                                                : 'bg-green-100 text-green-700'
+                                                ? 'bg-danger/10 text-danger'
+                                                : 'bg-secondary/10 text-secondary'
                                             }`}>
                                             {cat.type}
                                         </span>
@@ -290,14 +290,14 @@ const AdminCategories = () => {
                                 <div className="flex gap-1">
                                     <button
                                         onClick={() => openEdit(cat)}
-                                        className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                                        className="p-1.5 text-textColor/60 hover:text-primary hover:bg-primary/5 rounded transition"
                                         title="Edit"
                                     >
                                         <MdEdit className="w-4 h-4" />
                                     </button>
                                     <button
                                         onClick={() => handleDelete(cat._id, cat.name)}
-                                        className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"
+                                        className="p-1.5 text-textColor/60 hover:text-danger hover:bg-danger/5 rounded transition"
                                         title="Delete"
                                     >
                                         <MdDelete className="w-4 h-4" />
@@ -309,12 +309,12 @@ const AdminCategories = () => {
                                 <div className="mb-3">
                                     <div className="flex flex-wrap gap-1.5">
                                         {cat.keywords.slice(0, 3).map((kw, i) => (
-                                            <span key={i} className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">
+                                            <span key={i} className="text-xs px-2 py-0.5 bg-card text-textColor/70 rounded-full">
                                                 {kw}
                                             </span>
                                         ))}
                                         {cat.keywords.length > 3 && (
-                                            <span className="text-xs px-2 py-0.5 text-gray-500">
+                                            <span className="text-xs px-2 py-0.5 text-textColor/60">
                                                 +{cat.keywords.length - 3}
                                             </span>
                                         )}
@@ -322,15 +322,15 @@ const AdminCategories = () => {
                                 </div>
                             )}
 
-                            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                                <div className="text-xs text-gray-500">
+                            <div className="flex items-center justify-between pt-3 border-t border-background">
+                                <div className="text-xs text-textColor/60">
                                     {cat.keywords?.length || 0} keywords
                                 </div>
                                 <button
                                     onClick={() => handleToggleActive(cat)}
                                     className={`flex items-center gap-1 text-sm font-medium transition ${cat.isActive
-                                            ? 'text-green-600 hover:text-green-700'
-                                            : 'text-gray-500 hover:text-gray-700'
+                                            ? 'text-secondary hover:text-secondary'
+                                            : 'text-textColor/60 hover:text-textColor/80'
                                         }`}
                                 >
                                     {cat.isActive ? (
@@ -352,12 +352,12 @@ const AdminCategories = () => {
             </div>
 
             {filteredCategories.length === 0 && (
-                <div className="bg-white rounded-lg border border-gray-200 p-12 text-center shadow-sm">
-                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <MdCategory className="w-8 h-8 text-gray-400" />
+                <div className="bg-card rounded-lg border border-background p-12 text-center shadow-sm">
+                    <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center mx-auto mb-3">
+                        <MdCategory className="w-8 h-8 text-textColor/50" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900">No Categories Found</h3>
-                    <p className="text-gray-600 mt-1">
+                    <h3 className="text-lg font-semibold text-textColor">No Categories Found</h3>
+                    <p className="text-textColor/70 mt-1">
                         {searchTerm ? 'Try a different search term' : 'Create your first category to get started'}
                     </p>
                 </div>
@@ -366,14 +366,14 @@ const AdminCategories = () => {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
-                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center flex-shrink-0">
-                            <h2 className="text-lg font-semibold text-gray-900">
+                    <div className="bg-card rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="bg-background px-6 py-4 border-b border-background flex justify-between items-center flex-shrink-0">
+                            <h2 className="text-lg font-semibold text-textColor">
                                 {editId ? 'Edit Category' : 'Create New Category'}
                             </h2>
                             <button
                                 onClick={() => setShowModal(false)}
-                                className="p-1 hover:bg-gray-200 rounded transition text-gray-500 hover:text-gray-700"
+                                className="p-1 hover:bg-card rounded transition text-textColor/60 hover:text-textColor/80"
                             >
                                 <MdClose className="w-5 h-5" />
                             </button>
@@ -381,21 +381,21 @@ const AdminCategories = () => {
                         <form onSubmit={handleSubmit} className="flex flex-col overflow-hidden">
                             <div className="p-6 space-y-5 overflow-y-auto">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Category Name <span className="text-red-500">*</span>
+                                <label className="block text-sm font-medium text-textColor/80 mb-1">
+                                    Category Name <span className="text-danger">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     required
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border border-background rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="e.g., Groceries, Salary"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                <label className="block text-sm font-medium text-textColor/80 mb-1">Type</label>
                                 <div className="flex gap-3">
                                     <label className="flex items-center gap-2">
                                         <input
@@ -403,9 +403,9 @@ const AdminCategories = () => {
                                             value="expense"
                                             checked={formData.type === 'expense'}
                                             onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                            className="w-4 h-4 text-red-500 focus:ring-red-500"
+                                            className="w-4 h-4 text-danger focus:ring-red-500"
                                         />
-                                        <span className="text-sm text-gray-700">Expense</span>
+                                        <span className="text-sm text-textColor/80">Expense</span>
                                     </label>
                                     <label className="flex items-center gap-2">
                                         <input
@@ -415,52 +415,52 @@ const AdminCategories = () => {
                                             onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                                             className="w-4 h-4 text-green-500 focus:ring-green-500"
                                         />
-                                        <span className="text-sm text-gray-700">Income</span>
+                                        <span className="text-sm text-textColor/80">Income</span>
                                     </label>
                                 </div>
                             </div>
 
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <label className="block text-sm font-medium text-gray-700">
-                                        Select Icon <span className="text-red-500">*</span>
+                                    <label className="block text-sm font-medium text-textColor/80">
+                                        Select Icon <span className="text-danger">*</span>
                                     </label>
                                     <a 
                                         href="https://react-icons.github.io/react-icons/icons/md" 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className="text-[10px] text-blue-600 hover:underline flex items-center gap-1"
+                                        className="text-[10px] text-primary hover:underline flex items-center gap-1"
                                     >
                                         Browse More on React-Icons Website
                                     </a>
                                 </div>
                                 
-                                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                                <div className="border border-background rounded-lg overflow-hidden">
                                     {/* Icon Preview & Search */}
-                                    <div className="p-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between gap-4">
+                                    <div className="p-3 bg-background border-b border-background flex items-center justify-between gap-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-gray-200 shadow-sm">
-                                                <CategoryIcon iconName={formData.icon} className="w-6 h-6 text-blue-600" />
+                                            <div className="w-10 h-10 bg-card rounded-lg flex items-center justify-center border border-background shadow-sm">
+                                                <CategoryIcon iconName={formData.icon} className="w-6 h-6 text-primary" />
                                             </div>
                                             <div className="text-xs">
-                                                <p className="font-semibold text-gray-900">Preview</p>
-                                                <p className="text-gray-500 text-[10px] break-all">{formData.icon}</p>
+                                                <p className="font-semibold text-textColor">Preview</p>
+                                                <p className="text-textColor/60 text-[10px] break-all">{formData.icon}</p>
                                             </div>
                                         </div>
                                         <div className="relative flex-1 max-w-[160px]">
-                                            <MdSearch className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" />
+                                            <MdSearch className="absolute left-2 top-1/2 -translate-y-1/2 text-textColor/50" />
                                             <input
                                                 type="text"
                                                 placeholder="Search icons..."
                                                 value={iconSearchTerm}
                                                 onChange={(e) => setIconSearchTerm(e.target.value)}
-                                                className="w-full pl-7 pr-3 py-1.5 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                                className="w-full pl-7 pr-3 py-1.5 text-xs border border-background rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                                             />
                                         </div>
                                     </div>
 
                                     {/* Icon Grid */}
-                                    <div className="h-44 overflow-y-auto p-3 bg-white">
+                                    <div className="h-44 overflow-y-auto p-3 bg-card">
                                         {iconSearchTerm && !AVAILABLE_ICONS.some(icon => icon.toLowerCase() === iconSearchTerm.toLowerCase()) && (
                                             <div className="mb-3 px-1">
                                                 <button
@@ -468,14 +468,14 @@ const AdminCategories = () => {
                                                     onClick={() => setFormData({ ...formData, icon: iconSearchTerm })}
                                                     className={`w-full py-2 px-3 rounded-lg flex items-center gap-3 transition-all ${
                                                         formData.icon === iconSearchTerm 
-                                                            ? 'bg-blue-600 text-white shadow-md' 
-                                                            : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                                                            ? 'bg-primary text-white shadow-md' 
+                                                            : 'bg-primary/5 text-primary hover:bg-primary/10 border border-blue-200'
                                                     }`}
                                                 >
                                                     <CategoryIcon iconName={iconSearchTerm} className="w-5 h-5" />
                                                     <span className="text-xs font-medium truncate">Use Custom: {iconSearchTerm}</span>
                                                 </button>
-                                                <div className="h-px bg-gray-100 my-3"></div>
+                                                <div className="h-px bg-card my-3"></div>
                                             </div>
                                         )}
 
@@ -492,8 +492,8 @@ const AdminCategories = () => {
                                                     }}
                                                     className={`p-2 rounded-lg flex items-center justify-center transition-all ${
                                                         formData.icon === icon 
-                                                            ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-100' 
-                                                            : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                                                            ? 'bg-primary text-white shadow-md ring-2 ring-blue-100' 
+                                                            : 'bg-background text-textColor/70 hover:bg-card'
                                                     }`}
                                                     title={icon}
                                                 >
@@ -505,7 +505,7 @@ const AdminCategories = () => {
                                         {AVAILABLE_ICONS.filter(icon => 
                                             icon.toLowerCase().includes(iconSearchTerm.toLowerCase())
                                         ).length === 0 && !iconSearchTerm && (
-                                            <div className="text-center py-8 text-gray-500 text-xs">
+                                            <div className="text-center py-8 text-textColor/60 text-xs">
                                                 No icons found. Try searching.
                                             </div>
                                         )}
@@ -514,17 +514,17 @@ const AdminCategories = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-textColor/80 mb-1">
                                     Auto Keywords (comma separated)
                                 </label>
                                 <textarea
                                     value={formData.keywords}
                                     onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                    className="w-full px-3 py-2 border border-background rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                                     placeholder="e.g., grocery, supermarket, walmart"
                                     rows="3"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">
+                                <p className="text-xs text-textColor/60 mt-1">
                                     If expense description contains these words, this category will be auto-selected.
                                 </p>
                             </div>
@@ -534,24 +534,24 @@ const AdminCategories = () => {
                                     type="checkbox"
                                     checked={formData.isActive}
                                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                                    className="w-4 h-4 text-blue-600 focus:ring-blue-500 rounded"
+                                    className="w-4 h-4 text-primary focus:ring-blue-500 rounded"
                                 />
-                                <span className="text-sm text-gray-700">Active (Users can select this category)</span>
+                                <span className="text-sm text-textColor/80">Active (Users can select this category)</span>
                             </label>
                             
                             </div>
 
-                            <div className="p-6 bg-gray-50 border-t border-gray-200 flex gap-3 flex-shrink-0">
+                            <div className="p-6 bg-background border-t border-background flex gap-3 flex-shrink-0">
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition"
+                                    className="flex-1 py-2 border border-background text-textColor/80 rounded-lg font-medium hover:bg-background transition"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition shadow-sm"
+                                    className="flex-1 py-2 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 transition shadow-sm"
                                 >
                                     {editId ? 'Update Category' : 'Create Category'}
                                 </button>

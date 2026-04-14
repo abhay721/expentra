@@ -125,9 +125,9 @@ const Income = () => {
     if (loading) {
         return (
             <div className="space-y-6">
-                <div className="h-8 bg-gray-200 rounded w-1/3 animate-pulse"></div>
-                <div className="h-32 bg-gray-100 rounded-xl animate-pulse"></div>
-                <div className="h-64 bg-gray-100 rounded-xl animate-pulse"></div>
+                <div className="h-8 bg-card rounded w-1/3 animate-pulse"></div>
+                <div className="h-32 bg-card rounded-xl animate-pulse"></div>
+                <div className="h-64 bg-card rounded-xl animate-pulse"></div>
             </div>
         );
     }
@@ -147,7 +147,7 @@ const Income = () => {
                     <select
                         value={filterMonth}
                         onChange={e => setFilterMonth(Number(e.target.value))}
-                        className="border border-gray-200 bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                        className="border border-background bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                     >
                         {MONTHS.map((m, i) => (
                             <option key={m} value={i + 1}>{m}</option>
@@ -157,7 +157,7 @@ const Income = () => {
                     <select
                         value={filterYear}
                         onChange={e => setFilterYear(Number(e.target.value))}
-                        className="border border-gray-200 bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                        className="border border-background bg-card text-textColor rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                     >
                         {[0, 1, 2].map(o => {
                             const y = today.getFullYear() - o;
@@ -177,7 +177,7 @@ const Income = () => {
             {/* Total Income Card with Gradient */}
             <div className="bg-gradient-to-r from-primary via-primary/50 via-secondary rounded-2xl p-6 shadow-lg">                <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
-                    <div className="bg-white/20 rounded-xl p-3 backdrop-blur-sm">
+                    <div className="bg-card/20 rounded-xl p-3 backdrop-blur-sm">
                         <MdTrendingUp className="text-3xl text-white" />
                     </div>
                     <div>
@@ -195,11 +195,11 @@ const Income = () => {
             </div>
 
             {/* Income Table */}
-            <div className="bg-card rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-200">
+            <div className="bg-card rounded-2xl shadow-sm border border-background overflow-hidden transition-all duration-200">
                 <div className="overflow-x-auto">
                     <table className="min-w-full">
                         <thead>
-                            <tr className="bg-gray-50 border-b border-gray-200">
+                            <tr className="bg-background border-b border-background">
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Date</th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Source / Description</th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-textColor/70 uppercase tracking-wider">Category</th>
@@ -207,9 +207,9 @@ const Income = () => {
                                 <th className="px-6 py-4 text-right text-xs font-semibold text-textColor/70 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-background">
                             {incomes.map((income, idx) => (
-                                <tr key={income._id} className={`${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-all duration-200`}>
+                                <tr key={income._id} className={`${idx % 2 === 0 ? 'bg-card' : 'bg-background'} hover:bg-background transition-all duration-200`}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-textColor/70">
                                         {new Date(income.date).toLocaleDateString('en-IN', {
                                             day: '2-digit',
@@ -249,7 +249,7 @@ const Income = () => {
                                         </button>
                                         <button
                                             onClick={() => handleDelete(income._id)}
-                                            className="text-red-500 hover:text-red-600 transition-all duration-200"
+                                            className="text-danger hover:text-danger/80 transition-all duration-200"
                                             title="Delete"
                                         >
                                             <MdDelete className="w-5 h-5" />
@@ -277,7 +277,7 @@ const Income = () => {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-textColor/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-200">
-                    <div className="bg-card rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 border border-gray-200">
+                    <div className="bg-card rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 border border-background">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-primary rounded-xl p-2">
                                 <MdTrendingUp className="text-white text-xl" />
@@ -290,7 +290,7 @@ const Income = () => {
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
                                 <label className="block text-xs font-semibold text-textColor/70 uppercase tracking-wide mb-1.5">
-                                    Title <span className="text-red-500">*</span>
+                                    Title <span className="text-danger">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -298,13 +298,13 @@ const Income = () => {
                                     value={formData.title}
                                     onChange={handleTitleChange}
                                     placeholder="e.g. Salary, Freelance, Rent Income"
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-background rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
                             <div>
                                 <label className="block text-xs font-semibold text-textColor/70 uppercase tracking-wide mb-1.5">
-                                    Amount (₹) <span className="text-red-500">*</span>
+                                    Amount (₹) <span className="text-danger">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -314,7 +314,7 @@ const Income = () => {
                                     value={formData.amount}
                                     onChange={e => setFormData({ ...formData, amount: e.target.value })}
                                     placeholder="0.00"
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-background rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
@@ -327,7 +327,7 @@ const Income = () => {
                                         type="text"
                                         value={formData.category}
                                         disabled
-                                        className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 text-textColor/60 cursor-not-allowed"
+                                        className="w-full pl-10 pr-4 py-2.5 border border-background rounded-xl text-sm bg-background text-textColor/60 cursor-not-allowed"
                                     />
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <CategoryIcon
@@ -347,7 +347,7 @@ const Income = () => {
                                     value={formData.note}
                                     onChange={e => setFormData({ ...formData, note: e.target.value })}
                                     placeholder="Any extra details..."
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-background rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
@@ -359,7 +359,7 @@ const Income = () => {
                                     type="date"
                                     value={formData.date}
                                     onChange={e => setFormData({ ...formData, date: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
+                                    className="w-full px-4 py-2.5 border border-background rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-background text-textColor transition-all duration-200"
                                 />
                             </div>
 
@@ -370,7 +370,7 @@ const Income = () => {
                                         setShowModal(false);
                                         setEditingId(null);
                                     }}
-                                    className="px-5 py-2.5 text-sm font-medium border border-gray-200 text-textColor rounded-xl hover:bg-gray-50 transition-all duration-200"
+                                    className="px-5 py-2.5 text-sm font-medium border border-background text-textColor rounded-xl hover:bg-background transition-all duration-200"
                                 >
                                     Cancel
                                 </button>

@@ -109,12 +109,12 @@ const GroupExpenses = () => {
     if (!selectedGroupId) {
         return (
             <div className="max-w-6xl mx-auto px-4 py-8">
-                <div className="bg-white rounded-lg border border-gray-200 p-12 text-center shadow-sm">
-                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <MdGroup className="w-10 h-10 text-blue-600" />
+                <div className="bg-card rounded-lg border border-background p-12 text-center shadow-sm">
+                    <div className="w-20 h-20 bg-card rounded-full flex items-center justify-center mx-auto mb-4">
+                        <MdGroup className="w-10 h-10 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900">No Group Selected</h3>
-                    <p className="text-gray-600 mt-2">Please select a group from the Groups menu first.</p>
+                    <h3 className="text-xl font-semibold text-textColor">No Group Selected</h3>
+                    <p className="text-textColor/70 mt-2">Please select a group from the Groups menu first.</p>
                 </div>
             </div>
         );
@@ -124,9 +124,9 @@ const GroupExpenses = () => {
         return (
             <div className="max-w-6xl mx-auto px-4 py-8">
                 <div className="space-y-4">
-                    <div className="h-32 bg-gray-100 rounded-lg animate-pulse"></div>
-                    <div className="h-24 bg-gray-100 rounded-lg animate-pulse"></div>
-                    <div className="h-24 bg-gray-100 rounded-lg animate-pulse"></div>
+                    <div className="h-32 bg-card rounded-lg animate-pulse"></div>
+                    <div className="h-24 bg-card rounded-lg animate-pulse"></div>
+                    <div className="h-24 bg-card rounded-lg animate-pulse"></div>
                 </div>
             </div>
         );
@@ -155,11 +155,11 @@ const GroupExpenses = () => {
             </div>
 
             {/* Activities Table */}
-            <div className="bg-card rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300">
+            <div className="bg-card rounded-2xl shadow-sm border border-background overflow-hidden transition-all duration-300">
                 <div className="overflow-x-auto">
                     <table className="min-w-full">
                         <thead>
-                            <tr className="bg-gray-50/50 border-b border-gray-100">
+                            <tr className="bg-background/50 border-b border-background">
                                 <th className="px-6 py-4 text-left text-[10px] font-black text-primary uppercase tracking-widest">Date</th>
                                 <th className="px-6 py-4 text-left text-[10px] font-black text-primary uppercase tracking-widest">Description</th>
                                 <th className="px-6 py-4 text-left text-[10px] font-black text-primary uppercase tracking-widest">Payers / Method</th>
@@ -168,14 +168,14 @@ const GroupExpenses = () => {
                                 <th className="px-6 py-4 text-right text-[10px] font-black text-primary uppercase tracking-widest">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50">
+                        <tbody className="divide-y divide-background">
                             {activities.map((act) => {
                                 const isExpense = act.activityType === 'expense';
                                 return (
                                     <React.Fragment key={act._id}>
                                         <tr 
                                             onClick={() => setExpandedActivity(expandedActivity === act._id ? null : act._id)}
-                                            className={`group cursor-pointer transition-all duration-200 ${expandedActivity === act._id ? 'bg-primary/5' : 'hover:bg-gray-50/80'}`}
+                                            className={`group cursor-pointer transition-all duration-200 ${expandedActivity === act._id ? 'bg-primary/5' : 'hover:bg-background/80'}`}
                                         >
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium opacity-60">
                                                 <div className="flex items-center gap-2">
@@ -220,13 +220,13 @@ const GroupExpenses = () => {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {isExpense ? (
                                                     <div className="flex items-center gap-2">
-                                                        <div className="w-8 h-8 rounded-lg bg-background border border-gray-100 flex items-center justify-center p-1.5 shadow-sm">
+                                                        <div className="w-8 h-8 rounded-lg bg-background border border-background flex items-center justify-center p-1.5 shadow-sm">
                                                             <CategoryIcon
                                                                 iconName={categories.find(c => c.name === act.category)?.icon || 'Category'}
                                                                 className="text-primary w-full h-full"
                                                             />
                                                         </div>
-                                                        <span className="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full bg-background border border-gray-100 opacity-70">
+                                                        <span className="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full bg-background border border-background opacity-70">
                                                             {act.category || 'Other'}
                                                         </span>
                                                     </div>
@@ -235,7 +235,7 @@ const GroupExpenses = () => {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`text-sm font-black ${isExpense ? 'text-red-500' : 'text-secondary'}`}>
+                                                <span className={`text-sm font-black ${isExpense ? 'text-danger' : 'text-secondary'}`}>
                                                     ₹{act.amount.toLocaleString()}
                                                 </span>
                                             </td>
@@ -251,7 +251,7 @@ const GroupExpenses = () => {
                                                         </button>
                                                         <button
                                                             onClick={() => handleDeleteExpense(act._id)}
-                                                            className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                                            className="p-2 text-danger hover:bg-danger/10 rounded-lg transition-colors"
                                                             title="Delete"
                                                         >
                                                             <MdDelete className="w-4 h-4" />
@@ -265,7 +265,7 @@ const GroupExpenses = () => {
 
                                         {/* Expanded Settlement Details */}
                                         {expandedActivity === act._id && (
-                                            <tr className="bg-gray-50/50 border-b border-gray-100">
+                                            <tr className="bg-background/50 border-b border-background">
                                                 <td colSpan="6" className="px-10 py-6">
                                                     <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-1 duration-200">
                                                         <div className="flex items-center gap-2 text-primary">
@@ -278,7 +278,7 @@ const GroupExpenses = () => {
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                                             {isExpense ? (
                                                                 act.settlements?.map((s, idx) => (
-                                                                    <div key={idx} className="bg-card border border-gray-100 rounded-xl p-3 shadow-sm flex items-center justify-between gap-4">
+                                                                    <div key={idx} className="bg-card border border-background rounded-xl p-3 shadow-sm flex items-center justify-between gap-4">
                                                                         <div className="flex items-center gap-3">
                                                                             <div className="flex items-center gap-1.5 min-w-0">
                                                                                 <span className="text-[10px] font-bold opacity-80 truncate">{s.from.name}</span>
@@ -288,7 +288,7 @@ const GroupExpenses = () => {
                                                                         </div>
                                                                         <div className="flex flex-col items-end shrink-0">
                                                                             <span className="text-xs font-black text-secondary">₹{s.amount.toLocaleString()}</span>
-                                                                            <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md ${s.reimbursementStatus === 'paid' ? 'bg-secondary/10 text-secondary' : 'bg-orange-500/10 text-orange-500'}`}>
+                                                                            <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md ${s.reimbursementStatus === 'paid' ? 'bg-secondary/10 text-secondary' : 'bg-danger/50/10 text-danger'}`}>
                                                                                 {s.reimbursementStatus}
                                                                             </span>
                                                                         </div>
@@ -296,7 +296,7 @@ const GroupExpenses = () => {
                                                                 ))
                                                             ) : (
                                                                 act.underlyingExpenses?.map((ue, idx) => (
-                                                                    <div key={idx} className="bg-card border border-gray-100 rounded-xl p-3 shadow-sm flex items-center justify-between gap-4">
+                                                                    <div key={idx} className="bg-card border border-background rounded-xl p-3 shadow-sm flex items-center justify-between gap-4">
                                                                         <span className="text-[10px] font-bold opacity-80 truncate">{ue.title}</span>
                                                                         <span className="text-xs font-black text-secondary shrink-0">₹{ue.amount.toLocaleString()}</span>
                                                                     </div>
@@ -317,7 +317,7 @@ const GroupExpenses = () => {
                             {activities.length === 0 && (
                                 <tr>
                                     <td colSpan="6" className="px-6 py-16 text-center">
-                                        <div className="w-16 h-16 bg-background rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-50">
+                                        <div className="w-16 h-16 bg-background rounded-2xl flex items-center justify-center mx-auto mb-4 border border-background">
                                             <MdReceipt className="w-8 h-8 opacity-20" />
                                         </div>
                                         <p className="text-sm font-bold opacity-40">No activity history found</p>

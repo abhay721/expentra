@@ -65,8 +65,8 @@ const Analysis = () => {
 
     if (error && !analysis) {
         return (
-            <div className="flex flex-col items-center justify-center h-64 bg-card rounded-2xl shadow-sm border border-gray-100">
-                <p className="text-red-500 font-medium opacity-80">Could not load analysis data.</p>
+            <div className="flex flex-col items-center justify-center h-64 bg-card rounded-2xl shadow-sm border border-background">
+                <p className="text-danger font-medium opacity-80">Could not load analysis data.</p>
                 <button
                     onClick={fetchData}
                     className="mt-4 flex items-center gap-1.5 px-5 py-2.5 bg-primary text-card text-sm font-medium rounded-xl hover:opacity-90 transition-all shadow-sm"
@@ -82,8 +82,8 @@ const Analysis = () => {
     const healthScoreRaw = analysis?.financialHealthScore || '0/100';
     const healthScore = parseInt(healthScoreRaw.split('/')[0], 10) || 0;
 
-    const healthColor = healthScore >= 80 ? 'text-secondary' : healthScore >= 50 ? 'text-primary' : 'text-red-500';
-    const healthBarColor = healthScore >= 80 ? 'bg-secondary' : healthScore >= 50 ? 'bg-primary' : 'bg-red-500';
+    const healthColor = healthScore >= 80 ? 'text-secondary' : healthScore >= 50 ? 'text-primary' : 'text-danger';
+    const healthBarColor = healthScore >= 80 ? 'bg-secondary' : healthScore >= 50 ? 'bg-primary' : 'bg-danger';
 
     // Processing Trend Data
     const trendData = MONTHS.map((m, i) => {
@@ -100,13 +100,13 @@ const Analysis = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl md:text-3xl font-bold text-textColor">Analysis</h1>
-                    <p className="text-sm text-gray-500 mt-1">Smart financial overview and insights</p>
+                    <p className="text-sm text-textColor/60 mt-1">Smart financial overview and insights</p>
                 </div>
                 <div className="flex flex-wrap gap-3 items-center">
                     <select
                         value={selectedMonth}
                         onChange={e => setSelectedMonth(Number(e.target.value))}
-                        className="bg-card rounded-xl border border-gray-100 px-4 py-2 text-sm text-textColor outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all cursor-pointer"
+                        className="bg-card rounded-xl border border-background px-4 py-2 text-sm text-textColor outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all cursor-pointer"
                     >
                         {MONTHS.map((m, i) => (
                             <option key={m} value={i + 1}>{m}</option>
@@ -115,7 +115,7 @@ const Analysis = () => {
                     <select
                         value={selectedYear}
                         onChange={e => setSelectedYear(Number(e.target.value))}
-                        className="bg-card rounded-xl border border-gray-100 px-4 py-2 text-sm text-textColor outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all cursor-pointer"
+                        className="bg-card rounded-xl border border-background px-4 py-2 text-sm text-textColor outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all cursor-pointer"
                     >
                         {[0, 1, 2].map(o => {
                             const y = today.getFullYear() - o;
@@ -127,13 +127,13 @@ const Analysis = () => {
 
             {/* Smart Expense Prediction */}
             <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl shadow-md p-8 text-card relative overflow-hidden transition-all duration-300">
-                <div className="absolute -right-10 -top-10 bg-white/10 w-48 h-48 rounded-full blur-2xl"></div>
-                <div className="absolute -left-10 -bottom-10 bg-white/10 w-32 h-32 rounded-full blur-xl"></div>
+                <div className="absolute -right-10 -top-10 bg-card/10 w-48 h-48 rounded-full blur-2xl"></div>
+                <div className="absolute -left-10 -bottom-10 bg-card/10 w-32 h-32 rounded-full blur-xl"></div>
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="bg-white/20 rounded-xl p-2.5 backdrop-blur-sm shadow-sm">
-                                <MdLightbulb className="w-6 h-6 text-yellow-300" />
+                            <div className="bg-card/20 rounded-xl p-2.5 backdrop-blur-sm shadow-sm">
+                                <MdLightbulb className="w-6 h-6 text-card" />
                             </div>
                             <h2 className="text-lg font-bold tracking-wide">Expense Prediction</h2>
                         </div>
@@ -147,7 +147,7 @@ const Analysis = () => {
                                 <p className="text-4xl md:text-5xl font-black drop-shadow-md tracking-tight">
                                     ₹{prediction.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                                 </p>
-                                <div className="inline-flex mt-3 bg-white/20 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/20">
+                                <div className="inline-flex mt-3 bg-card/20 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/20">
                                     <p className="text-xs font-bold text-white tracking-wide">
                                         {prediction > (monthlyData?.totalIncome || 0) ? '⚠️ Alert: May exceed current income' : '✓ Spending under control'}
                                     </p>
@@ -165,7 +165,7 @@ const Analysis = () => {
             {/* Core Insights Row */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {/* Health Score */}
-                <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md transition-all duration-300">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="bg-background rounded-xl p-2.5">
                             <MdHealthAndSafety className={`w-5 h-5 ${healthColor}`} />
@@ -185,7 +185,7 @@ const Analysis = () => {
                 </div>
 
                 {/* Average Daily Expense */}
-                <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-background rounded-xl p-2.5">
@@ -199,25 +199,25 @@ const Analysis = () => {
                 </div>
 
                 {/* Savings Rate */}
-                <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+                <div className="bg-card rounded-2xl border border-background shadow-sm p-6 hover:shadow-md transition-all duration-300 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="bg-background rounded-xl p-2.5">
-                                {savingsRate >= 0 ? <MdTrendingUp className="w-5 h-5 text-secondary" /> : <MdTrendingDown className="w-5 h-5 text-red-500" />}
+                                {savingsRate >= 0 ? <MdTrendingUp className="w-5 h-5 text-secondary" /> : <MdTrendingDown className="w-5 h-5 text-danger" />}
                             </div>
                             <h3 className="text-sm font-semibold text-textColor opacity-70">Savings Rate</h3>
                         </div>
-                        <p className={`text-4xl font-black ${savingsRate >= 0 ? 'text-secondary' : 'text-red-500'}`}>{savingsRate}%</p>
+                        <p className={`text-4xl font-black ${savingsRate >= 0 ? 'text-secondary' : 'text-danger'}`}>{savingsRate}%</p>
                     </div>
                     <p className="text-xs text-textColor opacity-50 font-medium">Income retention metric</p>
                 </div>
             </div>
 
             {/* Annual Trend Chart */}
-            <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6 pb-8 transition-all duration-300">
+            <div className="bg-card rounded-2xl border border-background shadow-sm p-6 pb-8 transition-all duration-300">
                 <div className="mb-8">
                     <h3 className="text-lg font-semibold text-textColor">Annual Spending Trend</h3>
-                    <p className="text-sm text-gray-500 mt-0.5">Month-by-month expenditure trajectory</p>
+                    <p className="text-sm text-textColor/60 mt-0.5">Month-by-month expenditure trajectory</p>
                 </div>
                 <div className="h-80 w-full">
                     <ResponsiveContainer width="100%" height="100%">

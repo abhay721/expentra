@@ -51,6 +51,8 @@ import Budget from './pages/Budget';
 import Reports from './pages/Reports';
 import Analysis from './pages/Analysis';
 import Alerts from './pages/Alerts';
+import Home from './pages/Home';
+
 
 // Group Pages
 import GroupSelection from './pages/group/GroupSelection';
@@ -77,11 +79,10 @@ function App() {
 
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
-          {/* Redirect root to dashboard */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
           {/* Protected Routes Wrapper mapped to Layout wrapper */}
           <Route element={<ProtectedRoute />}>

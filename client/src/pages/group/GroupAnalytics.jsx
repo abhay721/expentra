@@ -43,12 +43,12 @@ const GroupAnalytics = () => {
     if (!selectedGroupId) {
         return (
             <div className="max-w-6xl mx-auto px-4 py-8">
-                <div className="bg-white rounded-lg border border-gray-200 p-12 text-center shadow-sm">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <MdGroup className="w-8 h-8 text-gray-400" />
+                <div className="bg-card rounded-lg border border-background p-12 text-center shadow-sm">
+                    <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mx-auto mb-4">
+                        <MdGroup className="w-8 h-8 text-textColor/50" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900">No Group Selected</h3>
-                    <p className="text-gray-600 mt-2">Please select a group from the Groups menu first.</p>
+                    <h3 className="text-xl font-semibold text-textColor">No Group Selected</h3>
+                    <p className="text-textColor/70 mt-2">Please select a group from the Groups menu first.</p>
                 </div>
             </div>
         );
@@ -58,15 +58,15 @@ const GroupAnalytics = () => {
         return (
             <div className="max-w-6xl mx-auto px-4 py-8">
                 <div className="space-y-4">
-                    <div className="h-8 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+                    <div className="h-8 bg-card rounded w-1/4 animate-pulse"></div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {[1, 2, 3, 4].map(i => (
-                            <div key={i} className="h-28 bg-gray-100 rounded-lg animate-pulse"></div>
+                            <div key={i} className="h-28 bg-card rounded-lg animate-pulse"></div>
                         ))}
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div className="h-96 bg-gray-100 rounded-lg animate-pulse"></div>
-                        <div className="h-96 bg-gray-100 rounded-lg animate-pulse"></div>
+                        <div className="h-96 bg-card rounded-lg animate-pulse"></div>
+                        <div className="h-96 bg-card rounded-lg animate-pulse"></div>
                     </div>
                 </div>
             </div>
@@ -129,19 +129,19 @@ const GroupAnalytics = () => {
         <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Group Analytics</h1>
-                <p className="text-gray-600 text-sm mt-1">
+                <h1 className="text-2xl font-bold text-textColor">Group Analytics</h1>
+                <p className="text-textColor/70 text-sm mt-1">
                     {groupData?.name} • Spending insights
                 </p>
             </div>
 
             {expenses.length === 0 ? (
-                <div className="bg-white rounded-lg border border-gray-200 p-12 text-center shadow-sm">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <MdShowChart className="w-8 h-8 text-gray-400" />
+                <div className="bg-card rounded-lg border border-background p-12 text-center shadow-sm">
+                    <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mx-auto mb-4">
+                        <MdShowChart className="w-8 h-8 text-textColor/50" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900">No Data Available</h3>
-                    <p className="text-gray-600 mt-2">Add expenses to this group to see analytics.</p>
+                    <h3 className="text-lg font-semibold text-textColor">No Data Available</h3>
+                    <p className="text-textColor/70 mt-2">Add expenses to this group to see analytics.</p>
                 </div>
             ) : (
                 <>
@@ -149,7 +149,7 @@ const GroupAnalytics = () => {
                     {/* Unified Insight Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {/* Total Spending */}
-                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-300">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="bg-background rounded-xl p-2.5">
                                     <MdAttachMoney className="w-5 h-5 text-primary" />
@@ -157,11 +157,11 @@ const GroupAnalytics = () => {
                                 <h3 className="text-[10px] font-black uppercase tracking-widest text-textColor/40">Total Group Spend</h3>
                             </div>
                             <p className="text-xl font-bold text-textColor">₹{totalSpent.toLocaleString()}</p>
-                            <p className="text-[10px] font-bold text-primary uppercase tracking-tighter mt-1">{expenses.length} transactions recorded</p>
+                            <p className="text-[10px] font-bold text-primary mt-1">{expenses.length} transactions recorded</p>
                         </div>
 
                         {/* Top Payer */}
-                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-300">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="bg-background rounded-xl p-2.5">
                                     <MdPerson className="w-5 h-5 text-primary" />
@@ -169,11 +169,11 @@ const GroupAnalytics = () => {
                                 <h3 className="text-[10px] font-black uppercase tracking-widest text-textColor/40">Top Contributor</h3>
                             </div>
                             <p className="text-xl font-bold text-textColor truncate">{topPayer}</p>
-                            <p className="text-[10px] font-bold text-primary uppercase tracking-tighter mt-1">Highest squad contributor</p>
+                            <p className="text-[10px] font-bold text-primary mt-1">Highest squad contributor</p>
                         </div>
 
                         {/* Top Category */}
-                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-300">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="bg-background rounded-xl p-2.5">
                                     <MdCategory className="w-5 h-5 text-primary" />
@@ -181,21 +181,21 @@ const GroupAnalytics = () => {
                                 <h3 className="text-[10px] font-black uppercase tracking-widest text-textColor/40">Top Spending Cat</h3>
                             </div>
                             <p className="text-xl font-bold text-textColor truncate">{topCategory}</p>
-                            <p className="text-[10px] font-bold text-primary uppercase tracking-tighter mt-1">Most frequent group expense</p>
+                            <p className="text-[10px] font-bold text-primary mt-1">Most frequent group expense</p>
                         </div>
                     </div>
 
                     {/* Charts Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Category Pie Chart */}
-                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm">
+                        <div className="bg-card rounded-2xl border border-background p-6 shadow-sm">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                                     <MdCategory className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-bold text-textColor">Spending by Category</h3>
-                                    <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest leading-none mt-1">Mix Breakdown</p>
+                                    <p className="text-[10px] font-medium text-textColor/50 uppercase tracking-widest leading-none mt-1">Mix Breakdown</p>
                                 </div>
                             </div>
                             <div className="h-72 w-full mt-2">
@@ -235,14 +235,14 @@ const GroupAnalytics = () => {
                         </div>
 
                         {/* Contributions Bar Chart */}
-                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm">
+                        <div className="bg-card rounded-2xl border border-background p-6 shadow-sm">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
                                     <MdPerson className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-bold text-textColor">Member Shares</h3>
-                                    <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest leading-none mt-1">Individual Contributions</p>
+                                    <p className="text-[10px] font-medium text-textColor/50 uppercase tracking-widest leading-none mt-1">Individual Contributions</p>
                                 </div>
                             </div>
                             <div className="h-72 w-full mt-2">
@@ -278,14 +278,14 @@ const GroupAnalytics = () => {
 
                         {/* Monthly Trend Chart */}
                         {monthlyData.length > 0 && (
-                            <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm md:col-span-2">
+                            <div className="bg-card rounded-2xl border border-background p-6 shadow-sm md:col-span-2">
                                 <div className="flex items-center gap-3 mb-8">
                                     <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                                         <MdTrendingUp className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <h3 className="text-sm font-bold text-textColor">Spending Trend</h3>
-                                        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest leading-none mt-1">Monthly Flow</p>
+                                        <p className="text-[10px] font-medium text-textColor/50 uppercase tracking-widest leading-none mt-1">Monthly Flow</p>
                                     </div>
                                 </div>
                                 <div className="h-72 w-full">

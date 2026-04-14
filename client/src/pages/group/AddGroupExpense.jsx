@@ -244,7 +244,7 @@ const AddGroupExpense = () => {
                 <div className="max-w-4xl mx-auto flex items-center gap-4">
                     <button
                         onClick={() => navigate('/groups/expenses')}
-                        className="p-2.5 rounded-xl bg-background border border-gray-100 hover:bg-primary hover:text-white transition-all duration-300 shadow-sm group"
+                        className="p-2.5 rounded-xl bg-background border border-background hover:bg-primary hover:text-white transition-all duration-300 shadow-sm group"
                     >
                         <MdArrowBack className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
                     </button>
@@ -265,7 +265,7 @@ const AddGroupExpense = () => {
                     <div className="lg:col-span-2 space-y-8">
 
                         {/* Basic Info */}
-                        <div className="bg-card rounded-3xl shadow-sm border border-gray-100 p-8">
+                        <div className="bg-card rounded-3xl shadow-sm border border-background p-8">
                             <h2 className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-2 mb-6">
                                 <MdReceipt className="text-lg" /> Expense Details
                             </h2>
@@ -278,7 +278,7 @@ const AddGroupExpense = () => {
                                         value={title}
                                         onChange={e => handleTitleChange(e.target.value)}
                                         placeholder="e.g. Dinner Checkout"
-                                        className="w-full px-4 py-3 rounded-xl bg-background border border-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all"
+                                        className="w-full px-4 py-3 rounded-xl bg-background border border-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all"
                                     />
                                 </div>
                                 <div className="space-y-1.5">
@@ -288,14 +288,14 @@ const AddGroupExpense = () => {
                                         value={amount}
                                         onChange={e => setAmount(e.target.value)}
                                         placeholder="0.00"
-                                        className="w-full px-4 py-3 rounded-xl bg-background border border-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-black text-lg transition-all"
+                                        className="w-full px-4 py-3 rounded-xl bg-background border border-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-black text-lg transition-all"
                                     />
                                 </div>
                             </div>
                         </div>
 
                         {/* Metadata Details - Moved here */}
-                        <div className="bg-card rounded-3xl shadow-sm border border-gray-100 p-8 space-y-6">
+                        <div className="bg-card rounded-3xl shadow-sm border border-background p-8 space-y-6">
                             <h4 className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
                                 <MdCategory className="text-lg" /> Extra Details
                             </h4>
@@ -312,7 +312,7 @@ const AddGroupExpense = () => {
                                     <select
                                         value={category}
                                         onChange={e => setCategory(e.target.value)}
-                                        className="w-full pl-10 pr-10 py-3 rounded-xl bg-background border border-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium transition-all appearance-none cursor-pointer relative"
+                                        className="w-full pl-10 pr-10 py-3 rounded-xl bg-background border border-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium transition-all appearance-none cursor-pointer relative"
                                     >
                                         {categories.length > 0 ? (
                                             <>
@@ -330,7 +330,7 @@ const AddGroupExpense = () => {
                                         )}
                                     </select>
                                     <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
-                                        <MdOutlineCategory className="text-gray-300 w-4 h-4" />
+                                        <MdOutlineCategory className="text-textColor/40 w-4 h-4" />
                                     </div>
                                 </div>
                             </div>
@@ -342,7 +342,7 @@ const AddGroupExpense = () => {
                                         type="date"
                                         value={date}
                                         onChange={e => setDate(e.target.value)}
-                                        className="w-full px-4 py-3 rounded-xl bg-background border border-gray-100 focus:outline-none focus:border-primary text-sm font-medium transition-all"
+                                        className="w-full px-4 py-3 rounded-xl bg-background border border-background focus:outline-none focus:border-primary text-sm font-medium transition-all"
                                     />
                                 </div>
                                 <div className="space-y-1.5">
@@ -352,20 +352,20 @@ const AddGroupExpense = () => {
                                         value={note}
                                         onChange={e => setNote(e.target.value)}
                                         placeholder="Write something..."
-                                        className="w-full px-4 py-3 rounded-xl bg-background border border-gray-100 focus:outline-none focus:border-primary text-sm transition-all placeholder:opacity-30"
+                                        className="w-full px-4 py-3 rounded-xl bg-background border border-background focus:outline-none focus:border-primary text-sm transition-all placeholder:opacity-30"
                                     />
                                 </div>
                             </div>
                         </div>
 
                         {/* Paid By */}
-                        <div className="bg-card rounded-3xl shadow-sm border border-gray-100 p-8">
+                        <div className="bg-card rounded-3xl shadow-sm border border-background p-8">
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-2">
                                     <div className="w-6 h-6 rounded-lg bg-primary text-white text-[10px] flex items-center justify-center font-black">1</div>
                                     Who Paid?
                                 </h2>
-                                <p className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full ${isPaidCorrect ? 'bg-secondary/10 text-secondary' : 'bg-red-500/10 text-red-500'}`}>
+                                <p className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full ${isPaidCorrect ? 'bg-secondary/10 text-secondary' : 'bg-danger/10 text-danger'}`}>
                                     {isPaidCorrect ? 'Fully Paid' : 'Wait... Check amount'}
                                 </p>
                             </div>
@@ -374,7 +374,7 @@ const AddGroupExpense = () => {
                                 {groupData?.members.map(m => {
                                     const payer = paidBy.find(p => p.mid === m._id);
                                     return (
-                                        <div key={m._id} className="group flex items-center justify-between px-5 py-3 rounded-2xl bg-background border border-gray-50 hover:border-primary/20 transition-all">
+                                        <div key={m._id} className="group flex items-center justify-between px-5 py-3 rounded-2xl bg-background border border-background hover:border-primary/20 transition-all">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary font-bold text-xs uppercase">
                                                     {m.name.charAt(0)}
@@ -398,13 +398,13 @@ const AddGroupExpense = () => {
                         </div>
 
                         {/* Split Method */}
-                        <div className="bg-card rounded-3xl shadow-sm border border-gray-100 p-8">
+                        <div className="bg-card rounded-3xl shadow-sm border border-background p-8">
                             <h2 className="text-sm font-bold uppercase tracking-widest text-primary mb-6 flex items-center gap-2">
                                 <div className="w-6 h-6 rounded-lg bg-primary text-white text-[10px] flex items-center justify-center font-black">2</div>
                                 Split Method
                             </h2>
 
-                            <div className="flex gap-3 mb-8 p-1.5 bg-background rounded-2xl border border-gray-50">
+                            <div className="flex gap-3 mb-8 p-1.5 bg-background rounded-2xl border border-background">
                                 {['equal', 'exact', 'percentage'].map(type => (
                                     <button
                                         key={type}
@@ -425,7 +425,7 @@ const AddGroupExpense = () => {
                                         key={m.mid}
                                         className={`flex items-center justify-between px-5 py-3 rounded-2xl border transition-all ${m.involved
                                             ? 'bg-background border-primary/10 shadow-sm'
-                                            : 'bg-card border-gray-50 opacity-40'
+                                            : 'bg-card border-background opacity-40'
                                             }`}
                                     >
                                         <div className="flex items-center gap-4">
@@ -484,7 +484,7 @@ const AddGroupExpense = () => {
                                 </div>
                                 <div className="flex justify-between items-baseline border-b border-white/10 pb-3">
                                     <span className="opacity-70 font-medium">Recorded Paid</span>
-                                    <span className={`font-black ${isPaidCorrect ? 'text-white' : 'text-red-200 animate-pulse'}`}>
+                                    <span className={`font-black ${isPaidCorrect ? 'text-white' : 'text-danger/50 animate-pulse'}`}>
                                         ₹{totalPaid.toFixed(2)}
                                     </span>
                                 </div>
@@ -496,7 +496,7 @@ const AddGroupExpense = () => {
 
                             <button
                                 onClick={handleSubmit}
-                                className="w-full py-4 bg-white text-primary hover:bg-background rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-xl hover:-translate-y-1 active:translate-y-0"
+                                className="w-full py-4 bg-card text-primary hover:bg-background rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-xl hover:-translate-y-1 active:translate-y-0"
                             >
                                 {isEditMode ? <MdEdit className="text-lg" /> : <MdCheckCircle className="text-lg" />}
                                 {isEditMode ? 'Update Record' : 'Save Expense'}

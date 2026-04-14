@@ -100,7 +100,7 @@ const Dashboard = () => {
                 </div>
                 <button
                     onClick={handleSwitchToGroup}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-card border border-gray-100 text-textColor font-semibold rounded-xl hover:bg-background transition-all duration-300 shadow-sm group"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-card border border-background text-textColor font-semibold rounded-xl hover:bg-background transition-all duration-300 shadow-sm group"
                 >
                     <MdGroup className="text-xl text-primary group-hover:scale-110 transition-transform" />
                     <span>Switch to Group</span>
@@ -111,7 +111,7 @@ const Dashboard = () => {
             {/* Top Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Total Income */}
-                <div className="bg-card rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl p-6 border border-background shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xs font-bold text-textColor opacity-50 uppercase tracking-widest text-primary">Total Income</p>
                         <div className="p-2 bg-secondary/10 rounded-lg">
@@ -125,48 +125,48 @@ const Dashboard = () => {
                 </div>
 
                 {/* Total Expense */}
-                <div className="bg-card rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl p-6 border border-background shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xs font-bold text-textColor opacity-50 uppercase tracking-widest text-primary">Total Expense</p>
-                        <div className="p-2 bg-red-500/10 rounded-lg">
-                            <MdTrendingUp className="text-red-500 text-xl" />
+                        <div className="p-2 bg-danger/10 rounded-lg">
+                            <MdTrendingUp className="text-danger text-xl" />
                         </div>
                     </div>
                     <p className="text-3xl font-black text-textColor">₹{(monthlyReport?.totalSpent || 0).toLocaleString()}</p>
                     <div className="mt-5 w-full h-1.5 bg-background rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full transition-all duration-1000 ${incomePercentage > 90 ? 'bg-red-500' : 'bg-primary'}`}
+                        <div className={`h-full rounded-full transition-all duration-1000 ${incomePercentage > 90 ? 'bg-danger' : 'bg-primary'}`}
                              style={{ width: `${Math.min(incomePercentage, 100)}%` }}>
                         </div>
                     </div>
                 </div>
 
                 {/* Remaining Budget */}
-                <div className="bg-card rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl p-6 border border-background shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xs font-bold text-textColor opacity-50 uppercase tracking-widest text-primary">Remaining Budget</p>
                         <div className="p-2 bg-primary/10 rounded-lg">
                             <MdAccountBalance className="text-primary text-xl" />
                         </div>
                     </div>
-                    <p className={`text-3xl font-black ${budgetStatus?.isExceeded ? 'text-red-500' : 'text-textColor'}`}>
+                    <p className={`text-3xl font-black ${budgetStatus?.isExceeded ? 'text-danger' : 'text-textColor'}`}>
                         ₹{(budgetStatus?.remaining || 0).toLocaleString()}
                     </p>
                     <div className="mt-5 w-full h-1.5 bg-background rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full transition-all duration-1000 ${budgetStatus?.isExceeded ? 'bg-red-500' : 'bg-primary opacity-60'}`}
+                        <div className={`h-full rounded-full transition-all duration-1000 ${budgetStatus?.isExceeded ? 'bg-danger' : 'bg-primary opacity-60'}`}
                              style={{ width: `${Math.min(budgetPercentage, 100)}%` }}>
                         </div>
                     </div>
                 </div>
 
                 {/* Balance */}
-                <div className="bg-card rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl p-6 border border-background shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xs font-bold text-textColor opacity-50 uppercase tracking-widest text-primary">Net Balance</p>
                         <div className="p-2 bg-secondary/10 rounded-lg">
                             <MdTrendingDown className="text-secondary text-xl rotate-180" />
                         </div>
                     </div>
-                    <p className={`text-3xl font-black ${monthlyReport?.remainingBalance < 0 ? 'text-red-500' : 'text-textColor'}`}>
+                    <p className={`text-3xl font-black ${monthlyReport?.remainingBalance < 0 ? 'text-danger' : 'text-textColor'}`}>
                         ₹{(monthlyReport?.remainingBalance || 0).toLocaleString()}
                     </p>
                     <p className="text-[10px] text-textColor opacity-40 font-bold uppercase mt-4">Income vs Outcome Flow</p>
@@ -176,7 +176,7 @@ const Dashboard = () => {
             {/* Charts & Insights Section */}
             <div className="grid grid-cols-1 lg:grid-cols-7 gap-8">
                 {/* Category Distribution (Left: 4 Units) */}
-                <div className="lg:col-span-4 bg-card rounded-3xl border border-gray-100 p-8 shadow-sm">
+                <div className="lg:col-span-4 bg-card rounded-3xl border border-background p-8 shadow-sm">
                     <div className="flex justify-between items-start mb-8 text-secondary">
                         <div>
                             <h3 className="text-xl font-bold text-textColor tracking-tight">Category Distribution</h3>
@@ -227,7 +227,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="h-64 flex flex-col items-center justify-center bg-background/50 rounded-2xl border border-dashed border-gray-200">
+                        <div className="h-64 flex flex-col items-center justify-center bg-background/50 rounded-2xl border border-dashed border-background">
                             <MdAccountBalance className="text-4xl text-textColor opacity-20 mb-3" />
                             <p className="text-textColor opacity-50 font-medium">No spending data to visualize</p>
                         </div>
@@ -237,13 +237,13 @@ const Dashboard = () => {
                 {/* Smart Analysis (Right: 3 Units) */}
                 <div className="lg:col-span-3 flex flex-col gap-6">
                     <div className="h-full bg-gradient-to-br from-primary to-secondary rounded-3xl p-8 text-card relative overflow-hidden shadow-lg group">
-                        <div className="absolute -right-12 -top-12 bg-white/10 w-48 h-48 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>
-                        <div className="absolute -left-12 -bottom-12 bg-white/10 w-40 h-40 rounded-full blur-2xl"></div>
+                        <div className="absolute -right-12 -top-12 bg-card/10 w-48 h-48 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>
+                        <div className="absolute -left-12 -bottom-12 bg-card/10 w-40 h-40 rounded-full blur-2xl"></div>
                         
                         <div className="relative z-10 flex flex-col h-full">
                             <div className="flex items-center gap-3 mb-8">
                                 <div className="p-3 bg-card/20 rounded-2xl backdrop-blur-sm border border-card/10">
-                                    <MdLightbulb className="text-2xl text-yellow-300" />
+                                    <MdLightbulb className="text-2xl text-card" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg tracking-tight text-white">Smart Analysis</h3>
@@ -265,7 +265,7 @@ const Dashboard = () => {
                                         <p className="text-4xl font-black text-white">
                                             ₹{Number(analysis?.futureExpensePrediction || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                                         </p>
-                                        <div className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase text-white/80">Est.</div>
+                                        <div className="bg-card/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase text-white/80">Est.</div>
                                     </div>
                                     <p className="text-xs text-white/50 mt-4 leading-relaxed italic">
                                         "Focus on controlling <strong>{analysis?.spendingPattern?.topCategory || 'expenditures'}</strong> to increase your health score."

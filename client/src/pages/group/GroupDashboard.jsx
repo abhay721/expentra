@@ -43,12 +43,12 @@ const GroupDashboard = () => {
 
     if (!selectedGroupId) {
         return (
-            <div className="min-h-[400px] flex flex-col items-center justify-center p-8 text-center bg-card rounded-3xl border border-gray-100 shadow-sm mt-8 animate-in fade-in zoom-in-95 duration-500">
+            <div className="min-h-[400px] flex flex-col items-center justify-center p-8 text-center bg-card rounded-3xl border border-background shadow-sm mt-8 animate-in fade-in zoom-in-95 duration-500">
                 <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mb-6">
                     <MdGroup className="w-10 h-10 text-primary opacity-40" />
                 </div>
                 <h3 className="text-xl font-bold text-textColor">No Group Selected</h3>
-                <p className="text-gray-500 mt-2 max-w-xs mx-auto">Please select a group from the Groups menu to view its dashboard.</p>
+                <p className="text-textColor/60 mt-2 max-w-xs mx-auto">Please select a group from the Groups menu to view its dashboard.</p>
             </div>
         );
     }
@@ -131,7 +131,7 @@ const GroupDashboard = () => {
                         <p className="text-sm opacity-60 mt-1">Group Financial Overview</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-xl border border-gray-100 shadow-sm text-sm font-medium">
+                <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-xl border border-background shadow-sm text-sm font-medium">
                     <MdCalendarToday className="text-primary" />
                     <span className="opacity-70">Updated: today</span>
                 </div>
@@ -140,7 +140,7 @@ const GroupDashboard = () => {
             {/* Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Members */}
-                <div className="bg-card rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl p-6 border border-background shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xs font-bold opacity-50 uppercase tracking-widest text-primary">Members</p>
                         <div className="p-2 bg-primary/10 rounded-lg">
@@ -154,23 +154,23 @@ const GroupDashboard = () => {
                 </div>
 
                 {/* My Balance */}
-                <div className="bg-card rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl p-6 border border-background shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xs font-bold opacity-50 uppercase tracking-widest text-primary">{balLabel}</p>
-                        <div className={`p-2 rounded-lg ${myBal < 0 ? 'bg-red-500/10' : 'bg-secondary/10'}`}>
-                            <MdAccountBalanceWallet className={`text-xl ${myBal < 0 ? 'text-red-500' : 'text-secondary'}`} />
+                        <div className={`p-2 rounded-lg ${myBal < 0 ? 'bg-danger/10' : 'bg-secondary/10'}`}>
+                            <MdAccountBalanceWallet className={`text-xl ${myBal < 0 ? 'text-danger' : 'text-secondary'}`} />
                         </div>
                     </div>
-                    <p className={`text-3xl font-black ${myBal < 0 ? 'text-red-500' : 'text-textColor'}`}>
+                    <p className={`text-3xl font-black ${myBal < 0 ? 'text-danger' : 'text-textColor'}`}>
                         ₹{Math.abs(myBal).toLocaleString()}
                     </p>
                     <div className="mt-5 w-full h-1.5 bg-background rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full ${myBal < 0 ? 'bg-red-500' : 'bg-secondary'}`} style={{ width: '100%' }}></div>
+                        <div className={`h-full rounded-full ${myBal < 0 ? 'bg-danger' : 'bg-secondary'}`} style={{ width: '100%' }}></div>
                     </div>
                 </div>
 
                 {/* Total Group Expense */}
-                <div className="bg-card rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl p-6 border border-background shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xs font-bold opacity-50 uppercase tracking-widest text-primary">Total Group</p>
                         <div className="p-2 bg-primary/10 rounded-lg">
@@ -184,7 +184,7 @@ const GroupDashboard = () => {
                 </div>
 
                 {/* Top Payer */}
-                <div className="bg-card rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl p-6 border border-background shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-xs font-bold opacity-50 uppercase tracking-widest text-primary">Top Payer</p>
                         <div className="p-2 bg-secondary/10 rounded-lg">
@@ -199,7 +199,7 @@ const GroupDashboard = () => {
             {/* Main Content */}
             <div className="grid grid-cols-1 lg:grid-cols-7 gap-8">
                 {/* Member Contributions (Left: 4 Units) */}
-                <div className="lg:col-span-4 bg-card rounded-3xl border border-gray-100 p-8 shadow-sm">
+                <div className="lg:col-span-4 bg-card rounded-3xl border border-background p-8 shadow-sm">
                     <div className="flex justify-between items-start mb-8 text-secondary">
                         <div>
                             <h3 className="text-xl font-bold tracking-tight">Member Contributions</h3>
@@ -247,14 +247,14 @@ const GroupDashboard = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="h-64 flex flex-col items-center justify-center bg-background/50 rounded-2xl border border-dashed border-gray-200">
+                        <div className="h-64 flex flex-col items-center justify-center bg-background/50 rounded-2xl border border-dashed border-background">
                             <MdAccountBalanceWallet className="text-4xl opacity-20 mb-3" />
                             <p className="opacity-50 font-medium">No contribution data yet</p>
                         </div>
                     )}
 
                     {/* Pending Settlements List */}
-                    <div className="mt-10 pt-10 border-t border-gray-100">
+                    <div className="mt-10 pt-10 border-t border-background">
                         <h3 className="text-lg font-bold tracking-tight mb-6">Pending Settlements</h3>
                         {allSettlements.length === 0 ? (
                             <div className="text-center py-6 bg-secondary/5 rounded-2xl border border-dashed border-secondary/20">
@@ -268,8 +268,8 @@ const GroupDashboard = () => {
                                         <div
                                             key={i}
                                             className={`p-5 rounded-2xl border transition-all hover:shadow-sm ${isOverdue
-                                                    ? 'bg-red-500/5 border-red-500/10'
-                                                    : 'bg-background/50 border-gray-100'
+                                                    ? 'bg-danger/5 border-danger/10'
+                                                    : 'bg-background/50 border-background'
                                                 }`}
                                         >
                                             <div className="flex items-center text-xs mb-3 gap-2">
@@ -278,11 +278,11 @@ const GroupDashboard = () => {
                                                 <span className="font-bold text-textColor">{debt.to.name}</span>
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className={`text-xl font-black ${isOverdue ? 'text-red-500' : 'text-textColor'}`}>
+                                                <span className={`text-xl font-black ${isOverdue ? 'text-danger' : 'text-textColor'}`}>
                                                     ₹{debt.amount.toLocaleString()}
                                                 </span>
                                                 {isOverdue && (
-                                                    <span className="text-[10px] font-bold bg-red-500 text-white px-2 py-0.5 rounded-full uppercase tracking-tighter">
+                                                    <span className="text-[10px] font-bold bg-danger text-white px-2 py-0.5 rounded-full uppercase tracking-tighter">
                                                         Overdue
                                                     </span>
                                                 )}
@@ -299,8 +299,8 @@ const GroupDashboard = () => {
                 <div className="lg:col-span-3 flex flex-col gap-6">
                     {/* Urgent Settlement Card (Gradient) */}
                     <div className="bg-gradient-to-br from-primary to-secondary rounded-3xl p-8 text-card relative overflow-hidden shadow-lg group shrink-0">
-                        <div className="absolute -right-12 -top-12 bg-white/10 w-48 h-48 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>
-                        <div className="absolute -left-12 -bottom-12 bg-white/10 w-40 h-40 rounded-full blur-2xl"></div>
+                        <div className="absolute -right-12 -top-12 bg-card/10 w-48 h-48 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>
+                        <div className="absolute -left-12 -bottom-12 bg-card/10 w-40 h-40 rounded-full blur-2xl"></div>
                         
                         <div className="relative z-10 flex flex-col h-full">
                             <div className="flex items-center gap-3 mb-8">
@@ -339,7 +339,7 @@ const GroupDashboard = () => {
                     </div>
 
                     {/* Group Members List */}
-                    <div className="bg-card rounded-3xl border border-gray-100 p-8 shadow-sm flex-1">
+                    <div className="bg-card rounded-3xl border border-background p-8 shadow-sm flex-1">
                         <h3 className="text-lg font-bold tracking-tight mb-6">Group Members</h3>
                         <div className="space-y-4">
                             {groupData?.members.map((m, index) => (

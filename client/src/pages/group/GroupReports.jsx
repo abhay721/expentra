@@ -105,12 +105,12 @@ const GroupReports = () => {
     if (!selectedGroupId) {
         return (
             <div className="max-w-6xl mx-auto px-4 py-8">
-                <div className="bg-white rounded-lg border border-gray-200 p-12 text-center shadow-sm">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <MdGroup className="w-8 h-8 text-gray-400" />
+                <div className="bg-card rounded-lg border border-background p-12 text-center shadow-sm">
+                    <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mx-auto mb-4">
+                        <MdGroup className="w-8 h-8 text-textColor/50" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900">No Group Selected</h3>
-                    <p className="text-gray-600 mt-2">Please select a group from the Groups menu first.</p>
+                    <h3 className="text-xl font-semibold text-textColor">No Group Selected</h3>
+                    <p className="text-textColor/70 mt-2">Please select a group from the Groups menu first.</p>
                 </div>
             </div>
         );
@@ -120,9 +120,9 @@ const GroupReports = () => {
         return (
             <div className="max-w-6xl mx-auto px-4 py-8">
                 <div className="space-y-4">
-                    <div className="h-8 bg-gray-200 rounded w-1/4 animate-pulse"></div>
-                    <div className="h-32 bg-gray-100 rounded-lg animate-pulse"></div>
-                    <div className="h-96 bg-gray-100 rounded-lg animate-pulse"></div>
+                    <div className="h-8 bg-card rounded w-1/4 animate-pulse"></div>
+                    <div className="h-32 bg-card rounded-lg animate-pulse"></div>
+                    <div className="h-96 bg-card rounded-lg animate-pulse"></div>
                 </div>
             </div>
         );
@@ -197,7 +197,7 @@ const GroupReports = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl md:text-3xl font-bold text-textColor tracking-tight">Group Reports</h1>
-                    <p className="text-sm font-semibold text-gray-400 mt-1 uppercase tracking-widest">{groupData?.name} • Financial activity</p>
+                    <p className="text-sm font-semibold text-textColor/50 mt-1 uppercase tracking-widest">{groupData?.name} • Financial activity</p>
                 </div>
                 <button
                     onClick={handleDownloadCSV}
@@ -209,9 +209,9 @@ const GroupReports = () => {
 
             {/* Overview Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Transaction Value</p>
+                        <p className="text-[10px] font-black text-textColor/50 uppercase tracking-widest">Total Transaction Value</p>
                         <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                             <MdAttachMoney className="w-5 h-5" />
                         </div>
@@ -219,19 +219,19 @@ const GroupReports = () => {
                     <p className="text-3xl font-bold text-textColor tracking-tight">₹{totalFilteredAmount.toLocaleString()}</p>
                 </div>
 
-                <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-red-400">Gross Expenses</p>
-                        <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-red-500">
+                        <p className="text-[10px] font-black text-textColor/50 uppercase tracking-widest text-danger">Gross Expenses</p>
+                        <div className="w-10 h-10 bg-danger/5 rounded-xl flex items-center justify-center text-danger">
                             <MdReceipt className="w-5 h-5" />
                         </div>
                     </div>
-                    <p className="text-3xl font-bold text-red-600 tracking-tight">₹{expenseTotal.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-danger tracking-tight">₹{expenseTotal.toLocaleString()}</p>
                 </div>
 
-                <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-secondary">Total Settlements</p>
+                        <p className="text-[10px] font-black text-textColor/50 uppercase tracking-widest text-secondary">Total Settlements</p>
                         <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
                             <MdCompareArrows className="w-5 h-5" />
                         </div>
@@ -241,7 +241,7 @@ const GroupReports = () => {
             </div>
 
             {/* Smart Filters Container */}
-            <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div className="bg-card rounded-2xl border border-background shadow-sm p-6">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center text-primary">
@@ -260,11 +260,11 @@ const GroupReports = () => {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Type</label>
+                        <label className="text-[10px] font-black text-textColor/50 uppercase tracking-widest ml-1">Type</label>
                         <select
                             value={filterType}
                             onChange={e => setFilterType(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-background border border-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor"
+                            className="w-full px-4 py-2.5 bg-background border border-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor"
                         >
                             <option value="">All Transactions</option>
                             <option value="expense">Expenses Only</option>
@@ -272,11 +272,11 @@ const GroupReports = () => {
                         </select>
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Category</label>
+                        <label className="text-[10px] font-black text-textColor/50 uppercase tracking-widest ml-1">Category</label>
                         <select
                             value={filterCategory}
                             onChange={e => setFilterCategory(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-background border border-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor transition-all"
+                            className="w-full px-4 py-2.5 bg-background border border-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor transition-all"
                             disabled={filterType === 'settlement'}
                         >
                             <option value="">All Categories</option>
@@ -286,11 +286,11 @@ const GroupReports = () => {
                         </select>
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Paid By / From</label>
+                        <label className="text-[10px] font-black text-textColor/50 uppercase tracking-widest ml-1">Paid By / From</label>
                         <select
                             value={filterPaidBy}
                             onChange={e => setFilterPaidBy(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-background border border-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor transition-all"
+                            className="w-full px-4 py-2.5 bg-background border border-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor transition-all"
                         >
                             <option value="">Any Member</option>
                             {members.map(m => (
@@ -299,11 +299,11 @@ const GroupReports = () => {
                         </select>
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Sorting</label>
+                        <label className="text-[10px] font-black text-textColor/50 uppercase tracking-widest ml-1">Sorting</label>
                         <select
                             value={sortBy}
                             onChange={e => setSortBy(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-background border border-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor transition-all"
+                            className="w-full px-4 py-2.5 bg-background border border-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-sm font-bold text-textColor transition-all"
                         >
                             <option value="date-desc">Timeline (Newest)</option>
                             <option value="date-asc">Timeline (Oldest)</option>
@@ -315,43 +315,43 @@ const GroupReports = () => {
             </div>
 
             {/* Results Table View */}
-            <div className="bg-card rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            <div className="bg-card rounded-2xl border border-background shadow-sm overflow-hidden">
+                <div className="px-6 py-5 border-b border-background flex items-center justify-between">
+                    <p className="text-[10px] font-black text-textColor/50 uppercase tracking-widest">
                         Activity Stream <span className="text-primary font-black ml-1">({filteredActivities.length})</span>
                     </p>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-textColor/50 uppercase tracking-widest">
                         Total Value: <span className="text-textColor font-black ml-1">₹{totalFilteredAmount.toLocaleString()}</span>
                     </p>
                 </div>
-                
+
                 <div className="overflow-x-auto">
                     {filteredActivities.length === 0 ? (
                         <div className="p-20 text-center">
-                            <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-50">
-                                <MdOutlineReceiptLong className="w-8 h-8 text-gray-300" />
+                            <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center mx-auto mb-4 border border-background">
+                                <MdOutlineReceiptLong className="w-8 h-8 text-textColor/40" />
                             </div>
                             <p className="text-textColor font-bold">No results found</p>
-                            <p className="text-gray-400 text-xs mt-1">Try adjusting your filters to see more activity.</p>
+                            <p className="text-textColor/50 text-xs mt-1">Try adjusting your filters to see more activity.</p>
                         </div>
                     ) : (
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-background/50 border-b border-gray-100">
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Description</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Member / From</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Amount</th>
+                                <tr className="bg-background/50 border-b border-background">
+                                    <th className="px-6 py-4 text-[10px] font-black text-textColor/50 uppercase tracking-widest">Description</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-textColor/50 uppercase tracking-widest">Category</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-textColor/50 uppercase tracking-widest">Member / From</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-textColor/50 uppercase tracking-widest text-right">Amount</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50">
+                            <tbody className="divide-y divide-background">
                                 {filteredActivities.map((act) => (
                                     <tr key={act.id} className="group hover:bg-background transition-all duration-200">
                                         <td className="px-6 py-5">
                                             <div className="space-y-1">
                                                 <p className="text-sm font-bold text-textColor tracking-tight">{act.title}</p>
                                                 <div className="flex items-center gap-3">
-                                                    <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1 uppercase tracking-widest">
+                                                    <span className="text-[10px] font-bold text-textColor/50 flex items-center gap-1 uppercase tracking-widest">
                                                         <MdDateRange className="text-xs" /> {format(new Date(act.date), 'dd MMM yyyy')}
                                                     </span>
                                                     {act.note && (
@@ -364,7 +364,7 @@ const GroupReports = () => {
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-xl bg-background flex items-center justify-center text-primary shadow-sm border border-gray-100 transition-transform group-hover:scale-105">
+                                                <div className="w-9 h-9 rounded-xl bg-background flex items-center justify-center text-primary shadow-sm border border-background transition-transform group-hover:scale-105">
                                                     <CategoryIcon iconName={categoryMetadata[act.category?.toLowerCase()] || 'MdCategory'} className="w-5 h-5" />
                                                 </div>
                                                 <p className="text-sm font-bold text-textColor tracking-tight">{act.category}</p>
@@ -372,19 +372,18 @@ const GroupReports = () => {
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shadow-sm transition-transform group-hover:scale-105 ${
-                                                    act.paidBy.includes(',') ? 'bg-purple-100 text-purple-600' : 'bg-primary/10 text-primary'
-                                                }`}>
+                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shadow-sm transition-transform group-hover:scale-105 ${act.paidBy.includes(',') ? 'bg-primary/10 text-primary' : 'bg-primary/10 text-primary'
+                                                    }`}>
                                                     {act.paidBy.includes(',') ? 'M' : (act.paidBy.charAt(0) || 'U').toUpperCase()}
                                                 </div>
                                                 <p className="text-sm font-bold text-textColor truncate max-w-[120px] tracking-tight">{act.paidBy || 'Unknown'}</p>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 text-right">
-                                            <p className={`text-base font-black tracking-tight ${act.type === 'expense' ? 'text-red-500' : 'text-secondary'}`}>
+                                            <p className={`text-base font-black tracking-tight ${act.type === 'expense' ? 'text-danger' : 'text-secondary'}`}>
                                                 ₹{act.amount.toLocaleString()}
                                             </p>
-                                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest opacity-50">{act.type}</p>
+                                            <p className="text-[9px] font-black text-textColor/50 uppercase tracking-widest opacity-50">{act.type}</p>
                                         </td>
                                     </tr>
                                 ))}

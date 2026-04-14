@@ -12,6 +12,7 @@ export default {
                 background: "#F9FAFB",  // Light Gray
                 textColor: "#111827",   // Dark text
                 card: "#FFFFFF",        // Card white
+                danger: "#EF4444",      // Red — error/over-budget states
             },
         },
     },

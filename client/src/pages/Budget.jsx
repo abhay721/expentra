@@ -13,8 +13,8 @@ const SemiCircleProgress = ({ title, value, max, colorClass, isRed }) => {
     const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
     return (
-        <div className="bg-card rounded-3xl p-6 flex flex-col items-center justify-between border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-            <h3 className={`text-lg font-semibold mb-6 ${isRed ? 'text-red-500' : 'text-primary'}`}>
+        <div className="bg-card rounded-3xl p-6 flex flex-col items-center justify-between border border-background shadow-sm hover:shadow-md transition-all duration-300">
+            <h3 className={`text-lg font-semibold mb-6 ${isRed ? 'text-danger' : 'text-primary'}`}>
                 {title}
             </h3>
             
@@ -48,7 +48,7 @@ const SemiCircleProgress = ({ title, value, max, colorClass, isRed }) => {
                 </div>
             </div>
             
-            <p className="text-xs text-textColor opacity-40 mt-8 pt-4 w-full text-center border-t border-gray-50">
+            <p className="text-xs text-textColor opacity-40 mt-8 pt-4 w-full text-center border-t border-background">
                 Current month data
             </p>
         </div>
@@ -120,7 +120,7 @@ const Budget = () => {
     if (loading) {
         return (
             <div className="space-y-6 bg-transparent">
-                <div className="h-8 bg-gray-100 rounded w-1/4 animate-pulse"></div>
+                <div className="h-8 bg-card rounded w-1/4 animate-pulse"></div>
                 <div className="h-32 bg-card rounded-2xl animate-pulse"></div>
                 <div className="h-64 bg-card rounded-2xl animate-pulse"></div>
             </div>
@@ -143,8 +143,8 @@ const Budget = () => {
             </div>
 
             {/* Set Budget Form */}
-            <div className="bg-card rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all duration-200">
-                <div className="p-6 pb-4 border-b border-gray-50 flex items-center justify-between">
+            <div className="bg-card rounded-2xl border border-background shadow-sm overflow-hidden transition-all duration-200">
+                <div className="p-6 pb-4 border-b border-background flex items-center justify-between">
                     <div>
                         <h2 className="text-lg font-semibold text-textColor">Budget Configuration</h2>
                         <p className="text-sm text-textColor opacity-60 mt-0.5">Define your monthly limits</p>
@@ -162,7 +162,7 @@ const Budget = () => {
                                 value={amount}
                                 onChange={e => setAmount(e.target.value)}
                                 placeholder="e.g. 30000"
-                                className="block w-full px-4 py-2.5 bg-background border border-gray-100 text-textColor rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-200 shadow-sm"
+                                className="block w-full px-4 py-2.5 bg-background border border-background text-textColor rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-200 shadow-sm"
                             />
                         </div>
                         <div>
@@ -176,7 +176,7 @@ const Budget = () => {
                                 value={savingGoal}
                                 onChange={e => setSavingGoal(e.target.value)}
                                 placeholder="e.g. 5000"
-                                className="block w-full px-4 py-2.5 bg-background border border-gray-100 text-textColor rounded-xl focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all duration-200 shadow-sm"
+                                className="block w-full px-4 py-2.5 bg-background border border-background text-textColor rounded-xl focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all duration-200 shadow-sm"
                             />
                         </div>
                         <button
@@ -195,17 +195,17 @@ const Budget = () => {
                     {/* Warning Banner */}
                     {budgetStatus.warning && (
                         <div className={`rounded-xl border-l-4 p-4 shadow-sm flex items-start gap-3 transition-all duration-200 ${budgetStatus.isExceeded
-                                ? 'bg-card border-red-500'
-                                : 'bg-card border-orange-400'
+                                ? 'bg-card border-danger'
+                                : 'bg-card border-danger'
                             }`}>
-                            <MdWarning className={`w-6 h-6 shrink-0 ${budgetStatus.isExceeded ? 'text-red-500' : 'text-orange-400'
+                            <MdWarning className={`w-6 h-6 shrink-0 ${budgetStatus.isExceeded ? 'text-danger' : 'text-danger'
                                 }`} />
                             <div>
-                                <h3 className={`font-semibold ${budgetStatus.isExceeded ? 'text-red-500' : 'text-orange-500'
+                                <h3 className={`font-semibold ${budgetStatus.isExceeded ? 'text-danger' : 'text-danger'
                                     }`}>
                                     {budgetStatus.isExceeded ? 'Budget Exceeded!' : 'Approaching Budget Limit'}
                                 </h3>
-                                <p className={`mt-0.5 text-sm ${budgetStatus.isExceeded ? 'text-red-500 opacity-80' : 'text-orange-500 opacity-80'
+                                <p className={`mt-0.5 text-sm ${budgetStatus.isExceeded ? 'text-danger opacity-80' : 'text-danger opacity-80'
                                     }`}>
                                     {budgetStatus.warning}
                                 </p>
@@ -215,7 +215,7 @@ const Budget = () => {
 
                     {/* Budget vs Income Discrepancy Note */}
                     {budgetStatus.budget > (monthlyReport?.totalIncome || 0) && (
-                        <div className="flex items-start gap-2 bg-orange-50/50 border border-orange-100 px-3 py-2.5 rounded-lg text-xs text-orange-600 font-medium w-fit">
+                        <div className="flex items-start gap-2 bg-danger/5/50 border border-danger/20 px-3 py-2.5 rounded-lg text-xs text-danger font-medium w-fit">
                             <MdWarning className="shrink-0 text-sm mt-0.5" />
                             <span>Your Max Spend Limit (₹{budgetStatus.budget.toLocaleString()}) exceeds your recorded Income (₹{(monthlyReport?.totalIncome || 0).toLocaleString()}). Consider adjusting your budget.</span>
                         </div>
@@ -223,7 +223,7 @@ const Budget = () => {
 
                     {/* Top Summary Cards (Horizontal Structure) */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-4">
+                        <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-4">
                             <div className="bg-primary/10 p-3 rounded-xl shrink-0">
                                 <MdAccountBalance className="text-primary text-2xl" />
                             </div>
@@ -234,26 +234,26 @@ const Budget = () => {
                             </div>
                         </div>
 
-                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-4">
-                            <div className="bg-red-500/10 p-3 rounded-xl shrink-0">
-                                <MdTrendingUp className="text-red-500 text-2xl" />
+                        <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-4">
+                            <div className="bg-danger/10 p-3 rounded-xl shrink-0">
+                                <MdTrendingUp className="text-danger text-2xl" />
                             </div>
                             <div>
                                 <p className="text-xs font-semibold text-textColor opacity-60 uppercase tracking-wide">Spent Budget</p>
-                                <p className="text-2xl font-bold text-red-500 mt-1">₹{budgetStatus.totalSpent.toLocaleString()}</p>
+                                <p className="text-2xl font-bold text-danger mt-1">₹{budgetStatus.totalSpent.toLocaleString()}</p>
                                 <p className="text-xs text-textColor opacity-40 mt-1">
                                     {((budgetStatus.totalSpent / budgetStatus.budget) * 100).toFixed(1)}% used
                                 </p>
                             </div>
                         </div>
 
-                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-4">
+                        <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-4">
                             <div className="bg-secondary/10 p-3 rounded-xl shrink-0">
                                 <MdSavings className="text-secondary text-2xl" />
                             </div>
                             <div>
                                 <p className="text-xs font-semibold text-textColor opacity-60 uppercase tracking-wide">Remaining Budget</p>
-                                <p className={`text-2xl font-bold mt-1 ${budgetStatus.remaining < 0 ? 'text-red-500' : 'text-secondary'}`}>
+                                <p className={`text-2xl font-bold mt-1 ${budgetStatus.remaining < 0 ? 'text-danger' : 'text-secondary'}`}>
                                     ₹{budgetStatus.remaining.toLocaleString()}
                                 </p>
                                 <p className="text-xs text-textColor opacity-40 mt-1">Available to spend</p>
@@ -267,7 +267,7 @@ const Budget = () => {
                             title="Budget Used"
                             value={budgetStatus.totalSpent}
                             max={budgetStatus.budget}
-                            colorClass="text-red-500"
+                            colorClass="text-danger"
                             isRed={true}
                         />
                         <SemiCircleProgress
@@ -286,7 +286,7 @@ const Budget = () => {
 
                     {/* Goal Tracker */}
                     {budgetStatus.savingGoal > 0 && (
-                        <div className="bg-card rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-200">
+                        <div className="bg-card rounded-2xl border border-background p-6 shadow-sm hover:shadow-md transition-all duration-200">
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
                                     <div className="p-3 bg-secondary/10 rounded-xl">
@@ -311,7 +311,7 @@ const Budget = () => {
                                     Target: <span>₹{budgetStatus.savingGoal.toLocaleString()}</span>
                                 </div>
                             </div>
-                            <div className="w-full bg-background border border-gray-100 rounded-full h-3 shadow-sm p-0.5">
+                            <div className="w-full bg-background border border-background rounded-full h-3 shadow-sm p-0.5">
                                 <div
                                     className="h-full rounded-full bg-secondary transition-all duration-1000"
                                     style={{ width: `${savingsProgress}%` }}
@@ -325,7 +325,7 @@ const Budget = () => {
 
             {/* Empty State */}
             {!budgetStatus && !loading && (
-                <div className="bg-card rounded-2xl border border-gray-100 p-12 text-center transition-all duration-200">
+                <div className="bg-card rounded-2xl border border-background p-12 text-center transition-all duration-200">
                     <div className="flex flex-col items-center gap-4">
                         <div className="p-5 bg-background shadow-sm rounded-full">
                             <MdAccountBalance className="w-12 h-12 text-textColor opacity-20" />

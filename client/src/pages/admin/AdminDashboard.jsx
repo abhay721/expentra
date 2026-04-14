@@ -40,15 +40,15 @@ const AdminDashboard = () => {
     if (loading) {
         return (
             <div className="space-y-6">
-                <div className="h-8 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+                <div className="h-8 bg-card rounded w-1/4 animate-pulse"></div>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="h-32 bg-gray-100 rounded-lg animate-pulse"></div>
+                        <div key={i} className="h-32 bg-card rounded-lg animate-pulse"></div>
                     ))}
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="h-80 bg-gray-100 rounded-lg animate-pulse"></div>
-                    <div className="h-80 bg-gray-100 rounded-lg animate-pulse"></div>
+                    <div className="h-80 bg-card rounded-lg animate-pulse"></div>
+                    <div className="h-80 bg-card rounded-lg animate-pulse"></div>
                 </div>
             </div>
         );
@@ -71,79 +71,79 @@ const AdminDashboard = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                        <MdAdminPanelSettings className="w-7 h-7 text-blue-600" />
+                    <div className="p-2 bg-primary/5 rounded-lg">
+                        <MdAdminPanelSettings className="w-7 h-7 text-primary" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-                        <p className="text-sm text-gray-600 mt-0.5">Platform overview and analytics</p>
+                        <h1 className="text-2xl font-bold text-textColor">Admin Dashboard</h1>
+                        <p className="text-sm text-textColor/70 mt-0.5">Platform overview and analytics</p>
                     </div>
                 </div>
             </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+                <div className="bg-card rounded-lg border border-background p-5 shadow-sm">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Total Users</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats?.totalUsers?.toLocaleString() || 0}</p>
+                            <p className="text-xs font-medium text-textColor/70 uppercase tracking-wide">Total Users</p>
+                            <p className="text-2xl font-bold text-textColor">{stats?.totalUsers?.toLocaleString() || 0}</p>
                         </div>
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <MdPeople className="w-5 h-5 text-blue-600" />
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <MdPeople className="w-5 h-5 text-primary" />
                         </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-xs">
-                        <MdVerifiedUser className="text-gray-400" />
-                        <span className="text-gray-600">{stats?.adminCount || 0} Admins</span>
+                        <MdVerifiedUser className="text-textColor/50" />
+                        <span className="text-textColor/70">{stats?.adminCount || 0} Admins</span>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+                <div className="bg-card rounded-lg border border-background p-5 shadow-sm">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Daily Active</p>
-                            <p className="text-2xl font-bold text-gray-900">{advancedStats?.dailyActiveUsers?.toLocaleString() || 0}</p>
+                            <p className="text-xs font-medium text-textColor/70 uppercase tracking-wide">Daily Active</p>
+                            <p className="text-2xl font-bold text-textColor">{advancedStats?.dailyActiveUsers?.toLocaleString() || 0}</p>
                         </div>
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <MdShowChart className="w-5 h-5 text-blue-600" />
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <MdShowChart className="w-5 h-5 text-primary" />
                         </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-xs">
-                        <MdTimeline className="text-gray-400" />
-                        <span className="text-gray-600">Last 24 hours</span>
+                        <MdTimeline className="text-textColor/50" />
+                        <span className="text-textColor/70">Last 24 hours</span>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+                <div className="bg-card rounded-lg border border-background p-5 shadow-sm">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Total Transactions</p>
-                            <p className="text-2xl font-bold text-gray-900">{advancedStats?.totalExpensesCount?.toLocaleString() || 0}</p>
+                            <p className="text-xs font-medium text-textColor/70 uppercase tracking-wide">Total Transactions</p>
+                            <p className="text-2xl font-bold text-textColor">{advancedStats?.totalExpensesCount?.toLocaleString() || 0}</p>
                         </div>
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <MdReceipt className="w-5 h-5 text-blue-600" />
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <MdReceipt className="w-5 h-5 text-primary" />
                         </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-xs">
-                        <MdTrendingUp className="text-gray-400" />
-                        <span className="text-gray-600">All time</span>
+                        <MdTrendingUp className="text-textColor/50" />
+                        <span className="text-textColor/70">All time</span>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+                <div className="bg-card rounded-lg border border-background p-5 shadow-sm">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Total Volume</p>
-                            <p className="text-xl font-bold text-gray-900">₹{advancedStats?.totalTransactionAmount?.toLocaleString() || 0}</p>
+                            <p className="text-xs font-medium text-textColor/70 uppercase tracking-wide">Total Volume</p>
+                            <p className="text-xl font-bold text-textColor">₹{advancedStats?.totalTransactionAmount?.toLocaleString() || 0}</p>
                         </div>
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <MdAttachMoney className="w-5 h-5 text-blue-600" />
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <MdAttachMoney className="w-5 h-5 text-primary" />
                         </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-xs">
-                        <MdDashboard className="text-gray-400" />
-                        <span className="text-gray-600">System economy</span>
+                        <MdDashboard className="text-textColor/50" />
+                        <span className="text-textColor/70">System economy</span>
                     </div>
                 </div>
             </div>
@@ -151,10 +151,10 @@ const AdminDashboard = () => {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Platform Activity Trend */}
-                <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
-                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200">
-                        <MdTrendingUp className="w-5 h-5 text-blue-600" />
-                        <h3 className="font-semibold text-gray-900">Platform Activity Trend</h3>
+                <div className="bg-card rounded-lg border border-background p-5 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-background">
+                        <MdTrendingUp className="w-5 h-5 text-primary" />
+                        <h3 className="font-semibold text-textColor">Platform Activity Trend</h3>
                     </div>
                     <div className="h-80 w-full">
                         <ResponsiveContainer width="100%" height="100%" minWidth={0}>
@@ -198,10 +198,10 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Top Categories Pie Chart */}
-                <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
-                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200">
-                        <MdCategory className="w-5 h-5 text-blue-600" />
-                        <h3 className="font-semibold text-gray-900">Top Spending Categories</h3>
+                <div className="bg-card rounded-lg border border-background p-5 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-background">
+                        <MdCategory className="w-5 h-5 text-primary" />
+                        <h3 className="font-semibold text-textColor">Top Spending Categories</h3>
                     </div>
                     <div className="h-80 w-full">
                         {pieData.length > 0 ? (
@@ -226,7 +226,7 @@ const AdminDashboard = () => {
                                 </PieChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-full flex items-center justify-center text-gray-500">
+                            <div className="h-full flex items-center justify-center text-textColor/60">
                                 No category data available
                             </div>
                         )}
@@ -237,54 +237,54 @@ const AdminDashboard = () => {
             {/* Recent Users & Categories Tables */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Users Table */}
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                    <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
+                <div className="bg-card rounded-lg border border-background shadow-sm overflow-hidden">
+                    <div className="px-5 py-3 bg-background border-b border-background">
                         <div className="flex items-center gap-2">
-                            <MdPeople className="w-5 h-5 text-blue-600" />
-                            <h3 className="font-semibold text-gray-900">Recent Users</h3>
+                            <MdPeople className="w-5 h-5 text-primary" />
+                            <h3 className="font-semibold text-textColor">Recent Users</h3>
                         </div>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-gray-50">
+                            <thead className="bg-background">
                                 <tr>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase">User</th>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase">Email</th>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase">Role</th>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase">Joined</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-textColor/70 uppercase">User</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-textColor/70 uppercase">Email</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-textColor/70 uppercase">Role</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-textColor/70 uppercase">Joined</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-background">
                                 {stats?.recentUsers?.slice(0, 5).map((user) => (
-                                    <tr key={user._id} className="hover:bg-gray-50 transition">
+                                    <tr key={user._id} className="hover:bg-background transition">
                                         <td className="px-4 py-2">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                                    <span className="text-xs font-bold text-blue-700">
+                                                <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                                                    <span className="text-xs font-bold text-primary">
                                                         {user.name?.charAt(0)?.toUpperCase() || 'U'}
                                                     </span>
                                                 </div>
-                                                <span className="text-sm font-medium text-gray-900">{user.name}</span>
+                                                <span className="text-sm font-medium text-textColor">{user.name}</span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-2 text-sm text-gray-600">{user.email}</td>
+                                        <td className="px-4 py-2 text-sm text-textColor/70">{user.email}</td>
                                         <td className="px-4 py-2">
                                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${user.role === 'admin'
-                                                    ? 'bg-purple-100 text-purple-700'
-                                                    : 'bg-gray-100 text-gray-600'
+                                                    ? 'bg-primary/10 text-primary'
+                                                    : 'bg-card text-textColor/70'
                                                 }`}>
                                                 {user.role === 'admin' && <MdVerifiedUser className="text-xs" />}
                                                 {user.role || 'user'}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-2 text-sm text-gray-600">
+                                        <td className="px-4 py-2 text-sm text-textColor/70">
                                             {new Date(user.createdAt).toLocaleDateString()}
                                         </td>
                                     </tr>
                                 ))}
                                 {(!stats?.recentUsers || stats.recentUsers.length === 0) && (
                                     <tr>
-                                        <td colSpan="4" className="px-4 py-8 text-center text-gray-500">
+                                        <td colSpan="4" className="px-4 py-8 text-center text-textColor/60">
                                             No users found
                                         </td>
                                     </tr>
@@ -295,40 +295,40 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Top Categories Table */}
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                    <div className="px-5 py-3 bg-gray-50 border-b border-gray-200">
+                <div className="bg-card rounded-lg border border-background shadow-sm overflow-hidden">
+                    <div className="px-5 py-3 bg-background border-b border-background">
                         <div className="flex items-center gap-2">
-                            <MdCategory className="w-5 h-5 text-blue-600" />
-                            <h3 className="font-semibold text-gray-900">Top Expense Categories</h3>
+                            <MdCategory className="w-5 h-5 text-primary" />
+                            <h3 className="font-semibold text-textColor">Top Expense Categories</h3>
                         </div>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-gray-50">
+                            <thead className="bg-background">
                                 <tr>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase">Category</th>
-                                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-600 uppercase">Usage Count</th>
-                                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-600 uppercase">Total Amount</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-textColor/70 uppercase">Category</th>
+                                    <th className="px-4 py-2 text-right text-xs font-medium text-textColor/70 uppercase">Usage Count</th>
+                                    <th className="px-4 py-2 text-right text-xs font-medium text-textColor/70 uppercase">Total Amount</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-background">
                                 {advancedStats?.topCategories?.slice(0, 5).map((cat, idx) => (
-                                    <tr key={cat.name} className="hover:bg-gray-50 transition">
+                                    <tr key={cat.name} className="hover:bg-background transition">
                                         <td className="px-4 py-2">
                                             <div className="flex items-center gap-2">
                                                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></div>
-                                                <span className="text-sm font-medium text-gray-900 capitalize">{cat.name}</span>
+                                                <span className="text-sm font-medium text-textColor capitalize">{cat.name}</span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-2 text-right text-sm font-semibold text-gray-700">{cat.count}</td>
-                                        <td className="px-4 py-2 text-right text-sm font-semibold text-green-600">
+                                        <td className="px-4 py-2 text-right text-sm font-semibold text-textColor/80">{cat.count}</td>
+                                        <td className="px-4 py-2 text-right text-sm font-semibold text-secondary">
                                             ₹{cat.totalAmount?.toLocaleString() || 0}
                                         </td>
                                     </tr>
                                 ))}
                                 {(!advancedStats?.topCategories || advancedStats.topCategories.length === 0) && (
                                     <tr>
-                                        <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                        <td colSpan="3" className="px-4 py-8 text-center text-textColor/60">
                                             No category data available
                                         </td>
                                     </tr>
@@ -340,25 +340,25 @@ const AdminDashboard = () => {
             </div>
 
             {/* System Health Indicator */}
-            <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+            <div className="bg-card rounded-lg border border-background p-5 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
-                    <MdWarning className="w-5 h-5 text-blue-600" />
-                    <h3 className="font-semibold text-gray-900">System Health</h3>
+                    <MdWarning className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-textColor">System Health</h3>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm text-gray-600">Active Groups</span>
-                        <span className="text-lg font-bold text-blue-600">{advancedStats?.activeGroups || 0}</span>
+                    <div className="flex items-center justify-between p-3 bg-background rounded-lg">
+                        <span className="text-sm text-textColor/70">Active Groups</span>
+                        <span className="text-lg font-bold text-primary">{advancedStats?.activeGroups || 0}</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm text-gray-600">Avg Transaction</span>
-                        <span className="text-lg font-bold text-blue-600">
+                    <div className="flex items-center justify-between p-3 bg-background rounded-lg">
+                        <span className="text-sm text-textColor/70">Avg Transaction</span>
+                        <span className="text-lg font-bold text-primary">
                             ₹{advancedStats?.averageTransactionAmount?.toLocaleString() || 0}
                         </span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm text-gray-600">User Growth</span>
-                        <span className={`text-lg font-bold ${(stats?.growthRate || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <div className="flex items-center justify-between p-3 bg-background rounded-lg">
+                        <span className="text-sm text-textColor/70">User Growth</span>
+                        <span className={`text-lg font-bold ${(stats?.growthRate || 0) >= 0 ? 'text-secondary' : 'text-danger'}`}>
                             {(stats?.growthRate || 0) >= 0 ? '+' : ''}{stats?.growthRate || 0}%
                         </span>
                     </div>
