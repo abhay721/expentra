@@ -61,10 +61,7 @@ export const sendPushNotification = async (tokens, payload) => {
             tokens: tokens,
         };
 
-        console.log("--- Sending notification to:", tokens.length, "tokens");
         const response = await firebaseApp.messaging().sendEachForMulticast(message);
-
-        console.log("--- FCM Result: Success:", response.successCount, "| Failure:", response.failureCount);
 
         // Cleanup invalid tokens
         if (response.failureCount > 0) {

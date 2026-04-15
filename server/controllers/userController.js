@@ -1,6 +1,12 @@
 import User from '../models/userModel.js';
 import generateToken from '../utils/generateToken.js';
 
+// Password validation regex: min 8 chars, 1 uppercase, 1 lowercase, 1 number
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+
+// Email validation regex
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
@@ -8,6 +14,18 @@ const registerUser = async (req, res, next) => {
     const { name, email, password, role } = req.body;
 
     try {
+        // Validate email format
+        if (!emailRegex.test(email)) {
+            res.status(400);
+            throw new Error('Invalid email format');
+        }
+
+        // Validate password strength
+        if (!passwordRegex.test(password)) {
+            res.status(400);
+            throw new Error('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number');
+        }
+
         const userExists = await User.findOne({ email });
 
         if (userExists) {
@@ -59,14 +77,6 @@ const authUser = async (req, res, next) => {
             }
 
 
-
-            // Maintain legacy tracking array on User model explicitly mapped in old routes
-            user.loginActivity.unshift({
-                date: Date.now(),
-                ip: ipAddress
-            });
-            await user.save({ validateBeforeSave: false });
-
             res.json({
                 _id: user._id,
                 name: user.name,
@@ -97,8 +107,7 @@ const getUserProfile = async (req, res, next) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role,
-                loginActivity: user.loginActivity || [],
+                role: user.role
             });
         } else {
             res.status(404);

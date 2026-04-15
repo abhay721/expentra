@@ -47,6 +47,7 @@ const notificationSchema = new mongoose.Schema(
 
 // Index for performance and expiry if needed
 notificationSchema.index({ user: 1, createdAt: -1 });
+notificationSchema.index({ referenceId: 1 }, { unique: true, sparse: true }); // Prevent duplicate notifications
 
 const Notification = mongoose.model('Notification', notificationSchema);
 export default Notification;

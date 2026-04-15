@@ -34,13 +34,7 @@ const userSchema = new mongoose.Schema(
         fcmTokens: {
             type: [String],
             default: [],
-        },
-        loginActivity: [
-            {
-                date: { type: Date, default: Date.now },
-                ip: { type: String },
-            }
-        ],
+        }
     },
     {
         timestamps: true,

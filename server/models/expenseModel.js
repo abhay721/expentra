@@ -62,5 +62,9 @@ const expenseSchema = new mongoose.Schema(
     }
 );
 
+// Indexes
+expenseSchema.index({ userId: 1 }); // For user expense queries
+expenseSchema.index({ userId: 1, date: -1 }); // For sorted expense lists
+
 const Expense = mongoose.model('Expense', expenseSchema);
 export default Expense;

@@ -24,7 +24,6 @@ const initializeFirebase = async () => {
             firebaseApp = admin.initializeApp({
                 credential: admin.credential.cert(serviceAccount),
             });
-            console.log("✅ Firebase Admin initialized via serviceAccountKey.json");
             return firebaseApp;
         } catch (fileError) {
             // 2. Fallback to Environment Variables if file is missing or invalid
@@ -45,7 +44,6 @@ const initializeFirebase = async () => {
                         privateKey,
                     }),
                 });
-                console.log("✅ Firebase Admin initialized via Environment Variables for:", projectId);
                 return firebaseApp;
             }
             throw new Error(`Credentials not found in .env and file not found at: ${serviceAccountPath}`);

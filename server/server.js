@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import connectDB from './config/db.js';
 import { protect, admin } from './middleware/authMiddleware.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
@@ -20,13 +21,21 @@ connectDB();
 
 const app = express();
 
+// Rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+app.use(limiter);
+
 const allowedOrigins = [
     'https://expentra-ten.vercel.app',
     'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    process.env.FRONTEND_URL,
-    process.env.Frontend_URL
+    process.env.FRONTEND_URL
 ].filter(Boolean).map(origin => origin.replace(/\/$/, ""));
 
 const corsOptions = {

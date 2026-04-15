@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastContainer } from 'react-toastify';
@@ -42,33 +42,33 @@ import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Income from './pages/Income';
-import Expenses from './pages/Expenses';
-import Budget from './pages/Budget';
-import Reports from './pages/Reports';
-import Analysis from './pages/Analysis';
-import Alerts from './pages/Alerts';
-import Home from './pages/Home';
+const Login = React.lazy(() => import('./pages/Login'));
+const Register = React.lazy(() => import('./pages/Register'));
+const Dashboard = React.lazy(() => import('./pages/Dashboard'));
+const Income = React.lazy(() => import('./pages/Income'));
+const Expenses = React.lazy(() => import('./pages/Expenses'));
+const Budget = React.lazy(() => import('./pages/Budget'));
+const Reports = React.lazy(() => import('./pages/Reports'));
+const Analysis = React.lazy(() => import('./pages/Analysis'));
+const Alerts = React.lazy(() => import('./pages/Alerts'));
+const Home = React.lazy(() => import('./pages/Home'));
 
 
 // Group Pages
-import GroupSelection from './pages/group/GroupSelection';
-import GroupDashboard from './pages/group/GroupDashboard';
-import GroupExpenses from './pages/group/GroupExpenses';
-import AddGroupExpense from './pages/group/AddGroupExpense';
-import Settlement from './pages/group/Settlement';
-import Members from './pages/group/Members';
-import GroupAnalytics from './pages/group/GroupAnalytics';
-import GroupReports from './pages/group/GroupReports';
+const GroupSelection = React.lazy(() => import('./pages/group/GroupSelection'));
+const GroupDashboard = React.lazy(() => import('./pages/group/GroupDashboard'));
+const GroupExpenses = React.lazy(() => import('./pages/group/GroupExpenses'));
+const AddGroupExpense = React.lazy(() => import('./pages/group/AddGroupExpense'));
+const Settlement = React.lazy(() => import('./pages/group/Settlement'));
+const Members = React.lazy(() => import('./pages/group/Members'));
+const GroupAnalytics = React.lazy(() => import('./pages/group/GroupAnalytics'));
+const GroupReports = React.lazy(() => import('./pages/group/GroupReports'));
 
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminUsers from './pages/admin/AdminUsers';
-import AdminCategories from './pages/admin/AdminCategories';
-import AdminReports from './pages/admin/AdminReports';
-import AdminProfile from './pages/admin/AdminProfile';
+const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'));
+const AdminUsers = React.lazy(() => import('./pages/admin/AdminUsers'));
+const AdminCategories = React.lazy(() => import('./pages/admin/AdminCategories'));
+const AdminReports = React.lazy(() => import('./pages/admin/AdminReports'));
+const AdminProfile = React.lazy(() => import('./pages/admin/AdminProfile'));
 
 
 function App() {
@@ -76,8 +76,8 @@ function App() {
     <AuthProvider>
       <Router>
         <ToastContainer position="top-right" autoClose={3000} />
-
-        <Routes>
+        <Suspense fallback={<div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div></div>}>
+          <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
 
@@ -126,6 +126,7 @@ function App() {
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </Router>
     </AuthProvider>
   );
