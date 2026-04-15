@@ -6,9 +6,9 @@ import { toast } from 'react-toastify';
 import {
     PieChart, Pie, Cell, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { 
-    MdGroup, MdTrendingUp, MdTrendingDown, MdAccountBalance, 
-    MdAttachMoney, MdLightbulb, MdArrowForward 
+import {
+    MdGroup, MdTrendingUp, MdTrendingDown, MdAccountBalance,
+    MdAttachMoney, MdLightbulb, MdArrowForward
 } from 'react-icons/md';
 
 const COLORS = ['#2563EB', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
@@ -87,7 +87,7 @@ const Dashboard = () => {
     const incomePercentage = monthlyReport?.totalIncome ?
         ((monthlyReport.totalSpent / monthlyReport.totalIncome) * 100) : 0;
 
-    const budgetPercentage = budgetStatus?.budget ? 
+    const budgetPercentage = budgetStatus?.budget ?
         ((budgetStatus.totalSpent / budgetStatus.budget) * 100) : 0;
 
     return (
@@ -135,7 +135,7 @@ const Dashboard = () => {
                     <p className="text-3xl font-black text-textColor">₹{(monthlyReport?.totalSpent || 0).toLocaleString()}</p>
                     <div className="mt-5 w-full h-1.5 bg-background rounded-full overflow-hidden">
                         <div className={`h-full rounded-full transition-all duration-1000 ${incomePercentage > 90 ? 'bg-danger' : 'bg-primary'}`}
-                             style={{ width: `${Math.min(incomePercentage, 100)}%` }}>
+                            style={{ width: `${Math.min(incomePercentage, 100)}%` }}>
                         </div>
                     </div>
                 </div>
@@ -153,7 +153,7 @@ const Dashboard = () => {
                     </p>
                     <div className="mt-5 w-full h-1.5 bg-background rounded-full overflow-hidden">
                         <div className={`h-full rounded-full transition-all duration-1000 ${budgetStatus?.isExceeded ? 'bg-danger' : 'bg-primary opacity-60'}`}
-                             style={{ width: `${Math.min(budgetPercentage, 100)}%` }}>
+                            style={{ width: `${Math.min(budgetPercentage, 100)}%` }}>
                         </div>
                     </div>
                 </div>
@@ -202,8 +202,8 @@ const Dashboard = () => {
                                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                             ))}
                                         </Pie>
-                                        <Tooltip 
-                                            contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }} 
+                                        <Tooltip
+                                            contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
                                             formatter={(val) => `₹${val.toLocaleString()}`}
                                         />
                                     </PieChart>
@@ -239,7 +239,7 @@ const Dashboard = () => {
                     <div className="h-full bg-gradient-to-br from-primary to-secondary rounded-3xl p-8 text-card relative overflow-hidden shadow-lg group">
                         <div className="absolute -right-12 -top-12 bg-card/10 w-48 h-48 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>
                         <div className="absolute -left-12 -bottom-12 bg-card/10 w-40 h-40 rounded-full blur-2xl"></div>
-                        
+
                         <div className="relative z-10 flex flex-col h-full">
                             <div className="flex items-center gap-3 mb-8">
                                 <div className="p-3 bg-card/20 rounded-2xl backdrop-blur-sm border border-card/10">
@@ -247,7 +247,6 @@ const Dashboard = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg tracking-tight text-white">Smart Analysis</h3>
-                                    <p className="text-xs text-white/60">AI Powered Insights</p>
                                 </div>
                             </div>
 

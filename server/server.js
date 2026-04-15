@@ -21,17 +21,6 @@ connectDB();
 
 const app = express();
 
-// Rate limiting
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-    message: 'Too many requests from this IP, please try again later.',
-    standardHeaders: true,
-    legacyHeaders: false,
-});
-
-app.use(limiter);
-
 const allowedOrigins = [
     'https://expentra-ten.vercel.app',
     'http://localhost:5173',
@@ -46,6 +35,17 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// Rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+app.use(limiter);
 
 app.use(express.json());
 
