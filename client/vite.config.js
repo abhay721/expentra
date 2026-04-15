@@ -11,6 +11,11 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: '/',
+    server: {
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+      },
+    },
     plugins: [
       react(),
       VitePWA({

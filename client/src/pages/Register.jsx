@@ -4,6 +4,9 @@ import { AuthContext, API } from '../context/AuthContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import PublicNavbar from '../components/PublicNavbar';
+import { auth, googleProvider } from '../firebase';
+import { signInWithPopup } from 'firebase/auth';
+import { FcGoogle } from 'react-icons/fc';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -35,6 +38,36 @@ const Register = () => {
         } catch (error) {
             toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
             console.error(error);
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+
+            const res = await axios.post(`${API}/auth/google`, {
+                name: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL,
+            });
+
+            const { token, role } = res.data;
+            login(token, res.data, role);
+            toast.success('Registration via Google successful!');
+            
+            if (role === 'admin') {
+                navigate('/admin/dashboard');
+            } else {
+                navigate('/dashboard');
+            }
+        } catch (error) {
+            if (error.code === 'auth/popup-closed-by-user') {
+                toast.warning('Authentication cancelled');
+            } else {
+                toast.error(error.response?.data?.message || 'Google signup failed. Please try again.');
+                console.error(error);
+            }
         }
     };
 
@@ -142,6 +175,23 @@ const Register = () => {
                                     Create Account
                                 </button>
                             </form>
+
+                            <div className="relative my-6">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-background"></div>
+                                </div>
+                                <div className="relative flex justify-center text-xs uppercase">
+                                    <span className="bg-card px-2 text-textColor/40 font-semibold tracking-wider">Or continue with</span>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleGoogleLogin}
+                                className="w-full flex items-center justify-center gap-3 bg-background border border-background py-3 rounded-lg font-semibold text-sm uppercase tracking-wider shadow-sm hover:bg-background/80 transition-all duration-200"
+                            >
+                                <FcGoogle className="text-xl" />
+                                <span>Google</span>
+                            </button>
 
                             <div className="mt-8 pt-8 border-t border-background flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div>

@@ -1,5 +1,6 @@
 import User from '../models/userModel.js';
 import generateToken from '../utils/generateToken.js';
+import crypto from 'crypto';
 
 // Password validation regex: min 8 chars, 1 uppercase, 1 lowercase, 1 number
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
@@ -169,4 +170,62 @@ const saveFCMToken = async (req, res, next) => {
     }
 };
 
-export { registerUser, authUser, getUserProfile, updateUserProfile, saveFCMToken };
+// @desc    Google OAuth — login or register
+// @route   POST /api/auth/google
+// @access  Public
+const googleAuth = async (req, res, next) => {
+    const { name, email, photoURL } = req.body;
+
+    try {
+        if (!email || !name) {
+            res.status(400);
+            throw new Error('Name and email are required from Google account');
+        }
+
+        let user = await User.findOne({ email });
+
+        if (user) {
+            // Existing user — check if blocked
+            if (user.status === 'blocked' || user.isBlocked) {
+                res.status(403);
+                throw new Error('Account has been blocked by an administrator.');
+            }
+
+            return res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                token: generateToken(user._id),
+            });
+        }
+
+        // New Google user — create with a random password (schema unchanged)
+        const randomPassword = crypto.randomBytes(32).toString('hex');
+
+        user = await User.create({
+            name,
+            email,
+            password: randomPassword,
+            role: 'personal',
+            status: 'active',
+        });
+
+        if (user) {
+            return res.status(201).json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                token: generateToken(user._id),
+            });
+        }
+
+        res.status(400);
+        throw new Error('Failed to create user');
+    } catch (error) {
+        next(error);
+    }
+};
+
+export { registerUser, authUser, getUserProfile, updateUserProfile, saveFCMToken, googleAuth };
