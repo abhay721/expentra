@@ -70,7 +70,7 @@ EXPENTRA/
 ### Step-by-Step
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/abhay721/expentra.git
+    git clone https://github.com/repo-link
     cd expentra
     ```
 
@@ -99,7 +99,4 @@ EXPENTRA/
 
 ---
 
-### 📸 Screenshots
-*(Add your screenshots here to showcase the premium UI)*
 
-Created with ❤️ by [Abhay](https://github.com/abhay721)
